@@ -1,0 +1,28 @@
+id: NBLS_EDUCATION
+name: 교육급여
+level: central
+unit: household
+source_refs:
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 52, clause: 교육급여 선정기준(중위 50%)}
+  - {doc: 교육부 보도자료 「2026년 초·중·고 학생 교육급여와 교육비 지원 신청하세요!」(2026.3.3.), clause: 교육활동지원비, url: "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156746765"}
+assumptions:
+  - 학교급은 재학 중(is_student)인 가구원의 만 나이로 근사 — 초 7~12세, 중 13~15세, 고 16~18세
+  - 고교 무상교육 제외 학교의 입학금·수업료·교과서대는 미반영(대부분 무상교육)
+  - 연 1회 바우처를 월 환산(÷12)해 표시
+derived:
+  sel_line:
+    label: 교육급여 선정기준
+    ref: 0
+    expr: round(median_income(hh.size) * params.selection_ratio_education)
+eligibility:
+  all:
+    - {expr: nbls_income_recognized <= sel_line, ref: 0, label: 소득인정액 ≤ 교육급여 선정기준(중위 50%)}
+    - {expr: count(p.is_student and p.age >= 7 and p.age <= 18) >= 1, ref: 1, label: 초·중·고 재학생 있음}
+benefit:
+  annual: >-
+    sum(if(p.is_student and p.age >= 7 and p.age <= 12, lookup('education_activity_support', 'elementary'),
+        if(p.is_student and p.age >= 13 and p.age <= 15, lookup('education_activity_support', 'middle'),
+        if(p.is_student and p.age >= 16 and p.age <= 18, lookup('education_activity_support', 'high'), 0))))
+  ref: 1
+status: approved
+tests: tests/rules/NBLS_EDUCATION.yaml

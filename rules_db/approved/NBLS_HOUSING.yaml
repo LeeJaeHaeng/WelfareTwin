@@ -1,0 +1,50 @@
+id: NBLS_HOUSING
+name: 주거급여(임차급여)
+level: central
+unit: household
+source_refs:
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 52, clause: 주거급여 선정기준(중위 48%)}
+  - {doc: 2026년 주거급여 선정기준 및 최저보장수준 (국토교통부 고시 제2025-506호), clause: 기준임대료, url: "https://www.molit.go.kr/USR/I0204/m_45/dtl.jsp?idx=18653"}
+  - {doc: 마이홈포털 주거급여 임차가구지원, clause: 자기부담분·최소지급액·실제임차료 환산, url: "https://www.myhome.go.kr/hws/portal/cont/selectRentalHouseholdSupView.do"}
+assumptions:
+  - 자가가구 수선유지급여(현물·주기적)는 월 현금 급여 0으로 표시
+  - 임차가구 보증금은 assets_housing 으로 입력(실제임차료 = 월차임 + 보증금 × 4% ÷ 12)
+  - 10인 이상 가구 기준임대료 가산은 미반영(8~9인 10% 가산까지만)
+  - 급여액은 원 단위 반올림(지급 단위 규정 미확인)
+derived:
+  sel_line:
+    label: 주거급여 선정기준
+    ref: 0
+    expr: round(median_income(hh.size) * params.selection_ratio_housing)
+  livelihood_line:
+    label: 생계급여 선정기준(자기부담분 기준선)
+    ref: 2
+    expr: round(median_income(hh.size) * params.selection_ratio_livelihood)
+  is_renter:
+    label: 임차가구
+    expr: hh.housing == 'jeonse' or hh.housing == 'monthly_rent'
+  standard_rent:
+    label: 기준임대료
+    ref: 1
+    expr: >-
+      if(hh.size <= 7,
+         lookup('housing_standard_rent', hh.housing_zone, min(hh.size, 6)),
+         floor(lookup('housing_standard_rent', hh.housing_zone, 6) * params.housing_standard_rent_8plus_rate / 1000) * 1000)
+  actual_rent:
+    label: 실제임차료(월차임 + 보증금 환산)
+    ref: 2
+    expr: hh.rent_monthly + hh.assets_housing * params.housing_deposit_conversion_rate_annual / 12
+  self_burden:
+    label: 자기부담분
+    ref: 2
+    expr: params.housing_self_burden_rate * max(0, nbls_income_recognized - livelihood_line)
+eligibility:
+  all:
+    - {expr: nbls_income_recognized <= sel_line, ref: 0, label: 소득인정액 ≤ 주거급여 선정기준(중위 48%)}
+benefit:
+  monthly: >-
+    if(is_renter and min(actual_rent, standard_rent) > 0,
+       max(params.housing_min_payment, min(actual_rent, standard_rent) - self_burden), 0)
+  ref: 2
+status: approved
+tests: tests/rules/NBLS_HOUSING.yaml

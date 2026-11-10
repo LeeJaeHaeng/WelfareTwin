@@ -1,0 +1,24 @@
+program: NBLS_MEDICAL
+cases:
+  - name: 일반 근로자 — 공제 없이 선정기준 이내
+    source: 사업안내 2026 p.105 (의료급여는 일반 30% 공제 미적용), p.51 (1인 1,025,695)
+    household: {region_sido: 대구광역시, members: [{age: 40, employed: true, earned_income: 1000000}]}
+    expect: {eligible: true, benefit_monthly: 0}
+  - name: 일반 근로자 — 생계는 되지만 의료는 탈락
+    source: 사업안내 2026 p.105, p.51
+    household: {region_sido: 대구광역시, members: [{age: 40, employed: true, earned_income: 1030000}]}
+    expect: {eligible: false}
+    expect_derived: {nbls_income_recognized_medical: 1030000, nbls_income_recognized: 721000}
+  - name: 34세 이하 — 60만원 공제 후 30%
+    source: 사업안내 2026 p.105 (34세 이하 수급(권)자, 4개 급여 공통)
+    household: {region_sido: 대구광역시, members: [{age: 30, employed: true, earned_income: 1500000}]}
+    expect: {eligible: true}
+    expect_derived: {nbls_income_recognized_medical: 630000}
+  - name: 부양능력 있는 부양의무자 → 탈락
+    source: 사업안내 2026 p.6 (의료급여 부양의무자 기준)
+    household: {region_sido: 대구광역시, obligor_medical_capable: true, members: [{age: 80}]}
+    expect: {eligible: false}
+  - name: 경계 — 2인 소득인정액 = 선정기준
+    source: 사업안내 2026 p.51 (2인 1,679,717)
+    household: {region_sido: 경상북도, members: [{age: 70, other_income: 1679717}, {age: 68}]}
+    expect: {eligible: true}

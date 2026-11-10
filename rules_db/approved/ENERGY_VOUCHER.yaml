@@ -1,0 +1,30 @@
+id: ENERGY_VOUCHER
+name: 에너지바우처
+level: central
+unit: household
+source_refs:
+  - {doc: 에너지바우처 지원정보 (한국에너지공단), clause: 신청대상(소득기준·세대원 특성기준), url: "https://www.energyv.or.kr/info/support_info.do"}
+  - {doc: 에너지바우처 지원정보 (한국에너지공단), clause: 바우처 지원금액(2026.7.1.~2027.5.31.), url: "https://www.energyv.or.kr/info/support_info.do"}
+assumptions:
+  - 세대원 특성 중 중증·희귀·중증난치질환자, 소년소녀가정은 미반영
+  - 다자녀세대는 '19세 미만 가구원 2명 이상'으로 근사(부모 관계 미확인)
+  - 연간 총액을 월 환산(÷12)해 표시
+eligibility:
+  all:
+    - any:
+        - {expr: "elig('NBLS_LIVELIHOOD')", ref: 0, label: 생계급여 수급}
+        - {expr: "elig('NBLS_MEDICAL')", ref: 0, label: 의료급여 수급}
+        - {expr: "elig('NBLS_HOUSING')", ref: 0, label: 주거급여 수급}
+        - {expr: "elig('NBLS_EDUCATION')", ref: 0, label: 교육급여 수급}
+    - any:
+        - {expr: count(p.age >= params.ev_elderly_min_age) >= 1, ref: 0, label: 노인}
+        - {expr: count(p.age <= params.ev_infant_max_age) >= 1, ref: 0, label: 영유아}
+        - {expr: hh.n_disabled >= 1, ref: 0, label: 장애인}
+        - {expr: hh.n_pregnant >= 1, ref: 0, label: 임산부}
+        - {expr: hh.single_parent, ref: 0, label: 한부모가족}
+        - {expr: count(p.age <= params.ev_multichild_max_age) >= 2, ref: 0, label: 다자녀세대}
+benefit:
+  annual: lookup('ev_amount_annual', min(hh.size, 4))
+  ref: 1
+status: approved
+tests: tests/rules/ENERGY_VOUCHER.yaml

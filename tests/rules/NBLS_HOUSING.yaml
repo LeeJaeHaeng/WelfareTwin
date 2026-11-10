@@ -1,0 +1,43 @@
+program: NBLS_HOUSING
+cases:
+  - name: 사업안내 예시 — 서울 2인 무보증월세 30만원
+    source: 사업안내 2026 p.49 (1급지 2인가구 기준임대료 414천원 > 실제임차료 30만원 → 300,000원)
+    household:
+      region_sido: 서울특별시
+      housing: monthly_rent
+      rent_monthly: 300000
+      members: [{age: 50}, {age: 19, employed: true, earned_income: 900000}]
+    expect: {eligible: true, benefit_monthly: 300000}
+  - name: 사업안내 예시 — 서울 1인 무보증월세 30만원
+    source: 사업안내 2026 p.49 (1급지 1인가구 기준임대료 369천원 > 실제임차료 30만원)
+    household: {region_sido: 서울특별시, housing: monthly_rent, rent_monthly: 300000, members: [{age: 19}]}
+    expect: {eligible: true, benefit_monthly: 300000}
+  - name: 자기부담분 — 소득인정액이 생계급여 선정기준 초과
+    source: 고시 제2025-506호 3급지 1인 247,000원; 마이홈포털 자기부담분 = (소득인정액 − 생계 선정기준) × 30%
+    household: {region_sido: 대구광역시, housing: monthly_rent, rent_monthly: 300000, members: [{age: 50, other_income: 1000000}]}
+    expect: {eligible: true, benefit_monthly: 193167}
+    expect_derived: {standard_rent: 247000, self_burden: 53833.2}
+  - name: 최소 지급액 1만원
+    source: 마이홈포털 (급여 산정금액 1만원 미만이면 1만원)
+    household:
+      region_sido: 경상북도
+      housing: monthly_rent
+      rent_monthly: 500000
+      members: [{age: 50, other_income: 4100000}, {age: 48}, {age: 20}, {age: 18}, {age: 15}, {age: 12}]
+    expect: {eligible: true, benefit_monthly: 10000}
+  - name: 전세 보증금 환산
+    source: 마이홈포털 (실제임차료 = 월차임 + 보증금 × 4% ÷ 12); 고시 2급지 2인 335,000원
+    household: {region_sido: 경기도, housing: jeonse, assets_housing: 60000000, members: [{age: 70}, {age: 68}]}
+    expect: {eligible: true, benefit_monthly: 200000}
+  - name: 자가가구 — 자격은 있으나 월 현금급여 없음
+    source: 사업안내 2026 p.52 (선정기준), 단순화 가정(수선유지급여 현물)
+    household: {region_sido: 경상북도, housing: own, assets_housing: 50000000, members: [{age: 75}]}
+    expect: {eligible: true, benefit_monthly: 0}
+  - name: 경계 — 1인 소득인정액 = 주거급여 선정기준
+    source: 사업안내 2026 p.52 (1인 1,230,834원)
+    household: {region_sido: 경상북도, housing: monthly_rent, rent_monthly: 200000, members: [{age: 50, other_income: 1230834}]}
+    expect: {eligible: true}
+  - name: 경계 — 선정기준 + 1원
+    source: 사업안내 2026 p.52
+    household: {region_sido: 경상북도, housing: monthly_rent, rent_monthly: 200000, members: [{age: 50, other_income: 1230835}]}
+    expect: {eligible: false, benefit_monthly: 0}

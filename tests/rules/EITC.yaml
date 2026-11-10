@@ -1,0 +1,27 @@
+program: EITC
+cases:
+  - name: 단독 평탄구간 — 연 600만원
+    source: 조특법 제100조의5 ①1호 나목 (400만~900만원 미만 165만원)
+    household: {region_sido: 대구광역시, members: [{age: 30, employed: true, earned_income: 500000}]}
+    expect: {eligible: true, benefit_monthly: 137500}
+  - name: 단독 점증구간 — 연 300만원
+    source: 조특법 제100조의5 ①1호 가목 (총급여액등 × 165/400)
+    household: {region_sido: 대구광역시, members: [{age: 30, employed: true, earned_income: 250000}]}
+    expect: {eligible: true, benefit_monthly: 103125}
+  - name: 단독 총소득 2,400만원 — 기준 초과
+    source: 국세청 신청자격 (단독가구 2,200만원 미만)
+    household: {region_sido: 대구광역시, members: [{age: 30, employed: true, earned_income: 2000000}]}
+    expect: {eligible: false, benefit_monthly: 0}
+  - name: 맞벌이 평탄구간 — 연 1,440만원
+    source: 조특법 제100조의5 ①3호 나목 (800만~1,700만원 미만 330만원); 국세청 맞벌이 각각 300만원 이상
+    household: {region_sido: 경상북도, members: [{age: 40, employed: true, earned_income: 600000}, {age: 38, employed: true, earned_income: 600000}]}
+    expect: {eligible: true, benefit_monthly: 275000}
+    expect_derived: {eitc_type: dual_earner}
+  - name: 재산 2억원 — 50% 감액
+    source: 국세청 신청자격 (재산 1.7억원 이상 2.4억원 미만 산정액의 50%)
+    household: {region_sido: 대구광역시, assets_general: 200000000, members: [{age: 30, employed: true, earned_income: 500000}]}
+    expect: {eligible: true, benefit_monthly: 68750}
+  - name: 재산 2.4억원 — 제외
+    source: 국세청 신청자격 (재산 합계액 2.4억원 미만)
+    household: {region_sido: 대구광역시, assets_general: 240000000, members: [{age: 30, employed: true, earned_income: 500000}]}
+    expect: {eligible: false}

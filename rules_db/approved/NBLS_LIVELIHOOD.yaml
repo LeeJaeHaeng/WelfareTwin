@@ -1,0 +1,27 @@
+id: NBLS_LIVELIHOOD
+name: 생계급여
+level: central
+unit: household
+source_refs:
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 51, clause: 2026년 가구규모별·급여종류별 수급자 선정기준}
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 6, clause: 부양의무자 기준(생계급여 — 고소득·고재산 예외)}
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 238, clause: 생계급여 급여액 산정기준(10원 단위 올림)}
+assumptions:
+  - 부양의무자 기준은 '부양의무자 연소득 1.3억원 또는 일반재산 12억원 초과' 여부(obligor_over_limit)로만 근사
+  - 8인 이상 선정기준은 '7인 기준 + (7인−6인) × 증가 인원'(p.52) 대신 기준중위소득×32%로 계산 → 9인 이상에서 1원 단위 차이 가능
+derived:
+  sel_line:
+    label: 생계급여 선정기준(=지급기준)
+    ref: 0
+    expr: round(median_income(hh.size) * params.selection_ratio_livelihood)
+eligibility:
+  all:
+    - {expr: nbls_income_recognized <= sel_line, ref: 0, label: 소득인정액 ≤ 생계급여 선정기준(중위 32%)}
+    - {expr: not hh.obligor_over_limit, ref: 1, label: 부양의무자 고소득·고재산 기준 미해당}
+benefit:
+  monthly: >-
+    ceil((sel_line - nbls_income_recognized) / params.nbls_livelihood_round_unit)
+    * params.nbls_livelihood_round_unit
+  ref: 2
+status: approved
+tests: tests/rules/NBLS_LIVELIHOOD.yaml

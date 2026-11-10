@@ -1,0 +1,23 @@
+# 비밀
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.hypothesis/
+*.egg-info/
+
+# 캐시
+.cache/
+
+# 수집 원천·가공 데이터 (재수집 가능, 용량 큼)
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+
+# 제출 자료 압축본
+*.zip

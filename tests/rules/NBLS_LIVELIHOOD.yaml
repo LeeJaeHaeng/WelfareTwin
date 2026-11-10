@@ -1,0 +1,67 @@
+program: NBLS_LIVELIHOOD
+cases:
+  - name: 사업안내 예시 — 소득인정액 15만원 1인
+    source: 사업안내 2026 p.239 생계급여액 산출 예시 (820,556 − 150,000 = 670,556 → 원단위 올림)
+    household: {region_sido: 세종특별자치시, members: [{age: 70, other_income: 150000}]}
+    expect: {eligible: true, benefit_monthly: 670560}
+  - name: 사업안내 예시 — 19세 아들 취업 2인 가구
+    source: 사업안내 2026 p.49 (근로소득 90만원 → 60만원 공제 후 30% 추가 = 69만원 공제, 소득인정액 21만원)
+    household:
+      region_sido: 서울특별시
+      housing: monthly_rent
+      rent_monthly: 300000
+      members: [{age: 50}, {age: 19, employed: true, earned_income: 900000}]
+    expect: {eligible: true, benefit_monthly: 1133780}
+    expect_derived: {nbls_income_recognized: 210000}
+  - name: 경계 — 소득인정액 = 선정기준
+    source: 사업안내 2026 p.51 (선정기준 '이하')
+    household: {region_sido: 대구광역시, members: [{age: 50, other_income: 820556}]}
+    expect: {eligible: true, benefit_monthly: 0}
+  - name: 경계 — 선정기준 + 1원
+    source: 사업안내 2026 p.51
+    household: {region_sido: 대구광역시, members: [{age: 50, other_income: 820557}]}
+    expect: {eligible: false, benefit_monthly: 0}
+  - name: 부양의무자 고소득·고재산 → 제외
+    source: 사업안내 2026 p.6
+    household: {region_sido: 대구광역시, obligor_over_limit: true, members: [{age: 80}]}
+    expect: {eligible: false}
+  - name: 사업안내 예시1 — 세종 주거용 1억6,600만 + 일반 3천만
+    source: 사업안내 2026 p.165 예시1 (한도 초과 2천만 + 일반 3천만 → 4.17%, 1억4,600만 − 7,700만 = 6,900만 → 1.04%)
+    household: {region_sido: 세종특별자치시, housing: own, assets_housing: 166000000, assets_general: 30000000, members: [{age: 70}]}
+    expect: {eligible: false}
+    expect_derived: {nbls_property_income: 2802600}
+  - name: 사업안내 예시2 — 세종 주거용 7,800만 + 생업용 자동차(제외)
+    source: 사업안내 2026 p.166 예시2 (7,800만 − 7,700만 = 100만 × 1.04%; 생업용 자동차는 재산 제외)
+    household: {region_sido: 세종특별자치시, housing: own, assets_housing: 78000000, members: [{age: 70}]}
+    expect: {eligible: true, benefit_monthly: 810160}
+    expect_derived: {nbls_property_income: 10400}
+  - name: 사업안내 예시 — 세종 주거용 1억5,600만
+    source: 사업안내 2026 p.134 (한도 초과 1,000만 → 일반재산, 6,900만 → 주거용 환산)
+    household: {region_sido: 세종특별자치시, housing: own, assets_housing: 156000000, members: [{age: 70}]}
+    expect: {eligible: false}
+    expect_derived: {nbls_property_income: 1134600}
+  - name: 100% 환산 자동차 200만원
+    source: 사업안내 2026 p.166 (자동차 월 100%)
+    household: {region_sido: 경상북도, car_value: 2000000, members: [{age: 45}]}
+    expect: {eligible: false}
+    expect_derived: {nbls_income_recognized: 2000000}
+  - name: 금융재산 1천만 — 생활준비금 공제 후 기본재산액 이내
+    source: 사업안내 2026 p.148, p.165
+    household: {region_sido: 서울특별시, assets_financial: 10000000, members: [{age: 45}]}
+    expect: {eligible: true, benefit_monthly: 820560}
+    expect_derived: {nbls_property_income: 0}
+  - name: 일반 근로소득 30% 공제
+    source: 사업안내 2026 p.105 (생계·주거·교육 30% 공제)
+    household: {region_sido: 경상북도, members: [{age: 40, employed: true, earned_income: 1000000}]}
+    expect: {eligible: true, benefit_monthly: 120560}
+    expect_derived: {nbls_income_recognized: 700000}
+  - name: 65세 이상 근로소득 20만원 공제 후 30%
+    source: 사업안내 2026 p.105
+    household: {region_sido: 경상북도, members: [{age: 70, employed: true, earned_income: 500000}]}
+    expect: {eligible: true, benefit_monthly: 610560}
+    expect_derived: {nbls_income_recognized: 210000}
+  - name: 부채는 기본재산액과 함께 차감
+    source: 사업안내 2026 p.163 (부채 차감 순서), p.165 (그 외 지역 기본재산액 5,300만)
+    household: {region_sido: 경상북도, assets_general: 100000000, debts: 20000000, members: [{age: 45}]}
+    expect: {eligible: false}
+    expect_derived: {nbls_property_income: 1125900}

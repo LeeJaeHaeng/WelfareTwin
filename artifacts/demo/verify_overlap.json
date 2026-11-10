@@ -1,0 +1,104 @@
+{
+ "query": "overlap",
+ "status": "unsat",
+ "elapsed_sec": 0.27,
+ "options": {
+  "exclusion_pairs": [],
+  "dead_rules": [],
+  "unknown": [],
+  "co_eligible_pairs": [
+   [
+    "BASIC_PENSION",
+    "EITC"
+   ],
+   [
+    "BASIC_PENSION",
+    "ENERGY_VOUCHER"
+   ],
+   [
+    "BASIC_PENSION",
+    "NBLS_EDUCATION"
+   ],
+   [
+    "BASIC_PENSION",
+    "NBLS_HOUSING"
+   ],
+   [
+    "BASIC_PENSION",
+    "NBLS_LIVELIHOOD"
+   ],
+   [
+    "BASIC_PENSION",
+    "NBLS_MEDICAL"
+   ],
+   [
+    "EITC",
+    "ENERGY_VOUCHER"
+   ],
+   [
+    "EITC",
+    "NBLS_EDUCATION"
+   ],
+   [
+    "EITC",
+    "NBLS_HOUSING"
+   ],
+   [
+    "EITC",
+    "NBLS_LIVELIHOOD"
+   ],
+   [
+    "EITC",
+    "NBLS_MEDICAL"
+   ],
+   [
+    "ENERGY_VOUCHER",
+    "NBLS_EDUCATION"
+   ],
+   [
+    "ENERGY_VOUCHER",
+    "NBLS_HOUSING"
+   ],
+   [
+    "ENERGY_VOUCHER",
+    "NBLS_LIVELIHOOD"
+   ],
+   [
+    "ENERGY_VOUCHER",
+    "NBLS_MEDICAL"
+   ],
+   [
+    "NBLS_EDUCATION",
+    "NBLS_HOUSING"
+   ],
+   [
+    "NBLS_EDUCATION",
+    "NBLS_LIVELIHOOD"
+   ],
+   [
+    "NBLS_EDUCATION",
+    "NBLS_MEDICAL"
+   ],
+   [
+    "NBLS_HOUSING",
+    "NBLS_LIVELIHOOD"
+   ],
+   [
+    "NBLS_HOUSING",
+    "NBLS_MEDICAL"
+   ],
+   [
+    "NBLS_LIVELIHOOD",
+    "NBLS_MEDICAL"
+   ]
+  ]
+ },
+ "meta": {
+  "generated_at": "2026-11-10T01:11:42+00:00",
+  "git_rev": "uncommitted",
+  "rules_hash": "21d4b99df8aa",
+  "params_hash": "a3585b538aef",
+  "params_year": 2026
+ },
+ "items": []
+}

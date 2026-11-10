@@ -1,0 +1,57 @@
+id: BASIC_PENSION
+name: 기초연금
+level: central
+unit: household
+source_refs:
+  - {doc: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준), clause: 제2조 선정기준액·제3조 기준연금액, url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"}
+  - {doc: 보건복지부고시 제2026-156호, clause: 제6조 근로소득 공제·제8조 기본재산액·제9조 금융재산 공제, url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"}
+  - {doc: 보건복지부 보도자료(2026.1.1.) 붙임1 소득인정액 산식, clause: 재산 소득환산율 4%·고급자동차, url: "https://www.mohw.go.kr/board.es?act=view&bid=0027&list_no=1488478&mid=a10503000000"}
+  - {doc: 기초연금법 제8조제1항, clause: 부부 감액 20%, url: "https://easylaw.go.kr/CSP/CnpClsMain.laf?popMenu=ov&csmSeq=1963&ccfNo=3&cciNo=2&cnpClsNo=1"}
+assumptions:
+  - 가구 내 65세 이상이 2명 이상이면 부부가구, 1명이면 단독가구로 근사(65세 미만 배우자는 미반영)
+  - 소득은 65세 이상 가구원(본인·배우자 근사)의 소득만 합산, 재산은 가구 전체를 본인·배우자 소유로 근사
+  - car_value 는 4천만원 이상이면 전액 소득 반영, 미만이면 일반재산에 포함(차령·용도 예외 미반영)
+  - 소득역전 방지 감액·국민연금 연계 감액은 미반영
+  - 기본재산액이 일반재산보다 커도 남는 공제액을 금융재산에서 추가 공제하지 않음(고시 원문 미대조)
+derived:
+  bp_couple:
+    label: 부부가구(65세 이상 2명 이상)
+    expr: hh.n_elderly >= 2
+  bp_income_eval:
+    label: 소득평가액(근로소득 116만원 공제 후 70% + 기타소득)
+    ref: 1
+    expr: >-
+      sum(if(p.age >= params.bp_min_age,
+             (1 - params.bp_earned_deduction_rate) * max(0, p.earned_income - params.bp_earned_deduction_flat)
+             + p.business_income + p.other_income, 0))
+  bp_car_luxury:
+    label: 고급자동차 가액(전액 소득 반영)
+    ref: 2
+    expr: if(hh.car_value >= params.bp_luxury_car_threshold, hh.car_value, 0)
+  bp_property:
+    label: 재산(기본재산액·금융재산 공제·부채 차감 후)
+    ref: 1
+    expr: >-
+      max(0, max(0, hh.assets_housing + hh.assets_general
+                    + if(hh.car_value >= params.bp_luxury_car_threshold, 0, hh.car_value)
+                    - lookup('bp_basic_property_deduction', hh.bp_region))
+             + max(0, hh.assets_financial - params.bp_financial_deduction)
+             - hh.debts)
+  bp_income_recognized:
+    label: 소득인정액(기초연금)
+    ref: 2
+    expr: bp_income_eval + bp_property * params.bp_property_conversion_rate_annual / 12 + bp_car_luxury
+  bp_threshold:
+    label: 선정기준액
+    ref: 0
+    expr: if(bp_couple, lookup('bp_selection_threshold', 'couple'), lookup('bp_selection_threshold', 'single'))
+eligibility:
+  all:
+    - {expr: hh.n_elderly >= 1, ref: 0, label: 만 65세 이상}
+    - {expr: bp_income_recognized <= bp_threshold, ref: 0, label: 소득인정액 ≤ 선정기준액}
+benefit:
+  monthly: >-
+    if(bp_couple, 2 * params.bp_base_amount * (1 - params.bp_couple_reduction_rate), params.bp_base_amount)
+  ref: 3
+status: approved
+tests: tests/rules/BASIC_PENSION.yaml

@@ -1,0 +1,87 @@
+id: EITC
+name: 근로장려금
+level: central
+unit: household
+source_refs:
+  - {doc: 국세청 근로·자녀장려금 신청자격 (2025년 귀속), clause: 가구유형·총소득·재산 기준, url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2452&cntntsId=7783"}
+  - {doc: 조세특례제한법 제100조의5 제1항, clause: 근로장려금 산정식, url: "https://www.law.go.kr/LSW/lsSideInfoP.do?lsiSeq=284389&joNo=0100&joBrNo=05&docCls=jo&urlMode=lsScJoRltInfoR"}
+assumptions:
+  - 연간 소득 = 월 소득 × 12 (소득 변동 미반영)
+  - 가구유형 근사 — 1인 가구는 단독, 근로·사업소득 연 300만원 이상인 가구원이 2명 이상이면 맞벌이, 그 외 홑벌이(배우자·부양자녀 관계 미확인)
+  - 시행령 별표 근로장려금산정표(구간별 반올림) 대신 연속 산정식 사용 → 소액 차이 가능
+  - 재산은 부채를 차감하지 않은 가구 재산 합계(주거용·일반·금융·자동차)
+  - 생계급여 수급자 등 신청 제외 규정은 미반영(확인 필요)
+derived:
+  eitc_earned_annual:
+    label: 총급여액등(연)
+    ref: 1
+    expr: (hh.earned_income + hh.business_income) * 12
+  eitc_total_income_annual:
+    label: 총소득(연)
+    ref: 0
+    expr: (hh.earned_income + hh.business_income + hh.other_income) * 12
+  eitc_assets:
+    label: 재산 합계(부채 미차감)
+    ref: 0
+    expr: hh.assets_housing + hh.assets_general + hh.assets_financial + hh.car_value
+  eitc_type:
+    label: 가구유형
+    ref: 0
+    expr: >-
+      if(hh.size == 1, 'single',
+         if(count((p.earned_income + p.business_income) * 12 >= params.eitc_dual_earner_min_income) >= 2,
+            'dual_earner', 'single_earner'))
+  eitc_income_cap_for_type:
+    label: 가구유형별 총소득 기준
+    ref: 0
+    expr: lookup('eitc_income_cap', eitc_type)
+  eitc_base_single:
+    label: 산정액(단독)
+    ref: 1
+    expr: >-
+      max(0, min(eitc_earned_annual * (lookup('eitc_max_amount', 'single') / lookup('eitc_phase_in_end', 'single')),
+                 lookup('eitc_max_amount', 'single'),
+                 lookup('eitc_max_amount', 'single')
+                 - (eitc_earned_annual - lookup('eitc_phase_out_start', 'single'))
+                   * (lookup('eitc_max_amount', 'single')
+                      / (lookup('eitc_income_cap', 'single') - lookup('eitc_phase_out_start', 'single')))))
+  eitc_base_single_earner:
+    label: 산정액(홑벌이)
+    ref: 1
+    expr: >-
+      max(0, min(eitc_earned_annual * (lookup('eitc_max_amount', 'single_earner') / lookup('eitc_phase_in_end', 'single_earner')),
+                 lookup('eitc_max_amount', 'single_earner'),
+                 lookup('eitc_max_amount', 'single_earner')
+                 - (eitc_earned_annual - lookup('eitc_phase_out_start', 'single_earner'))
+                   * (lookup('eitc_max_amount', 'single_earner')
+                      / (lookup('eitc_income_cap', 'single_earner') - lookup('eitc_phase_out_start', 'single_earner')))))
+  eitc_base_dual_earner:
+    label: 산정액(맞벌이)
+    ref: 1
+    expr: >-
+      max(0, min(eitc_earned_annual * (lookup('eitc_max_amount', 'dual_earner') / lookup('eitc_phase_in_end', 'dual_earner')),
+                 lookup('eitc_max_amount', 'dual_earner'),
+                 lookup('eitc_max_amount', 'dual_earner')
+                 - (eitc_earned_annual - lookup('eitc_phase_out_start', 'dual_earner'))
+                   * (lookup('eitc_max_amount', 'dual_earner')
+                      / (lookup('eitc_income_cap', 'dual_earner') - lookup('eitc_phase_out_start', 'dual_earner')))))
+  eitc_asset_cap:
+    label: 재산 기준
+    ref: 0
+    expr: params.eitc_asset_cap
+  eitc_base:
+    label: 산정액(재산 감액 전)
+    ref: 1
+    expr: >-
+      if(eitc_type == 'single', eitc_base_single,
+         if(eitc_type == 'single_earner', eitc_base_single_earner, eitc_base_dual_earner))
+eligibility:
+  all:
+    - {expr: eitc_earned_annual > 0, ref: 0, label: 근로·사업소득 있음}
+    - {expr: eitc_total_income_annual < eitc_income_cap_for_type, ref: 0, label: 총소득 < 가구유형별 기준}
+    - {expr: eitc_assets < eitc_asset_cap, ref: 0, label: 재산 합계 < 2.4억원}
+benefit:
+  annual: if(eitc_assets >= params.eitc_asset_reduction_floor, eitc_base * params.eitc_asset_reduction_rate, eitc_base)
+  ref: 0
+status: approved
+tests: tests/rules/EITC.yaml

@@ -1,0 +1,18 @@
+program: ENERGY_VOUCHER
+cases:
+  - name: 생계급여 수급 노인 1인
+    source: 에너지바우처 지원정보 (1인 295,200원/년)
+    household: {region_sido: 대구광역시, members: [{age: 70}]}
+    expect: {eligible: true, benefit_monthly: 24600}
+  - name: 생계급여 수급이지만 세대원 특성 없음
+    source: 에너지바우처 지원정보 (소득기준과 세대원 특성기준을 모두 충족)
+    household: {region_sido: 대구광역시, members: [{age: 45}]}
+    expect: {eligible: false}
+  - name: 5인 가구 영유아 — 4인 이상 금액
+    source: 에너지바우처 지원정보 (4인 이상 701,300원/년)
+    household: {region_sido: 경상북도, members: [{age: 40}, {age: 38}, {age: 12}, {age: 9}, {age: 3}]}
+    expect: {eligible: true, benefit_monthly: 58442}
+  - name: 수급자 아닌 노인 → 해당 없음
+    source: 에너지바우처 지원정보 (기초생활 수급자 요건)
+    household: {region_sido: 서울특별시, members: [{age: 70, other_income: 3000000}]}
+    expect: {eligible: false}

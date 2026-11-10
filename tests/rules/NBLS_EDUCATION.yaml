@@ -1,0 +1,22 @@
+program: NBLS_EDUCATION
+cases:
+  - name: 경계 — 4인 소득인정액 = 교육급여 선정기준, 중·고 재학생
+    source: 교육부 보도자료(2026.3.3.) 4인 월 3,247,369원 이하; 교육활동지원비 중 699,000·고 860,000원(연)
+    household:
+      region_sido: 경상북도
+      members: [{age: 45, other_income: 3247369}, {age: 43}, {age: 14, is_student: true}, {age: 17, is_student: true}]
+    expect: {eligible: true, benefit_monthly: 129917}
+  - name: 경계 — 선정기준 + 1원
+    source: 교육부 보도자료(2026.3.3.)
+    household:
+      region_sido: 경상북도
+      members: [{age: 45, other_income: 3247370}, {age: 43}, {age: 14, is_student: true}, {age: 17, is_student: true}]
+    expect: {eligible: false, benefit_monthly: 0}
+  - name: 초등학생 1명
+    source: 교육부 보도자료(2026.3.3.) 초 502,000원(연)
+    household: {region_sido: 대구광역시, members: [{age: 38}, {age: 9, is_student: true}]}
+    expect: {eligible: true, benefit_monthly: 41833}
+  - name: 재학생 없음 → 해당 없음
+    source: 사업안내 2026 p.6 (교육급여는 입학금·수업료·교육활동지원비)
+    household: {region_sido: 대구광역시, members: [{age: 38}, {age: 4}]}
+    expect: {eligible: false}

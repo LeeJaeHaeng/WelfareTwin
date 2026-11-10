@@ -1,0 +1,605 @@
+# 2026년 제도 기준값. 문서 04·CLAUDE.md 원칙 2 — 모든 값은 출처와 함께, 코드 하드코딩 금지.
+# 각 항목: value / unit / source{doc, page, url} / verified / note
+# - 출처 원문과 대조하지 않은 값은 value 를 null 또는 verified: false 로 둔다.
+# - verified: true 로 바꾸려면 value 가 채워져 있고 source.doc 와 (page 또는 url) 이 있어야 한다(테스트로 강제).
+# - 2026-11-10: 1~6인 기준중위소득·급여별 비율·선정기준액을 보도자료 4쪽 표와 이미지로 대조해 입력.
+# - 선정기준액 = 중위소득 × 비율을 원 미만 반올림(ROUND_HALF_UP)하면 공표값 24칸과 모두 일치.
+#   반올림 규칙 자체는 문서에 명시된 것이 아니라 공표값에서 추론한 것(tests/test_params.py 로 고정).
+
+meta:
+  year: 2026
+  currency: KRW
+  period: monthly
+
+params:
+  median_income:
+    note: 가구원수별 기준중위소득(원/월), 1~6인. 원문 파일 data/raw/guides/2026_기준중위소득_보도자료_20250731.pdf
+    unit: KRW_per_month
+    value:
+      1: 2564238
+      2: 4199292
+      3: 5359036
+      4: 6494738
+      5: 7556719
+      6: 8555952
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  median_income_size7:
+    note: 7인 가구 기준중위소득(원/월). PDF 77쪽
+    unit: KRW_per_month
+    value: 9515150
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 51
+      url: null
+    verified: true
+
+  median_income_increment_per_member:
+    note: 8인 이상 가구에서 가구원 1인 증가 시 더하는 금액(원/월). PDF 77쪽
+    unit: KRW_per_month
+    value: 959198
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 51
+      url: null
+    verified: true
+
+  selection_ratio_livelihood:
+    note: 생계급여 선정기준 = 기준중위소득 × 이 비율. 원문 파일 data/raw/guides/2026_기준중위소득_보도자료_20250731.pdf
+    unit: ratio_of_median
+    value: 0.32
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  selection_ratio_medical:
+    note: 의료급여 선정기준 = 기준중위소득 × 이 비율. 원문 파일 data/raw/guides/2026_기준중위소득_보도자료_20250731.pdf
+    unit: ratio_of_median
+    value: 0.4
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  selection_ratio_housing:
+    note: 주거급여 선정기준 = 기준중위소득 × 이 비율. 원문 파일 data/raw/guides/2026_기준중위소득_보도자료_20250731.pdf
+    unit: ratio_of_median
+    value: 0.48
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  selection_ratio_education:
+    note: 교육급여 선정기준 = 기준중위소득 × 이 비율. 원문 파일 data/raw/guides/2026_기준중위소득_보도자료_20250731.pdf
+    unit: ratio_of_median
+    value: 0.5
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  selection_threshold_published_livelihood:
+    note: 보도자료 표에 실린 생계급여 선정기준액(원/월). 엔진 계산값 교차검증용 — 판정에는 비율×중위소득을 쓴다.
+    unit: KRW_per_month
+    value:
+      1: 820556
+      2: 1343773
+      3: 1714892
+      4: 2078316
+      5: 2418150
+      6: 2737905
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  selection_threshold_published_medical:
+    note: 보도자료 표에 실린 의료급여 선정기준액(원/월). 엔진 계산값 교차검증용 — 판정에는 비율×중위소득을 쓴다.
+    unit: KRW_per_month
+    value:
+      1: 1025695
+      2: 1679717
+      3: 2143614
+      4: 2597895
+      5: 3022688
+      6: 3422381
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  selection_threshold_published_housing:
+    note: 보도자료 표에 실린 주거급여 선정기준액(원/월). 엔진 계산값 교차검증용 — 판정에는 비율×중위소득을 쓴다.
+    unit: KRW_per_month
+    value:
+      1: 1230834
+      2: 2015660
+      3: 2572337
+      4: 3117474
+      5: 3627225
+      6: 4106857
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  selection_threshold_published_education:
+    note: 보도자료 표에 실린 교육급여 선정기준액(원/월). 엔진 계산값 교차검증용 — 판정에는 비율×중위소득을 쓴다.
+    unit: KRW_per_month
+    value:
+      1: 1282119
+      2: 2099646
+      3: 2679518
+      4: 3247369
+      5: 3778360
+      6: 4277976
+    source:
+      doc: 보건복지부 보도자료 「2026년도 기준 중위소득 6.51% 역대 최대로 인상」(2025.7.31., 제77차 중앙생활보장위원회 의결)
+      page: 4
+      url: null
+    verified: true
+
+  # ---- 기초생활보장 소득인정액 (사업안내 2026) ----
+  nbls_earned_deduction_rate:
+    note: 생계·주거·교육급여 근로·사업소득 공제율(의료급여는 일반 공제 없음). PDF 131쪽
+    unit: ratio
+    value: 0.3
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 105
+      url: null
+    verified: true
+
+  nbls_earned_deduction_youth_flat:
+    note: 34세 이하 수급(권)자·대학생 정액 공제 후 나머지 30% 추가 공제(4개 급여 공통). PDF 131쪽
+    unit: KRW_per_month
+    value: 600000
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 105
+      url: null
+    verified: true
+
+  nbls_earned_deduction_youth_max_age:
+    note: 청년 공제 대상 연령 상한(34세 이하). PDF 131쪽
+    unit: years
+    value: 34
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 105
+      url: null
+    verified: true
+
+  nbls_earned_deduction_senior_disabled_flat:
+    note: 65세 이상 노인·등록장애인 정액 공제 후 나머지 30% 추가 공제(4개 급여 공통). PDF 131쪽
+    unit: KRW_per_month
+    value: 200000
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 105
+      url: null
+    verified: true
+
+  nbls_earned_deduction_special_rate:
+    note: 특례 대상 정액 공제 후 추가 공제율. PDF 131쪽
+    unit: ratio
+    value: 0.3
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 105
+      url: null
+    verified: true
+
+  nbls_basic_property_deduction:
+    note: 기본재산액(가구규모 무관, 4개 급여 공통). 인천은 '광역' 열로 간주(사업안내에 명시 없음). PDF 191쪽
+    unit: KRW
+    value: 
+      seoul: 99000000
+      gyeonggi: 80000000
+      metro: 77000000
+      other: 53000000
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 165
+      url: null
+    verified: true
+
+  nbls_housing_property_cap:
+    note: 주거용재산 인정 한도 — 초과분은 일반재산으로 산정. PDF 160쪽
+    unit: KRW
+    value: 
+      seoul: 172000000
+      gyeonggi: 151000000
+      metro: 146000000
+      other: 112000000
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 134
+      url: null
+    verified: true
+
+  nbls_financial_living_reserve:
+    note: 금융재산 생활준비금 공제(가구당). PDF 174쪽
+    unit: KRW
+    value: 5000000
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 148
+      url: null
+    verified: true
+
+  nbls_conv_rate_housing:
+    note: 주거용재산 소득환산율(월). PDF 192쪽
+    unit: ratio_per_month
+    value: 0.0104
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 166
+      url: null
+    verified: true
+
+  nbls_conv_rate_general:
+    note: 일반재산 소득환산율(월). PDF 192쪽
+    unit: ratio_per_month
+    value: 0.0417
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 166
+      url: null
+    verified: true
+
+  nbls_conv_rate_financial:
+    note: 금융재산 소득환산율(월). PDF 192쪽
+    unit: ratio_per_month
+    value: 0.0626
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 166
+      url: null
+    verified: true
+
+  nbls_conv_rate_car:
+    note: 자동차(100% 환산 대상) 소득환산율(월). PDF 192쪽
+    unit: ratio_per_month
+    value: 1.0
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 166
+      url: null
+    verified: true
+
+  nbls_livelihood_round_unit:
+    note: 생계급여 지급 단위 — 1원 단위로 계산 후 10원 단위 올림. PDF 264쪽
+    unit: KRW
+    value: 10
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 238
+      url: null
+    verified: true
+
+  # ---- 주거급여 (국토교통부) ----
+  housing_standard_rent:
+    note: "기준임대료 급지(1~4) × 가구원수(1~6; 7인=6인). 사업안내 2026 p.193 표와 일치"
+    unit: KRW_per_month
+    value: 
+      1: {1: 369000, 2: 414000, 3: 492000, 4: 571000, 5: 591000, 6: 699000}
+      2: {1: 300000, 2: 335000, 3: 401000, 4: 463000, 5: 479000, 6: 568000}
+      3: {1: 247000, 2: 275000, 3: 327000, 4: 381000, 5: 394000, 6: 463000}
+      4: {1: 212000, 2: 238000, 3: 283000, 4: 329000, 5: 340000, 6: 402000}
+    source:
+      doc: "2026년 주거급여 선정기준 및 최저보장수준 (국토교통부 고시 제2025-506호)"
+      page: null
+      url: "https://www.molit.go.kr/USR/I0204/m_45/dtl.jsp?idx=18653"
+    verified: true
+
+  housing_standard_rent_8plus_rate:
+    note: "8~9인 = 6인 기준임대료의 10% 가산(이후 2인 증가마다 10%)"
+    unit: ratio
+    value: 1.1
+    source:
+      doc: "2026년 주거급여 선정기준 및 최저보장수준 (국토교통부 고시 제2025-506호)"
+      page: null
+      url: "https://www.molit.go.kr/USR/I0204/m_45/dtl.jsp?idx=18653"
+    verified: true
+
+  housing_self_burden_rate:
+    note: "자기부담분 = (소득인정액 − 생계급여 선정기준) × 30%"
+    unit: ratio
+    value: 0.3
+    source:
+      doc: "마이홈포털(국토교통부·LH) 주거급여 임차가구지원"
+      page: null
+      url: "https://www.myhome.go.kr/hws/portal/cont/selectRentalHouseholdSupView.do"
+    verified: true
+
+  housing_min_payment:
+    note: "급여 산정금액이 1만원 미만이면 1만원 지급"
+    unit: KRW_per_month
+    value: 10000
+    source:
+      doc: "마이홈포털(국토교통부·LH) 주거급여 임차가구지원"
+      page: null
+      url: "https://www.myhome.go.kr/hws/portal/cont/selectRentalHouseholdSupView.do"
+    verified: true
+
+  housing_deposit_conversion_rate_annual:
+    note: "실제임차료 = 월차임 + 보증금 × 4% ÷ 12"
+    unit: ratio_per_year
+    value: 0.04
+    source:
+      doc: "마이홈포털(국토교통부·LH) 주거급여 임차가구지원"
+      page: null
+      url: "https://www.myhome.go.kr/hws/portal/cont/selectRentalHouseholdSupView.do"
+    verified: true
+
+  # ---- 교육급여 (교육부) ----
+  education_activity_support:
+    note: "교육활동지원비(연 1회, 바우처)"
+    unit: KRW_per_year
+    value: 
+      elementary: 502000
+      middle: 699000
+      high: 860000
+    source:
+      doc: "교육부 보도자료 「2026년 초·중·고 학생 교육급여와 교육비 지원 신청하세요!」(2026.3.3.)"
+      page: null
+      url: "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156746765"
+    verified: true
+
+  # ---- 기초연금 (보건복지부) ----
+  bp_selection_threshold:
+    note: "선정기준액(월 소득인정액) — 배우자 없음/있음"
+    unit: KRW_per_month
+    value: 
+      single: 2470000
+      couple: 3952000
+    source:
+      doc: "기초연금 지급대상자 선정기준액, 기준연금액 및 소득인정액 산정 세부기준에 관한 고시 (보건복지부고시 제2026-156호)"
+      page: 제2조
+      url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"
+    verified: true
+
+  bp_base_amount:
+    note: "2026년 기준연금액"
+    unit: KRW_per_month
+    value: 349700
+    source:
+      doc: "기초연금 지급대상자 선정기준액, 기준연금액 및 소득인정액 산정 세부기준에 관한 고시 (보건복지부고시 제2026-156호)"
+      page: 제3조
+      url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"
+    verified: true
+
+  bp_couple_reduction_rate:
+    note: "부부 모두 수급 시 각각 20% 감액"
+    unit: ratio
+    value: 0.2
+    source:
+      doc: "찾기쉬운 생활법령정보 기초연금 (기초연금법 제8조제1항)"
+      page: null
+      url: "https://easylaw.go.kr/CSP/CnpClsMain.laf?popMenu=ov&csmSeq=1963&ccfNo=3&cciNo=2&cnpClsNo=1"
+    verified: true
+
+  bp_earned_deduction_flat:
+    note: "근로소득 기본공제액(부부 각각)"
+    unit: KRW_per_month
+    value: 1160000
+    source:
+      doc: "기초연금 지급대상자 선정기준액, 기준연금액 및 소득인정액 산정 세부기준에 관한 고시 (보건복지부고시 제2026-156호)"
+      page: 제6조
+      url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"
+    verified: true
+
+  bp_earned_deduction_rate:
+    note: "기본공제 후 나머지 근로소득의 추가 공제율"
+    unit: ratio
+    value: 0.3
+    source:
+      doc: "기초연금 지급대상자 선정기준액, 기준연금액 및 소득인정액 산정 세부기준에 관한 고시 (보건복지부고시 제2026-156호)"
+      page: 제6조
+      url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"
+    verified: true
+
+  bp_basic_property_deduction:
+    note: "기본재산액 — 대도시(특별시·광역시 구, 특례시)/중소도시(도의 시, 세종)/농어촌(도의 군)"
+    unit: KRW
+    value: 
+      metro: 135000000
+      city: 85000000
+      rural: 72500000
+    source:
+      doc: "기초연금 지급대상자 선정기준액, 기준연금액 및 소득인정액 산정 세부기준에 관한 고시 (보건복지부고시 제2026-156호)"
+      page: 제8조
+      url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"
+    verified: true
+
+  bp_financial_deduction:
+    note: "금융재산 공제액"
+    unit: KRW
+    value: 20000000
+    source:
+      doc: "기초연금 지급대상자 선정기준액, 기준연금액 및 소득인정액 산정 세부기준에 관한 고시 (보건복지부고시 제2026-156호)"
+      page: 제9조
+      url: "https://mohw.go.kr/board.es?act=view&bid=0026&list_no=1491451&mid=a10409020000"
+    verified: true
+
+  bp_property_conversion_rate_annual:
+    note: "재산의 소득환산율(연) — 월 환산은 ÷12. 법적 근거(기초연금법 시행규칙 제4조)는 미대조"
+    unit: ratio_per_year
+    value: 0.04
+    source:
+      doc: "보건복지부 보도자료 「2026년 노인 단독가구, 소득인정액 월 247만 원 이하면 기초연금 받는다」(2026.1.1.) 붙임1"
+      page: null
+      url: "https://www.mohw.go.kr/board.es?act=view&bid=0027&list_no=1488478&mid=a10503000000"
+    verified: true
+
+  bp_luxury_car_threshold:
+    note: "차량가액 4천만원 이상 고급 자동차는 가액 전액을 월 소득인정액에 반영"
+    unit: KRW
+    value: 40000000
+    source:
+      doc: "보건복지부 보도자료 「2026년 노인 단독가구, 소득인정액 월 247만 원 이하면 기초연금 받는다」(2026.1.1.) 붙임1"
+      page: null
+      url: "https://www.mohw.go.kr/board.es?act=view&bid=0027&list_no=1488478&mid=a10503000000"
+    verified: true
+
+  bp_min_age:
+    note: "만 65세 이상"
+    unit: years
+    value: 65
+    source:
+      doc: "보건복지부 보도자료 「2026년 노인 단독가구, 소득인정액 월 247만 원 이하면 기초연금 받는다」(2026.1.1.) 붙임1"
+      page: null
+      url: "https://www.mohw.go.kr/board.es?act=view&bid=0027&list_no=1488478&mid=a10503000000"
+    verified: true
+
+  # ---- 에너지바우처 (2026년도, 사용기간 2026.7.1.~2027.5.31.) ----
+  ev_amount_annual:
+    note: "세대원수별 연간 지원 총액(하·동절기 구분 없음). 4 = 4인 이상"
+    unit: KRW_per_year
+    value: 
+      1: 295200
+      2: 407500
+      3: 532700
+      4: 701300
+    source:
+      doc: "에너지바우처 지원정보 (한국에너지공단 energyv.or.kr)"
+      page: null
+      url: "https://www.energyv.or.kr/info/support_info.do"
+    verified: true
+
+  ev_elderly_min_age:
+    note: "노인: 1961.12.31. 이전 출생(2026년 만 65세 이상)"
+    unit: years
+    value: 65
+    source:
+      doc: "에너지바우처 지원정보 (한국에너지공단 energyv.or.kr)"
+      page: null
+      url: "https://www.energyv.or.kr/info/support_info.do"
+    verified: true
+
+  ev_infant_max_age:
+    note: "영유아: 7세 이하 취학 전 아동 → 만 6세 이하로 근사"
+    unit: years
+    value: 6
+    source:
+      doc: "에너지바우처 지원정보 (한국에너지공단 energyv.or.kr)"
+      page: null
+      url: "https://www.energyv.or.kr/info/support_info.do"
+    verified: false
+
+  ev_multichild_max_age:
+    note: "다자녀: 부 또는 모의 19세 미만 자녀 2명 이상"
+    unit: years
+    value: 18
+    source:
+      doc: "에너지바우처 지원정보 (한국에너지공단 energyv.or.kr)"
+      page: null
+      url: "https://www.energyv.or.kr/info/support_info.do"
+    verified: true
+
+  # ---- 근로장려금 (2025년 귀속, 2026년 신청·지급) ----
+  eitc_income_cap:
+    note: "부부합산 연간 총소득 기준(미만)"
+    unit: KRW_per_year
+    value: 
+      single: 22000000
+      single_earner: 32000000
+      dual_earner: 44000000
+    source:
+      doc: "국세청 근로·자녀장려금 신청자격 (2025년 귀속, 2026년 신청·지급)"
+      page: null
+      url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2452&cntntsId=7783"
+    verified: true
+
+  eitc_asset_cap:
+    note: "가구원 재산 합계(부채 미차감) 상한(미만)"
+    unit: KRW
+    value: 240000000
+    source:
+      doc: "국세청 근로·자녀장려금 신청자격 (2025년 귀속, 2026년 신청·지급)"
+      page: null
+      url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2452&cntntsId=7783"
+    verified: true
+
+  eitc_asset_reduction_floor:
+    note: "재산 1.7억원 이상 2.4억원 미만이면 산정액의 50%"
+    unit: KRW
+    value: 170000000
+    source:
+      doc: "국세청 근로·자녀장려금 신청자격 (2025년 귀속, 2026년 신청·지급)"
+      page: null
+      url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2452&cntntsId=7783"
+    verified: true
+
+  eitc_asset_reduction_rate:
+    note: "재산 감액 시 지급 비율"
+    unit: ratio
+    value: 0.5
+    source:
+      doc: "국세청 근로·자녀장려금 신청자격 (2025년 귀속, 2026년 신청·지급)"
+      page: null
+      url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2452&cntntsId=7783"
+    verified: true
+
+  eitc_max_amount:
+    note: "최대 지급액"
+    unit: KRW_per_year
+    value: 
+      single: 1650000
+      single_earner: 2850000
+      dual_earner: 3300000
+    source:
+      doc: "국세청 근로·자녀장려금 신청자격 (2025년 귀속, 2026년 신청·지급)"
+      page: null
+      url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7781"
+    verified: true
+
+  eitc_phase_in_end:
+    note: "점증구간 끝(총급여액등)"
+    unit: KRW_per_year
+    value: 
+      single: 4000000
+      single_earner: 7000000
+      dual_earner: 8000000
+    source:
+      doc: "조세특례제한법 제100조의5 제1항 (근로장려금 산정)"
+      page: null
+      url: "https://www.law.go.kr/LSW/lsSideInfoP.do?lsiSeq=284389&joNo=0100&joBrNo=05&docCls=jo&urlMode=lsScJoRltInfoR"
+    verified: true
+
+  eitc_phase_out_start:
+    note: "점감구간 시작(총급여액등)"
+    unit: KRW_per_year
+    value: 
+      single: 9000000
+      single_earner: 14000000
+      dual_earner: 17000000
+    source:
+      doc: "조세특례제한법 제100조의5 제1항 (근로장려금 산정)"
+      page: null
+      url: "https://www.law.go.kr/LSW/lsSideInfoP.do?lsiSeq=284389&joNo=0100&joBrNo=05&docCls=jo&urlMode=lsScJoRltInfoR"
+    verified: true
+
+  eitc_dual_earner_min_income:
+    note: "맞벌이: 본인·배우자 각각 총급여액등 300만원 이상"
+    unit: KRW_per_year
+    value: 3000000
+    source:
+      doc: "국세청 근로·자녀장려금 신청자격 (2025년 귀속, 2026년 신청·지급)"
+      page: null
+      url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=2452&cntntsId=7783"
+    verified: true

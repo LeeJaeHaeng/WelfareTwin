@@ -1,0 +1,25 @@
+id: NBLS_MEDICAL
+name: 의료급여
+level: central
+unit: household
+source_refs:
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 51, clause: 2026년 가구규모별·급여종류별 수급자 선정기준}
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 6, clause: 의료급여 부양의무자 기준}
+  - {doc: 2026년 국민기초생활보장 사업안내, page: 105, clause: 의료급여 근로소득 공제(일반 30% 공제 없음)}
+assumptions:
+  - 의료급여는 현물(진료비 지원) 급여이므로 월 현금 급여액은 0으로 표시
+  - 1종·2종 구분(근로능력 등)은 반영하지 않음(의료급여사업안내 소관)
+  - 부양의무자 부양능력 판정은 obligor_medical_capable(있음/없음)로만 근사
+derived:
+  sel_line:
+    label: 의료급여 선정기준
+    ref: 0
+    expr: round(median_income(hh.size) * params.selection_ratio_medical)
+eligibility:
+  all:
+    - {expr: nbls_income_recognized_medical <= sel_line, ref: 0, label: 소득인정액(의료) ≤ 의료급여 선정기준(중위 40%)}
+    - {expr: not hh.obligor_medical_capable, ref: 1, label: 부양능력 있는 부양의무자 없음}
+benefit:
+  monthly: "0"
+status: approved
+tests: tests/rules/NBLS_MEDICAL.yaml
