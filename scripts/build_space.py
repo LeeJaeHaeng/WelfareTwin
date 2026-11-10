@@ -30,9 +30,10 @@ FORBIDDEN = (".env", "sk-ant-", "VERCEL_OIDC")
 
 
 def build() -> Path:
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    OUT.mkdir(parents=True)
+    if OUT.exists():   # 폴더 자체는 두고 내용만 비움(Windows 에서 열린 폴더는 지울 수 없음)
+        for p in OUT.iterdir():
+            shutil.rmtree(p) if p.is_dir() else p.unlink()
+    OUT.mkdir(parents=True, exist_ok=True)
     for rel in INCLUDE:
         src = ROOT / rel
         if not src.exists():
@@ -43,10 +44,11 @@ def build() -> Path:
             shutil.copytree(src, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
         else:
             shutil.copy2(src, dst)
-    for name in ("Dockerfile", "README.md"):
-        shutil.copy2(ROOT / "deploy" / "space" / name, OUT / name)
+    for name in ("Dockerfile", "README.md"):   # Windows 체크아웃(CRLF)이어도 Space 에는 LF 로
+        text = (ROOT / "deploy" / "space" / name).read_text(encoding="utf-8").replace("\r\n", "\n")
+        (OUT / name).write_text(text, encoding="utf-8", newline="\n")
     rev = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
-    with (OUT / "Dockerfile").open("a", encoding="utf-8") as f:
+    with (OUT / "Dockerfile").open("a", encoding="utf-8", newline="\n") as f:
         f.write(f"\nENV WT_VERSION={rev or 'dev'}\n")
     for f in OUT.rglob("*"):   # 마지막 안전장치: 비밀처럼 보이는 파일·문자열이 있으면 중단
         if f.is_file():
