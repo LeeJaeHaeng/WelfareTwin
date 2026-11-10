@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>복지트윈 WelfareTwin</title>
+<meta name="description" content="사회보장제도를 실행 가능한 코드로 바꾸고, Z3 형식검증으로 사각지대·급여 절벽을 찾고, 합성 인구로 정책 변화를 미리 시뮬레이션하는 정책 디지털 트윈 — 데모(사전 계산본)">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f4f1; --surface: #fcfcfb; --surface-2: #f0efec; --border: #e3e2dd;
+  --text: #0b0b0b; --text-2: #52514e; --muted: #8b8a83; --grid: #ecebe7;
+  --accent: #2a78d6; --accent-soft: #e6f0fc;
+  --good: #0ca30c; --warn: #b77f00; --crit: #d03b3b; --crit-soft: #fbeaea; --good-soft: #e7f6e7;
+  --s-liv: #2a78d6; --s-hou: #eb6834; --s-edu: #1baf7a; --s-bp: #eda100; --s-eitc: #e87ba4; --s-ev: #008300; --s-local: #4a3aa7;
+  --s-own: #c3c2b7; --line: #0b0b0b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface: #1a1a19; --surface-2: #242422; --border: #33332f;
+    --text: #ffffff; --text-2: #c3c2b7; --muted: #8b8a83; --grid: #2c2c29;
+    --accent: #3987e5; --accent-soft: #1c2a3d;
+    --good: #2fbf2f; --warn: #fab219; --crit: #e66767; --crit-soft: #3a2020; --good-soft: #1d311d;
+    --s-liv: #3987e5; --s-hou: #d95926; --s-edu: #199e70; --s-bp: #c98500; --s-eitc: #d55181; --s-ev: #008300; --s-local: #9085e9;
+    --s-own: #55544f; --line: #ffffff;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface: #1a1a19; --surface-2: #242422; --border: #33332f;
+  --text: #ffffff; --text-2: #c3c2b7; --muted: #8b8a83; --grid: #2c2c29;
+  --accent: #3987e5; --accent-soft: #1c2a3d;
+  --good: #2fbf2f; --warn: #fab219; --crit: #e66767; --crit-soft: #3a2020; --good-soft: #1d311d;
+  --s-liv: #3987e5; --s-hou: #d95926; --s-edu: #199e70; --s-bp: #c98500; --s-eitc: #d55181; --s-ev: #008300; --s-local: #9085e9;
+  --s-own: #55544f; --line: #ffffff;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font-family: Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+header.top { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+header.top .wrap { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+.brand { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; white-space: nowrap; }
+.brand small { font-weight: 500; color: var(--muted); font-size: 13px; margin-left: 6px; }
+nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+nav.tabs button { border: 0; background: transparent; color: var(--text-2); font: inherit; font-size: 14px; padding: 6px 12px;
+  border-radius: 8px; cursor: pointer; }
+nav.tabs button:hover { background: var(--surface-2); color: var(--text); }
+nav.tabs button[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.theme-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text-2); border-radius: 8px; padding: 5px 10px;
+  font: inherit; font-size: 13px; cursor: pointer; }
+main { padding: 28px 0 48px; }
+section.view { display: none; }
+section.view.active { display: block; }
+h1 { font-size: 30px; letter-spacing: -0.03em; margin: 0 0 6px; line-height: 1.25; }
+h2 { font-size: 24px; letter-spacing: -0.02em; margin: 0 0 4px; }
+h3 { font-size: 17px; margin: 0 0 8px; }
+.lead { color: var(--text-2); margin: 0 0 22px; max-width: 860px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .g3, .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .g2 { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .g3, .g4 { grid-template-columns: 1fr; } .g4.keep2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  h1 { font-size: 24px; } .tile .value { font-size: 22px; } }
+@media (max-width: 760px) {
+  header.top .wrap { gap: 8px; }
+  .brand { flex: 1; }
+  nav.tabs { order: 3; flex: 0 0 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  nav.tabs button { white-space: nowrap; flex: 0 0 auto; }
+  .chart { height: 360px; }
+}
+.tile .label { color: var(--text-2); font-size: 13px; }
+.tile .value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin-top: 2px; }
+.tile .sub { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+  background: var(--surface-2); color: var(--text-2); }
+.badge.good { background: var(--good-soft); color: var(--good); }
+.badge.crit { background: var(--crit-soft); color: var(--crit); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.mono { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 12.5px; word-break: break-word; }
+.src { color: var(--muted); font-size: 12px; }
+label.field { display: block; font-size: 13px; color: var(--text-2); margin: 0 0 6px; }
+select, input[type=range] { width: 100%; }
+select { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--text-2); font-weight: 600; font-size: 12.5px; }
+.tbl-wrap { overflow-x: auto; }
+ul.reasons { margin: 8px 0 0; padding-left: 18px; }
+ul.reasons li { margin: 6px 0; }
+.textblock { white-space: pre-wrap; background: var(--surface-2); border-radius: 10px; padding: 12px; font-size: 13.5px; }
+.chart { width: 100%; height: 440px; }
+.chart.sm { height: 300px; }
+.row { display: flex; gap: 14px; flex-wrap: wrap; align-items: end; }
+.row > * { flex: 1 1 240px; }
+.note { border-left: 3px solid var(--accent); padding: 8px 12px; background: var(--accent-soft); border-radius: 0 10px 10px 0; font-size: 13.5px; }
+.note.crit { border-color: var(--crit); background: var(--crit-soft); }
+.layers { counter-reset: l; }
+.layer { display: flex; gap: 12px; align-items: flex-start; }
+.layer .k { flex: 0 0 34px; height: 34px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); font-weight: 800;
+  display: grid; place-items: center; font-size: 13px; }
+details summary { cursor: pointer; color: var(--text-2); font-size: 13.5px; }
+footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 12.5px; padding: 18px 0 28px; }
+.mt { margin-top: 14px; } .mt2 { margin-top: 22px; } .mb { margin-bottom: 14px; }
+.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">복지트윈<small>WelfareTwin</small></div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="화면 모드 전환">화면 모드</button>
+  </div>
+</header>
+<main class="wrap">
+  <section class="view" id="v-home"></section>
+  <section class="view" id="v-rules"></section>
+  <section class="view" id="v-blind"></section>
+  <section class="view" id="v-cliff"></section>
+  <section class="view" id="v-sim"></section>
+  <section class="view" id="v-bt"></section>
+</main>
+<footer>
+  <div class="wrap">
+    2026 사회보장 데이터를 활용한 AI 혁신 아이디어 경진대회 출품작 · 이 페이지는 <b>사전 계산본</b>(정적)입니다 — 실시간 Z3·LLM 실행은 로컬 대시보드에서.
+    실제 개인 데이터 없이 공개 집계표(KOSIS·e-나라지표 등)로 만든 합성 가구만 사용합니다. 각 규칙의 단순화 가정은 화면별로 표시합니다.
+    <span id="genAt"></span>
+  </div>
+</footer>
+<script>
+const VIEWS = [["home", "개요"], ["rules", "① 법전 → 코드"], ["blind", "② 사각지대"], ["cliff", "③ 급여 절벽"],
+               ["sim", "④ 시뮬레이터·레드팀"], ["bt", "⑤ 백테스트"]];
+const SERIES = { NBLS_LIVELIHOOD: ["생계급여", "--s-liv"], NBLS_HOUSING: ["주거급여", "--s-hou"], NBLS_EDUCATION: ["교육급여", "--s-edu"],
+  BASIC_PENSION: ["기초연금", "--s-bp"], EITC: ["근로장려금", "--s-eitc"], ENERGY_VOUCHER: ["에너지바우처", "--s-ev"], LOCAL: ["지자체 사업", "--s-local"] };
+let B = null, S = null;
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const won = v => `${Math.round(v).toLocaleString("ko-KR")}원`;
+const num = v => Math.round(v).toLocaleString("ko-KR");
+const man = v => `${(v / 1e4).toLocaleString("ko-KR", { maximumFractionDigits: 1 })}만`;
+const pct = (v, d = 1) => `${(v * 100).toFixed(d)}%`;
+const signed = v => (v > 0 ? "+" : "") + num(v);
+
+function layoutBase(extra = {}) {
+  return Object.assign({
+    paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+    font: { family: "Pretendard, sans-serif", color: css("--text-2"), size: 12 },
+    margin: { t: 10, r: 10, b: 50, l: 70 }, hovermode: "x unified",
+    xaxis: { gridcolor: css("--grid"), zeroline: false, tickformat: ",", linecolor: css("--border") },
+    yaxis: { gridcolor: css("--grid"), zeroline: false, tickformat: ",", linecolor: css("--border") },
+    legend: { orientation: "h", y: -0.22, font: { color: css("--text-2") } },
+    hoverlabel: { bgcolor: css("--surface"), bordercolor: css("--border"), font: { color: css("--text") } },
+  }, extra);
+}
+const CFG = { displayModeBar: false, responsive: true };
+
+// ---------------------------------------------------------------- 개요
+function viewHome() {
+  const rules = B.rules || [], agree = rules.filter(r => r.crosscheck && r.crosscheck.agree).length;
+  const sc = B.scenario.scenarios[0].metrics, bt = B.backtest, sc2 = B.blindspot_scale;
+  const maxCliff = Math.max(...B.cliff_z3.items.map(i => i.facts.loss));
+  document.getElementById("v-home").innerHTML = `
+    <h1>정책을 사람에게 실험하기 전에,<br>가상 대한민국에서 먼저.</h1>
+    <p class="lead">복지트윈은 사회보장제도를 <b>실행 가능한 코드</b>로 바꾸고, <b>Z3 형식검증</b>으로 사각지대·급여 절벽·중복을
+      수학적으로 찾아내며, <b>합성 인구 + AI 에이전트</b>로 정책 변화를 미리 시뮬레이션합니다. 판정은 항상 코드가 하고, AI 는 규칙 작성과 행동 추정만 합니다.</p>
+    <div class="grid g4">
+      <div class="card tile"><div class="label">지자체 사업 규칙 추출</div><div class="value">${agree}/${rules.length}건</div>
+        <div class="sub">AI 두 초안의 판정이 같음을 Z3 로 증명 · 근거 인용 불일치 0건</div></div>
+      <div class="card tile"><div class="label">소득보장 3종 모두 탈락하는 빈곤 가구</div><div class="value">${man(sc2.blindspot_households)} 가구</div>
+        <div class="sub">빈곤 가구 ${man(sc2.poor_households)} 중 ${pct(sc2.blindspot_households / sc2.poor_households)} (합성 인구)</div></div>
+      <div class="card tile"><div class="label">찾아낸 최대 급여 절벽</div><div class="value">−${num(maxCliff)}원</div>
+        <div class="sub">근로소득 1만원 증가 시 가처분소득 감소(월)</div></div>
+      <div class="card tile"><div class="label">백테스트 오차(2024→2025)</div><div class="value">${pct(bt.households.error_rate)}</div>
+        <div class="sub">수급 가구 증가 예측 ${signed(bt.households.predicted_increase)} vs 실제 ${signed(bt.households.actual_increase)}</div></div>
+    </div>
+    <div class="grid g2 mt2">
+      <div class="card layers">
+        <h3>구조: 4개 엔진 + 1개 검증</h3>
+        ${[["L1", "Rules-as-Code", "복지서비스 선정기준 → 실행 가능한 규칙. 중앙 제도 7종 + 대구·경북 사업 12건, 모든 수치에 출처(사업안내 쪽수·고시·URL)."],
+           ["L2", "형식검증(Z3)", "규칙 전체를 제약식으로 바꿔 '이런 가구가 존재하는가'를 판정 — 사각지대·급여 절벽·중복·사문화."],
+           ["L3", "가상 대한민국", `합성 가구 ${num(B.population?.n_households || 100000)}개(KOSIS 집계표 IPF) + AI 페르소나 238개의 신청 행동.`],
+           ["L4", "AI 정책 레드팀", "사업안 한 줄 → 영향·배제·허점·절벽·행정 부담 점검 리포트."],
+           ["V", "백테스트", "과거 제도 변화를 재현해 실제 수급 통계와 비교 — 오차를 숨기지 않고 공개."]]
+          .map(([k, t, d]) => `<div class="layer mt"><div class="k">${k}</div><div><b>${t}</b><div class="small muted">${d}</div></div></div>`).join("")}
+      </div>
+      <div class="card">
+        <h3>현행 기초생활보장, 시뮬레이션으로 보면</h3>
+        <div class="grid g2">
+          <div class="tile"><div class="label">자격 가구(합성 인구)</div><div class="value">${man(sc.eligible_households)}</div></div>
+          <div class="tile"><div class="label">기대 수급(실제 통계로 보정)</div><div class="value">${man(sc.expected_recipient_households)}</div></div>
+          <div class="tile"><div class="label">수급률</div><div class="value">${pct(sc.take_up_rate)}</div></div>
+          <div class="tile"><div class="label">자격은 있으나 미신청</div><div class="value">${man(sc.non_take_up_households)}</div></div>
+        </div>
+        <p class="small muted mt">보정 기준: ${B.scenario.calibration.target.year}년 실제 수급 ${num(B.scenario.calibration.target.households)}가구
+          (${esc(B.scenario.calibration.target.source)}). AI 는 신청 확률의 방향·상대 크기만, 수준은 실제 통계가 맡습니다.</p>
+        <p class="small mt"><a href="https://github.com/LeeJaeHaeng/WelfareTwin" target="_blank" rel="noopener">소스 코드(GitHub)</a></p>
+      </div>
+    </div>`;
+}
+
+// ---------------------------------------------------------------- ① 법전 → 코드
+function viewRules() {
+  const rules = B.rules || [];
+  const def = Math.max(0, rules.findIndex(r => r.serv_id === "WLF00005691"));
+  const el = document.getElementById("v-rules");
+  el.innerHTML = `
+    <h2>복지 법전 → 코드</h2>
+    <p class="lead">지자체 사업 원문을 AI 가 두 번(서로 다른 프롬프트) 규칙으로 옮기고, Z3 가 두 초안의 판정이 모든 가구에서 같은지 증명합니다.
+      다르면 갈리는 가구를 찾아 사람이 검수합니다.</p>
+    <div class="card mb"><label class="field" for="ruleSel">사업 선택</label>
+      <select id="ruleSel">${rules.map((r, i) => `<option value="${i}" ${i === def ? "selected" : ""}>${esc(r.name)} (${esc(r.text?.region || "")})</option>`).join("")}</select></div>
+    <div id="ruleBody"></div>`;
+  const render = i => {
+    const r = rules[i], rule = r.rule_approved || {}, cc = r.crosscheck || {}, e = cc.eligibility || {};
+    const badge = e.equivalent === true ? `<span class="badge good">✓ A·B 판정 동치(Z3 증명)</span>`
+      : e.equivalent === false ? `<span class="badge crit">⚠ A·B 판정 불일치 → 사람 검수</span>` : `<span class="badge">미확정</span>`;
+    const period = rule.benefit && ("monthly" in rule.benefit ? "monthly" : "annual");
+    document.getElementById("ruleBody").innerHTML = `
+      <div class="grid g2">
+        <div class="card"><h3>원문 (한국사회보장정보원 지자체복지서비스)</h3>
+          <div class="small muted">지원대상</div><div class="textblock">${esc(r.text?.target)}</div>
+          <div class="small muted mt">선정기준</div><div class="textblock">${esc(r.text?.criteria)}</div>
+          <div class="small muted mt">지원내용</div><div class="textblock">${esc(r.text?.benefit)}</div></div>
+        <div class="card"><h3>추출된 규칙(승인본)</h3>
+          <div class="row" style="gap:8px">${badge}<span class="badge ${r.A.quote_issues.length ? "crit" : "good"}">근거 인용 ${r.A.quote_issues.length ? "불일치" : "✓ 원문 일치"}</span>
+            <span class="badge">자동 테스트 ${r.n_tests}건</span></div>
+          <div class="tbl-wrap mt"><table><thead><tr><th>조건</th><th>식</th><th>근거 인용</th></tr></thead><tbody>
+            ${(rule.eligibility?.all || []).map(c => `<tr><td>${esc(c.label)}${c.uncertain ? ' <span class="badge">불확실</span>' : ""}</td>
+              <td class="mono">${esc(c.expr)}</td><td class="small">${esc(c.quote || "")}</td></tr>`).join("")}
+          </tbody></table></div>
+          ${period ? `<p class="small mt"><b>급여(${period === "monthly" ? "월" : "연"})</b> <span class="mono">${esc(rule.benefit[period])}</span> — ${esc(rule.benefit.quote || "")}</p>` : ""}
+          ${rule.region ? `<p class="small muted">지역: ${esc(rule.region.sido)} ${esc(rule.region.sigungu || "")}</p>` : ""}
+          ${(rule.not_modeled || []).length ? `<details class="mt"><summary>규칙으로 표현하지 못한 조건 ${rule.not_modeled.length}개(담당자 확인 필요)</summary>
+            <ul class="reasons small">${rule.not_modeled.map(n => `<li>${esc(n.quote)} — <span class="muted">${esc(n.reason)}</span></li>`).join("")}</ul></details>` : ""}
+          ${(rule.provenance?.human_edits || []).length ? `<div class="note mt">사람 검수 수정: ${esc(rule.provenance.human_edits.join(" / "))}</div>` : ""}
+          ${e.equivalent === false ? `<div class="note crit mt"><b>두 초안이 갈리는 가구(Z3 반례)</b><br>${esc(e.household_text)}<br>
+            A: ${e.A_eligible ? "자격" : "탈락"} / B: ${e.B_eligible ? "자격" : "탈락"}</div>` : ""}
+        </div>
+      </div>`;
+  };
+  document.getElementById("ruleSel").onchange = ev => render(+ev.target.value);
+  render(def);
+}
+
+// ---------------------------------------------------------------- ② 사각지대
+function viewBlind() {
+  const items = B.blindspot.items || [], sc = B.blindspot_scale;
+  document.getElementById("v-blind").innerHTML = `
+    <h2>사각지대 탐지</h2>
+    <p class="lead">빈곤선(소득인정액 ≤ 기준중위소득 40%) 이하인데 생계급여·기초연금·근로장려금에서 <b>모두</b> 탈락하는 가구가 존재하는지,
+      샘플링이 아니라 Z3 로 묻습니다. 존재하면 구체적인 가구와 탈락 조항을 돌려줍니다.</p>
+    <div class="grid g3 mb">
+      <div class="card tile"><div class="label">합성 인구 중 빈곤 가구</div><div class="value">${num(sc.poor_households)}</div></div>
+      <div class="card tile"><div class="label">그중 소득보장 3종 모두 탈락</div><div class="value">${num(sc.blindspot_households)}</div></div>
+      <div class="card tile"><div class="label">비율</div><div class="value">${pct(sc.blindspot_households / sc.poor_households)}</div>
+        <div class="sub">Z3 탐색 ${B.blindspot.elapsed_sec}초 · 서로 다른 유형 ${items.length}개</div></div>
+    </div>
+    <div class="grid g2">${items.map(it => {
+      const first = it.text.split("\n")[0].replace(/^\[[^\]]+\]\s*/, "");
+      return `<div class="card"><h3>${esc(it.title)}</h3><div class="small">${esc(first)}</div>
+        <p class="small mt">소득인정액 <b>${won(it.facts.income_recognized)}</b> (기준중위소득의 ${it.facts.median_pct}%)</p>
+        <ul class="reasons small">${it.programs.flatMap(p => p.reasons.map(r => `<li><b>${esc(p.name)}</b> 탈락: ${esc(r.label)}${r.detail ? " — " + esc(r.detail) : ""}
+          ${r.source ? `<div class="src">근거: ${esc(r.source)}</div>` : ""}</li>`)).join("")}</ul></div>`;
+    }).join("")}</div>
+    <details class="mt2"><summary>소득인정액 단순화 가정</summary><ul class="reasons small">${B.nbls_assumptions.map(a => `<li>${esc(a)}</li>`).join("")}</ul></details>`;
+}
+
+// ---------------------------------------------------------------- ③ 급여 절벽
+function viewCliff() {
+  const keys = Object.keys(S);
+  document.getElementById("v-cliff").innerHTML = `
+    <h2>급여 절벽</h2>
+    <p class="lead">가구주 근로소득을 1만원씩 올리며 모든 제도를 평가했습니다. 소득이 늘었는데 가처분소득(본인 소득 + 모든 현금 급여)이 줄면 절벽입니다.</p>
+    <div class="card mb"><div class="row">
+      <div><label class="field" for="preset">가구 프리셋</label><select id="preset">${keys.map(k => `<option value="${k}">${esc(S[k].label)}</option>`).join("")}</select></div>
+      <div><label class="field" for="inc">가구주 월 근로소득: <b id="incVal"></b></label><input type="range" id="inc" min="0" max="3500000" step="10000" value="900000"></div>
+    </div></div>
+    <div class="card"><div class="small muted">단위: 원/월 · 회색 = 본인 소득, 색 = 제도별 현금 급여(누적), 검은 선 = 가처분소득</div>
+      <div id="cliffChart" class="chart" role="img" aria-label="근로소득에 따른 가처분소득과 제도별 급여 누적 그래프"></div>
+      <div class="grid g4 keep2 mt" id="cliffTiles"></div>
+      <details class="mt"><summary>표로 보기</summary><div class="tbl-wrap" id="cliffTable"></div></details></div>
+    <h3 class="mt2">Z3 가 찾은 큰 절벽(전 제도·전 가구 유형)</h3>
+    <div class="grid g2">${B.cliff_z3.items.slice(0, 4).map(it => `<div class="card"><div class="small"><b>${esc(it.title)}</b> · 손실 <b style="color:var(--crit)">−${num(it.facts.loss)}원</b></div>
+      <div class="small mt">${esc(it.text.split("\n")[0].replace(/^\[[^\]]+\]\s*/, ""))}</div>
+      <div class="textblock mt small">${esc(it.text.split("\n").filter(l => !l.trim().startsWith("·")).slice(1).map(l => l.trim()).join("\n"))}</div></div>`).join("")}</div>`;
+  const draw = () => {
+    const d = S[document.getElementById("preset").value], x = +document.getElementById("inc").value;
+    document.getElementById("incVal").textContent = won(x);
+    const groups = Object.keys(d.series);
+    const disp = d.earned.map((_, i) => d.own_income[i] + groups.reduce((s, g) => s + d.series[g][i], 0));
+    const traces = [{ x: d.earned, y: d.own_income, name: "본인 소득", stackgroup: "a", line: { width: 0.5, color: css("--s-own") },
+                      fillcolor: css("--s-own"), hovertemplate: "%{y:,.0f}원" }];
+    groups.forEach(g => traces.push({ x: d.earned, y: d.series[g], name: g === "LOCAL" ? `지자체: ${d.local_programs.join(", ")}` : SERIES[g][0],
+      stackgroup: "a", line: { width: 0.5, color: css(SERIES[g][1]) }, fillcolor: css(SERIES[g][1]), hovertemplate: "%{y:,.0f}원" }));
+    traces.push({ x: d.earned, y: disp, name: "가처분소득", mode: "lines", line: { width: 2, color: css("--line") }, hovertemplate: "%{y:,.0f}원" });
+    const cx = [], cy = [], ct = [];
+    for (let i = 0; i < disp.length - 1; i++) {
+      const loss = disp[i] - disp[i + 1];
+      if (loss >= 5000) { cx.push(d.earned[i]); cy.push(disp[i]); ct.push(`⚠ −${num(loss)}원`); }
+    }
+    traces.push({ x: cx, y: cy, mode: "markers+text", text: ct, textposition: "top center", showlegend: false,
+      textfont: { color: css("--text-2"), size: 11 }, hovertemplate: "절벽: 소득 +1만원 → 가처분 %{text}<extra></extra>",
+      marker: { size: 11, symbol: "triangle-down", color: css("--crit"), line: { width: 2, color: css("--surface") } } });
+    Plotly.react("cliffChart", traces, layoutBase({ xaxis: { title: "가구주 월 근로소득(원)", tickformat: ",", gridcolor: css("--grid") },
+      yaxis: { tickformat: ",", gridcolor: css("--grid"), automargin: true },
+      shapes: [{ type: "line", x0: x, x1: x, yref: "paper", y0: 0, y1: 1, line: { dash: "dot", width: 1, color: css("--muted") } }] }), CFG);
+    const i = d.earned.indexOf(x);
+    document.getElementById("cliffTiles").innerHTML = [["가처분소득", disp[i]], ["본인 소득", d.own_income[i]],
+      ...groups.map(g => [g === "LOCAL" ? "지자체 사업" : SERIES[g][0], d.series[g][i]])]
+      .map(([l, v]) => `<div class="tile"><div class="label">${l}</div><div class="value" style="font-size:22px">${won(v)}</div></div>`).join("");
+    document.getElementById("cliffTable").innerHTML = `<table><thead><tr><th>근로소득</th><th>가처분</th>${groups.map(g => `<th>${g === "LOCAL" ? "지자체" : SERIES[g][0]}</th>`).join("")}</tr></thead><tbody>
+      ${d.earned.filter((_, k) => k % 10 === 0).map((e, k) => { const j = k * 10; return `<tr><td>${num(e)}</td><td>${num(disp[j])}</td>${groups.map(g => `<td>${num(d.series[g][j])}</td>`).join("")}</tr>`; }).join("")}
+      </tbody></table>`;
+  };
+  document.getElementById("preset").onchange = draw;
+  document.getElementById("inc").oninput = draw;
+  draw();
+  window.__drawCliff = draw;
+}
+
+// ---------------------------------------------------------------- ④ 시뮬레이터 + 레드팀
+function viewSim() {
+  const sc = B.scenario, rt = B.redteam, im = rt.impact, ad = rt.admin;
+  const names = sc.scenarios.map(s => s.name);
+  const nm = k => B.program_names[k] || k;
+  document.getElementById("v-sim").innerHTML = `
+    <h2>정책 시뮬레이터 + 레드팀</h2>
+    <p class="lead">AI 페르소나 238개의 신청 확률을 ${sc.calibration.target.year}년 실제 수급 가구 수(${num(sc.calibration.target.households)})로 보정한 뒤 시나리오를 비교합니다.</p>
+    <div class="card mb"><label class="field" for="scSel">시나리오</label>
+      <select id="scSel">${names.map((n, i) => `<option value="${i}" ${i === names.length - 1 ? "selected" : ""}>${esc(n)}</option>`).join("")}</select>
+      <div class="grid g4 keep2 mt" id="scTiles"></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>시나리오별 기대 수급 가구</h3><div id="scChart" class="chart sm" role="img" aria-label="시나리오별 기대 수급 가구 막대그래프"></div></div>
+      <div class="card"><h3>새로 포함 / 새로 탈락(현행 대비)</h3><div id="scChanges" class="small"></div></div>
+    </div>
+    <h2 class="mt2">사업안 레드팀 리포트</h2>
+    <p class="lead">사업안: <b>${esc(rt.proposal)}</b> — 처리 시간 ${rt.timings.total}초.
+      허점은 방어 목적의 설계 점검으로만 서술합니다(규칙상 허점 + 보완안).</p>
+    <div class="grid g4 mb">
+      <div class="card tile"><div class="label">대상 가구</div><div class="value">${num(im.eligible_households)}</div><div class="sub">${esc(im.scope || "")}</div></div>
+      <div class="card tile"><div class="label">월 재정(전원 신청 가정)</div><div class="value">${(im.monthly_budget_won_full_take_up / 1e6).toFixed(1)}백만원</div></div>
+      <div class="card tile"><div class="label">확인 단계</div><div class="value">${ad.n_checks}개</div><div class="sub">${esc(ad.checks.join(", "))}</div></div>
+      <div class="card tile"><div class="label">중복 확인 대상 제도</div><div class="value">${ad.overlap_review.length}개</div>
+        <div class="sub">${Object.entries(im.overlap_rates).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${esc(nm(k))} ${pct(v, 0)}`).join(" · ")}</div></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>배제 위험</h3><div class="small muted">조건 하나 때문에 탈락하는 가구 유형(Z3)</div>
+        <ul class="reasons small">${rt.exclusion.slice(0, 4).map(e => `<li>${esc(e.household_text)}<br><b>→ ${e.reasons.map(r => esc(r.label) + (r.detail ? " — " + esc(r.detail) : "")).join("; ")}</b></li>`).join("") || "<li>발견되지 않음</li>"}</ul></div>
+      <div class="card"><h3>허점 위험</h3><div class="small muted">작은 변경으로 새로 자격을 얻는 경로와 보완안</div>
+        <ul class="reasons small">${rt.loopholes.map(f => `<li><b>${esc(f.kind)}</b>: 약 ${num(f.households)}가구<br>보완: ${esc(f.remedy)}</li>`).join("") || "<li>발견되지 않음</li>"}</ul></div>
+      <div class="card"><h3>급여 절벽</h3><div class="textblock small">${esc((rt.cliff[0]?.text || "발견되지 않음").split("\n").filter(l => !l.trim().startsWith("·")).join("\n"))}</div></div>
+    </div>
+    <div class="card mt"><h3>추출된 규칙(검토 필요)</h3><div class="tbl-wrap"><table><tbody>
+      ${rt.program.eligibility.all.map(c => `<tr><td>${esc(c.label)}</td><td class="mono">${esc(c.expr)}</td></tr>`).join("")}
+      <tr><td>급여</td><td class="mono">${esc(rt.program.benefit.monthly ?? rt.program.benefit.annual)}</td></tr></tbody></table></div></div>`;
+  const draw = () => {
+    const k = +document.getElementById("scSel").value, s = sc.scenarios[k], m = s.metrics, dl = s.delta_vs_base;
+    const t = (l, v, d, inv) => `<div class="tile"><div class="label">${l}</div><div class="value" style="font-size:22px">${v}</div>
+      <div class="sub" style="color:${d === 0 ? "var(--muted)" : (d > 0) !== !!inv ? "var(--good)" : "var(--crit)"}">${d === 0 ? "현행과 같음" : "현행 대비 " + signed(d)}</div></div>`;
+    document.getElementById("scTiles").innerHTML =
+      t("기대 수급 가구", num(m.expected_recipient_households), dl.expected_recipient_households) +
+      t("미신청 사각지대", num(m.non_take_up_households), dl.non_take_up_households, true) +
+      `<div class="tile"><div class="label">월 재정(생계·주거·교육)</div><div class="value" style="font-size:22px">${num(m.monthly_budget_won / 1e8)}억원</div>
+        <div class="sub">현행 대비 ${signed(dl.monthly_budget_won / 1e8)}억원</div></div>` +
+      t("생계급여 자격 가구", num(m.livelihood_eligible_households), dl.livelihood_eligible_households);
+    const ch = s.changes_vs_base;
+    const none = ch && ch.newly_included.households === 0 && ch.newly_excluded.households === 0;
+    document.getElementById("scChanges").innerHTML = none ? `<div class="note">기초생활보장(4개 급여 중 하나 이상) <b>전체 자격 가구는 그대로</b>입니다.
+        생계급여 자격만 <b>${signed(dl.livelihood_eligible_households)}가구</b> 늘어나는데, 이 가구들은 이미 의료(40%)·주거(48%)급여 대상이기 때문입니다.
+        대신 생계급여액이 늘어 월 재정이 ${signed(dl.monthly_budget_won / 1e8)}억원 변합니다 — 제도 간 상호작용.</div>`
+      : ch ? ["newly_included", "newly_excluded"].map(key => `
+      <b>${key === "newly_included" ? "새로 포함" : "새로 탈락"} ${num(ch[key].households)}가구</b>
+      <ul class="reasons">${ch[key].top_types.slice(0, 5).map(x => `<li>${esc(x.type)} — ${num(x.households)}가구</li>`).join("") || "<li class='muted'>없음</li>"}</ul>`).join("")
+      : `<span class="muted">현행 규칙과 자격 판정이 같습니다(신청 방식만 다름).</span>`;
+  };
+  const short = n => (n.startsWith("현행 /") ? "현행 규칙" + n.slice(2) : n).replace("생계급여 선정기준 ", "생계 ").replace(" / S0", "<br>현행 신청").replace(" / S1", "<br>자동 안내");
+  const ys = sc.scenarios.map(s => s.metrics.expected_recipient_households);
+  Plotly.react("scChart", [{ type: "bar", x: names.map(short), y: ys, cliponaxis: false,
+    marker: { color: css("--s-liv"), cornerradius: 4 }, text: sc.scenarios.map(s => man(s.metrics.expected_recipient_households)),
+    textposition: "outside", hovertemplate: "%{x}<br>%{y:,.0f}가구<extra></extra>" }],
+    layoutBase({ hovermode: "closest", margin: { t: 24, r: 10, b: 60, l: 70 }, showlegend: false,
+      yaxis: { tickformat: ",", gridcolor: css("--grid"), range: [0, Math.max(...ys) * 1.15], automargin: true },
+      xaxis: { tickangle: 0, automargin: true } }), CFG);
+  document.getElementById("scSel").onchange = draw;
+  draw();
+}
+
+// ---------------------------------------------------------------- ⑤ 백테스트
+function viewBt() {
+  const bt = B.backtest, fx = B.backtest_fixed, by = String(bt.base_year), ty = String(bt.target_year);
+  const s = (B.nbls_series || []).filter(r => r.year >= 2015);
+  const base = bt.actual[by].households, ok = bt.households.error_rate <= 0.1;
+  document.getElementById("v-bt").innerHTML = `
+    <h2>백테스트</h2>
+    <p class="lead">${esc(bt.description)} — 오차를 숨기지 않고 그대로 공개합니다.</p>
+    <div class="card"><div id="btChart" class="chart" role="img" aria-label="실제 수급 가구 추이와 시뮬레이션 예측 비교"></div></div>
+    <div class="grid g4 mt">
+      <div class="card tile"><div class="label">예측 증가(가구)</div><div class="value">${signed(bt.households.predicted_increase)}</div></div>
+      <div class="card tile"><div class="label">실제 증가(가구)</div><div class="value">${signed(bt.households.actual_increase)}</div></div>
+      <div class="card tile"><div class="label">오차율(가구)</div><div class="value">${pct(bt.households.error_rate)}</div>
+        <div class="sub"><span class="badge ${ok ? "good" : "crit"}">${ok ? "✓ 목표 ±10% 달성" : "⚠ 목표 ±10% 미달"}</span></div></div>
+      <div class="card tile"><div class="label">오차율(인원)</div><div class="value">${pct(bt.persons.error_rate)}</div>
+        <div class="sub">${fx ? `비교: 인구 소득·자산 고정 시 가구 오차율 ${pct(fx.households.error_rate)}` : ""}</div></div>
+    </div>
+    <div class="card mt"><h3>한계(발표에서 명시)</h3><ul class="reasons small">${bt.limitations.map(l => `<li>${esc(l)}</li>`).join("")}</ul>
+      <details class="mt"><summary>기준값·증가율 출처</summary><ul class="reasons small">
+        ${Object.entries(bt.sources).flatMap(([y, arr]) => arr.map(x => `<li>${y} <span class="mono">${esc(x.param)}</span>: ${esc(x.doc)}</li>`)).join("")}
+        ${(bt.population_growth_sources || []).map(x => `<li>인구 보정 <span class="mono">${esc(x.param)}</span>: ${esc(x.doc)}</li>`).join("")}
+      </ul></details></div>`;
+  const tr = [{ x: s.map(r => r.year), y: s.map(r => r["합계"]), name: "실제 수급 가구(e-나라지표)", mode: "lines+markers",
+    line: { width: 2, color: css("--s-liv") }, marker: { size: 8 }, hovertemplate: "%{x}년 %{y:,.0f}가구<extra></extra>" },
+    { x: [+by, +ty], y: [base, base + bt.households.predicted_increase], name: "예측(기준값 + 소득·자산 증가)", mode: "lines+markers",
+      line: { width: 2, dash: "dash", color: css("--s-hou") }, marker: { size: 9 }, hovertemplate: "%{x}년 예측 %{y:,.0f}가구<extra></extra>" }];
+  if (fx) tr.push({ x: [+by, +ty], y: [base, base + fx.households.predicted_increase], name: "비교: 인구 소득·자산 고정", mode: "lines+markers",
+    line: { width: 2, dash: "dot", color: css("--muted") }, marker: { size: 7 }, hovertemplate: "%{x}년 (고정) %{y:,.0f}가구<extra></extra>" });
+  Plotly.react("btChart", tr, layoutBase({ hovermode: "closest", yaxis: { tickformat: ",", gridcolor: css("--grid"), title: "수급 가구" },
+    xaxis: { dtick: 1, gridcolor: css("--grid") } }), CFG);
+}
+
+// ---------------------------------------------------------------- 탭·테마
+const RENDER = { home: viewHome, rules: viewRules, blind: viewBlind, cliff: viewCliff, sim: viewSim, bt: viewBt };
+const rendered = new Set();
+function show(id) {
+  VIEWS.forEach(([v]) => { document.getElementById("v-" + v).classList.toggle("active", v === id); });
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.v === id));
+  if (!rendered.has(id)) { RENDER[id](); rendered.add(id); }
+  else document.querySelectorAll(`#v-${id} .js-plotly-plot`).forEach(p => Plotly.Plots.resize(p));
+  if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+  window.scrollTo({ top: 0 });
+}
+function rerenderAll() { const cur = [...rendered]; rendered.clear(); const active = location.hash.slice(1) || "home";
+  cur.forEach(v => { if (v === active) { RENDER[v](); rendered.add(v); } }); }
+document.getElementById("tabs").innerHTML = VIEWS.map(([v, l]) => `<button role="tab" data-v="${v}" type="button">${l}</button>`).join("");
+document.getElementById("tabs").onclick = e => { const b = e.target.closest("button"); if (b) show(b.dataset.v); };
+const themeBtn = document.getElementById("themeBtn");
+themeBtn.onclick = () => {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark" ||
+    (!document.documentElement.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+  try { localStorage.setItem("wt-theme", dark ? "light" : "dark"); } catch (e) {}
+  rerenderAll();
+};
+try { const t = localStorage.getItem("wt-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+
+Promise.all([fetch("data/bundle.json").then(r => r.json()), fetch("data/sweeps.json").then(r => r.json())]).then(([b, s]) => {
+  B = b; S = s;
+  document.getElementById("genAt").textContent = ` · 결과 생성 ${b.generated_at.slice(0, 10)}`;
+  const start = location.hash.slice(1);
+  show(RENDER[start] ? start : "home");
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (RENDER[h]) show(h); });
+}).catch(err => {
+  document.getElementById("v-home").classList.add("active");
+  document.getElementById("v-home").innerHTML = `<div class="note crit">데이터를 불러오지 못했습니다: ${esc(err)}</div>`;
+});
+</script>
+</body>
+</html>

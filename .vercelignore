@@ -1,0 +1,6 @@
+# Vercel 업로드 범위: 정적 웹(web/)과 설정만 — 소스·데이터·키는 올리지 않는다
+/*
+!/web
+!/vercel.json
+web/.env*
+web/.vercel

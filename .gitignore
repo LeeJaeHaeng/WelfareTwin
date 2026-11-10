@@ -31,3 +31,13 @@ artifacts/sim/*.parquet
 
 # 예외: LLM 행동 응답(비용이 든 결과, 재현용)
 !artifacts/sim/behavior.parquet
+
+# Vercel CLI 로컬 설정
+web/.vercel
+
+# Vercel CLI 로컬 설정·토큰(커밋 금지)
+.vercel
+.env*.local
+
+.vercel
+.env*

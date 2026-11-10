@@ -6,6 +6,12 @@
 
 작업 가이드는 `CLAUDE.md`, 진행 상황은 `docs/01_구현계획서.md`, 측정 결과는 `reports/`.
 
+## 웹 데모(배포)
+
+**https://welfaretwin.vercel.app** — 대시보드 5개 화면의 사전 계산본을 정적 웹으로 배포(Vercel, GitHub `main` 푸시 시 자동 배포).
+결과를 다시 계산했다면 `uv run python -m welfaretwin.web_export` 로 `web/data/` 를 갱신한 뒤 커밋·푸시한다.
+실시간 실행(Z3·LLM·사업안 직접 입력)은 정적 웹에서 빠지고 로컬 대시보드에서만 된다.
+
 ## 빠른 시작(데모)
 
 ```
