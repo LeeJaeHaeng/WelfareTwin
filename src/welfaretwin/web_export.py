@@ -69,7 +69,7 @@ def sweeps(max_income: int = 3_500_000, step: int = 10_000) -> dict:
             own.append(sum(m.earned_income + m.business_income + m.other_income for m in hh.members))
             for g in series:
                 series[g].append(vals[g])
-        out[key] = {"label": label, "earned": xs, "own_income": own,
+        out[key] = {"label": label, "household": Household(**base).model_dump(), "earned": xs, "own_income": own,
                     "series": {g: v for g, v in series.items() if any(v)}, "local_programs": sorted(local_names)}
     return out
 

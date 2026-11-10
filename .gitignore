@@ -41,3 +41,6 @@ web/.vercel
 
 .vercel
 .env*
+
+# Hugging Face Space 배포 묶음(scripts/build_space.py 가 생성)
+dist/

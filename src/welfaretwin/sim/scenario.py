@@ -177,15 +177,20 @@ def changed_types(t0: pd.DataFrame, t1: pd.DataFrame, top: int = 10) -> dict:
     return out
 
 
-def compare(changes: list[tuple[PolicyChange, str]], sample: int | None = None, workers: int = 6) -> dict:
-    """changes[0] 은 기준(현행 규칙 + S0)이어야 한다. 기준에서 보정한 b 를 모든 시나리오에 적용."""
+def compare(changes: list[tuple[PolicyChange, str]], sample: int | None = None, workers: int = 6,
+            cache: dict | None = None) -> dict:
+    """changes[0] 은 기준(현행 규칙 + S0)이어야 한다. 기준에서 보정한 b 를 모든 시나리오에 적용.
+
+    cache: 같은 표본(sample)으로 여러 번 부를 때 가구 표를 재사용(실시간 API 가 기준선을 한 번만 계산).
+    """
     t_start = time.perf_counter()
     behavior = load_behavior()
     actual = actual_recipients()
-    tables, results = {}, []
+    tables = cache if cache is not None else {}
+    results = []
     for change, scen in changes:
         key = json.dumps({"p": change.params, "x": [d["id"] for d in change.extra_programs],
-                          "s": change.population_scale}, sort_keys=True)
+                          "s": change.population_scale, "n": sample}, sort_keys=True)
         if key not in tables:
             res, hh, persons = evaluate_population(change, NBLS, sample=sample, workers=workers)
             tables[key] = household_table(res, hh, persons)
