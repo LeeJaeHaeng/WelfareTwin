@@ -221,19 +221,28 @@ def validate(prog_dict: dict, base: RuleSet) -> tuple[Program | None, list[str]]
         return None, [str(e).splitlines()[0] if len(str(e)) < 300 else str(e)[:600]]
 
 
-def extract(svc: ServiceText, variant: str, base: RuleSet | None = None, refresh: bool = False) -> Draft:
+def from_proposal(text: str, sido: str = "", sigungu: str = "") -> ServiceText:
+    """자연어 사업안 → ServiceText(레드팀 입력). 지역은 LLM 이 원문에서 읽는다."""
+    sid = "PROP" + hashlib.sha256(text.encode()).hexdigest()[:8].upper()
+    name = text.strip().splitlines()[0][:40]
+    return ServiceText(sid, name, sido, sigungu, "", text, "", text, "", "")
+
+
+def extract(svc: ServiceText, variant: str, base: RuleSet | None = None, refresh: bool = False,
+            role: str = "extract") -> Draft:
     base = base or load_ruleset()
     schema = SCHEMA_A if variant == "A" else SCHEMA_B
     user = f"{INSTRUCTION[variant]}\n\n{svc.prompt_text()}"
     calls = []
-    res: LLMResult = call_json(SYSTEM, user, schema, prompt_version=f"{PROMPT_VERSION}-{variant}", refresh=refresh)
+    res: LLMResult = call_json(SYSTEM, user, schema, prompt_version=f"{PROMPT_VERSION}-{variant}", refresh=refresh,
+                               role=role)
     calls.append({"model": res.model, "cached": res.cached, **res.usage})
     prog, errors = validate(to_program(res.data, svc, variant, res.model), base)
     if errors:   # 스키마·DSL 위반 → 오류를 알려 1회 재시도(문서 04 §4)
         retry_user = (f"{user}\n\n[이전 출력의 오류 — 표현식 언어 규칙에 맞게 고쳐서 다시 출력]\n"
                       + "\n".join(errors) + "\n[이전 출력]\n" + json.dumps(res.data, ensure_ascii=False))
         res = call_json(SYSTEM, retry_user, schema, prompt_version=f"{PROMPT_VERSION}-{variant}-retry",
-                        refresh=refresh)
+                        refresh=refresh, role=role)
         calls.append({"model": res.model, "cached": res.cached, **res.usage})
         prog, errors = validate(to_program(res.data, svc, variant, res.model), base)
     d = Draft(variant, svc, res.data, prog, errors, check_quotes(res.data, svc), calls)

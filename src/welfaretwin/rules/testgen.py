@@ -26,10 +26,14 @@ def _to_case(name: str, hh: Household, program: Program, rs: RuleSet, source: st
             "expect": {"eligible": d.eligible, "benefit_monthly": d.benefit_monthly}}
 
 
-def generate(program: Program, rs: RuleSet, timeout_ms: int = 10_000) -> list[dict]:
+def generate(program: Program, rs: RuleSet, timeout_ms: int = 10_000, plain: bool = False) -> list[dict]:
+    """plain=True 이면 '평범한 가구'(장애·부채·자동차·사업소득 없음 등)를 우선하는 소프트 제약(레드팀 배제 분석용)."""
     shh = SymHousehold()
     enc = Encoder(rs, shh)
-    s = _base_solver(shh, True, True, timeout_ms)
+    s = _base_solver(shh, True, True, timeout_ms, optimize=plain)
+    if plain:
+        for c, w in shh.plain():
+            s.add_soft(c, w)
     if program.region:   # 해당 시도 프로필만(시도·시/군 구분이 같은 대표 지역)
         idx = [i for i, (_, sido, sgg) in enumerate(REGION_PROFILES) if sido == program.region.sido]
         sgg = program.region.sigungu or ""

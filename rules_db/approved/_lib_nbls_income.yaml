@@ -32,7 +32,7 @@ derived:
            min(p.earned_income + p.business_income, params.nbls_earned_deduction_youth_flat)
            + params.nbls_earned_deduction_special_rate
              * max(0, p.earned_income + p.business_income - params.nbls_earned_deduction_youth_flat), 0),
-        if(p.age >= 65 or p.disability != 'none',
+        if(p.age >= params.nbls_earned_deduction_senior_min_age or p.disability != 'none',
            min(p.earned_income + p.business_income, params.nbls_earned_deduction_senior_disabled_flat)
            + params.nbls_earned_deduction_special_rate
              * max(0, p.earned_income + p.business_income - params.nbls_earned_deduction_senior_disabled_flat), 0)))
@@ -45,7 +45,7 @@ derived:
            min(p.earned_income + p.business_income, params.nbls_earned_deduction_youth_flat)
            + params.nbls_earned_deduction_special_rate
              * max(0, p.earned_income + p.business_income - params.nbls_earned_deduction_youth_flat), 0),
-        if(p.age >= 65 or p.disability != 'none',
+        if(p.age >= params.nbls_earned_deduction_senior_min_age or p.disability != 'none',
            min(p.earned_income + p.business_income, params.nbls_earned_deduction_senior_disabled_flat)
            + params.nbls_earned_deduction_special_rate
              * max(0, p.earned_income + p.business_income - params.nbls_earned_deduction_senior_disabled_flat), 0)))

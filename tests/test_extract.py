@@ -87,7 +87,7 @@ def test_testgen_positive_and_one_negative_per_condition():
 def test_llm_cache_hit_skips_api(tmp_path, monkeypatch):
     monkeypatch.setattr(llm, "CACHE_DIR", tmp_path)
     monkeypatch.setenv("WT_LLM_MODEL", "claude-opus-5")
-    key = llm._key("claude-opus-5", "v", "s", "u", {"type": "object"})
+    key = llm._key("claude-opus-5", "v|s=0", "s", "u", {"type": "object"})
     (tmp_path / f"{key}.json").write_text(json.dumps({"data": {"x": 1}, "model": "claude-opus-5", "usage": {}}),
                                           encoding="utf-8")
 

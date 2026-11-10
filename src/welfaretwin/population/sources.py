@@ -22,8 +22,10 @@ AGE_BANDS = [(15, 19), (20, 24), (25, 29), (30, 34), (35, 39), (40, 44), (45, 49
              (60, 64), (65, 69), (70, 74), (75, 79), (80, 84), (85, 95)]
 SIZES = [1, 2, 3, 4, 5, 6]                       # 6 = 6인 이상
 TENURE = ["own", "jeonse", "monthly_rent", "other"]
-# 가계금융복지조사 가구주 연령 그룹(≤29, 30대, 40대, 50대, 60+) — AGE_BANDS 인덱스 → 그룹
-AGE_GROUP_OF_BAND = np.array([0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4])
+# 가계금융복지조사 가구주 연령 그룹 — AGE_BANDS 인덱스 → 그룹. 60~64세는 '60세 이상'(025),
+# 65세 이상은 '65세 이상'(026) 분포를 쓴다(025 에는 아직 일하는 60~64세가 섞여 고령 가구 소득이 과대).
+AGE_GROUP_OF_BAND = np.array([0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5, 5, 5, 5])
+N_AGE_GROUPS = 6
 SIZE_GROUP = np.array([0, 1, 2, 3, 4, 4])          # 가구원수 1..5인 이상
 INCOME_BANDS = [(0, 1000), (1000, 3000), (3000, 5000), (5000, 7000), (7000, 10000), (10000, 30000)]  # 만원/년
 
@@ -96,25 +98,25 @@ def tenure_sido_size() -> Table:
 def income_band_shares() -> tuple[Table, Table]:
     """가계금융복지조사(2025, 2024년 소득): 소득 구간 비중(%) — 가구주 연령 그룹별, 가구원수별."""
     rows = fetch("101", "DT_1HDAAB03", itm_id="T10",
-                 objs={"objL1": "021 022 023 024 025 071 072 073 074 075", "objL2": "10 20 30 40 50 60"})
+                 objs={"objL1": "021 022 023 024 025 026 071 072 073 074 075", "objL2": "10 20 30 40 50 60"})
     band = {"10": 0, "20": 1, "30": 2, "40": 3, "50": 4, "60": 5}
-    by_age, by_size = np.zeros((5, 6)), np.zeros((5, 6))
+    by_age, by_size = np.zeros((6, 6)), np.zeros((5, 6))
     for r in rows:
         v = to_float(r["DT"])
         if v is None:
             continue
         c = int(r["C1"])
-        target = by_age[c - 21] if 21 <= c <= 25 else by_size[c - 71]
+        target = by_age[c - 21] if 21 <= c <= 26 else by_size[c - 71]
         target[band[r["C2"]]] = v
     src = _src("101", "DT_1HDAAB03", "가구특성별 소득구간별 가구분포", 2025, rows)
     return Table(by_age, src), Table(by_size, src)
 
 
 def income_source_means() -> Table:
-    """가구주 연령 그룹(5) × 소득원천(경상, 근로, 사업, 재산, 공적이전, 사적이전) 평균(만원/년)."""
+    """가구주 연령 그룹(6) × 소득원천(경상, 근로, 사업, 재산, 공적이전, 사적이전) 평균(만원/년)."""
     rows = fetch("101", "DT_1HDAAB01", itm_id="T00",
-                 objs={"objL1": "021 022 023 024 025", "objL2": "00 10 20 30 40 50"})
-    a = np.zeros((5, 6))
+                 objs={"objL1": "021 022 023 024 025 026", "objL2": "00 10 20 30 40 50"})
+    a = np.zeros((6, 6))
     for r in rows:
         v = to_float(r["DT"])
         if v is not None:

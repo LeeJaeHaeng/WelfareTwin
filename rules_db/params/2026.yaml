@@ -193,6 +193,16 @@ params:
       url: null
     verified: true
 
+  nbls_earned_deduction_senior_min_age:
+    note: "노인 근로소득 특례공제(20만원 공제 후 30%) 대상 연령 하한. 2025년부터 65세(2024년 75세). PDF 131쪽"
+    unit: years
+    value: 65
+    source:
+      doc: 2026년 국민기초생활보장 사업안내 (보건복지부, 2026.1.1.)
+      page: 105
+      url: null
+    verified: true
+
   nbls_earned_deduction_special_rate:
     note: 특례 대상 정액 공제 후 추가 공제율. PDF 131쪽
     unit: ratio

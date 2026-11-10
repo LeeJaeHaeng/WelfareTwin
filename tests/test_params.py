@@ -10,7 +10,7 @@ from welfaretwin.rules.params import PARAMS_DIR, Param, load_params
 
 
 def test_all_param_files_load():
-    files = sorted(PARAMS_DIR.glob("*.yaml"))
+    files = sorted(PARAMS_DIR.glob("2*.yaml"))
     assert files
     for f in files:
         ps = load_params(path=f)

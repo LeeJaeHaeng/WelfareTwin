@@ -45,6 +45,8 @@ ASSUMPTIONS = {
     "child_age_gap": ((25, 38), "자녀 나이 = 가구주 나이 − U(25, 38)"),
     "three_generation_prob": (0.1, "가구주 35~55세·4인 이상 가구 중 부모 1명 동거 확률"),
     "college_prob_19_24": (0.6, "19~24세 재학(대학) 확률"),
+    "older_head_work_prob": (0.35, "19~64세 가구원이 없는 가구(고령 가구)에서 가구주가 일하는 확률 — 일하지 않으면 근로·사업소득 몫을 "
+                                    "기타소득(연금·이전소득)으로 배분. 통계 미연계 가정(고령자 고용률로 대체 예정)"),
     "public_transfer_share": (0.5, "공적이전소득 중 '공적연금 등 소득평가액 반영분'으로 보는 비율(나머지는 기초연금 등 "
                                    "시뮬레이션 대상 급여로 보고 제외)"),
     "debt_sigma": (1.0, "부채 보유 가구의 부채액 로그정규 σ"),
@@ -99,7 +101,7 @@ def build_weights() -> tuple[np.ndarray, dict, dict]:
     ss = c.sum(axis=1)                                        # (sido, size)
     p_ten_size = ten_size.data / np.maximum(ten_size.data.sum(axis=1, keepdims=True), 1)  # (sido, ten, size)
     # 가계금융복지조사 소득 비율 × 2025 가구 수(그룹별)
-    age_g = np.array([c[:, S.AGE_GROUP_OF_BAND == g].sum() for g in range(5)])
+    age_g = np.array([c[:, S.AGE_GROUP_OF_BAND == g].sum() for g in range(S.N_AGE_GROUPS)])
     size_g = np.array([c[:, :, S.SIZE_GROUP == g].sum() for g in range(5)])
     t_inc_age = inc_age.data / inc_age.data.sum(axis=1, keepdims=True) * age_g[:, None]
     t_inc_size = inc_size.data / inc_size.data.sum(axis=1, keepdims=True) * size_g[:, None]
@@ -187,7 +189,15 @@ def generate(n: int = 100_000, seed: int = 20261110) -> tuple[pd.DataFrame, pd.D
             share_other = (prop + priv + pub * ASSUMPTIONS["public_transfer_share"][0]) / tot
             monthly = inc * 10_000 / 12
             earned_total = monthly * share_work
-            earners = [i for i, m in enumerate(members) if 19 <= m[0] <= 69] or [0]
+            earners = [i for i, m in enumerate(members) if 19 <= m[0] <= 64]   # 근로능력 연령(사업안내 p.96: 18~64세)
+            if not earners:   # 고령 가구: 가구주가 일할 때만 근로소득, 아니면 기타소득으로
+                if rng.random() < ASSUMPTIONS["older_head_work_prob"][0]:
+                    earners = [0]
+                else:   # 일하지 않는 고령 가구주: 근로·사업소득 몫을 기타소득(연금·이전소득)으로
+                    share_other += share_work + share_biz
+                    share_biz = 0.0
+                    earned_total = 0.0
+                    earners = [0]
             wts = np.array([1.0 if members[i][2] == "head" else 0.5 if members[i][2] == "spouse" else 0.6
                             for i in earners])
             alloc = dict(zip(earners, earned_total * wts / wts.sum()))
