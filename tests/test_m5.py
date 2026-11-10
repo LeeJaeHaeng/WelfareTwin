@@ -15,6 +15,7 @@ from welfaretwin.sim.scenario import PolicyChange, build_ruleset, calibrate, met
 def table():
     return pd.DataFrame({
         "nbls_eligible": [True, True, True, False],
+        "livelihood_eligible": [True, False, False, False],
         "weight": [100.0, 200.0, 300.0, 400.0],
         "size": [1, 2, 3, 1],
         "nbls_cash": [500_000, 300_000, 100_000, 0],
@@ -32,6 +33,7 @@ def test_calibration_hits_target(table, behavior):
     m = metrics(table, behavior, "S0", b)
     assert m["expected_recipient_households"] == pytest.approx(400.0, rel=1e-6)
     assert m["eligible_households"] == 600.0 and m["non_take_up_households"] == pytest.approx(200.0)
+    assert m["livelihood_eligible_households"] == 100.0
 
 
 def test_same_intercept_keeps_scenario_ordering(table, behavior):
