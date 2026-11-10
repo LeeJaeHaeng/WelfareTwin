@@ -28,3 +28,6 @@ data/processed/**
 
 # 시뮬레이션 상세 결과(재생성 가능)
 artifacts/sim/*.parquet
+
+# 예외: LLM 행동 응답(비용이 든 결과, 재현용)
+!artifacts/sim/behavior.parquet

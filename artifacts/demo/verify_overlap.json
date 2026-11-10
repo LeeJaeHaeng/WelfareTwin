@@ -1,7 +1,7 @@
 {
  "query": "overlap",
  "status": "unsat",
- "elapsed_sec": 2.74,
+ "elapsed_sec": 3.09,
  "options": {
   "exclusion_pairs": [],
   "dead_rules": [],
@@ -514,10 +514,10 @@
   ]
  },
  "meta": {
-  "generated_at": "2026-11-10T04:58:06+00:00",
-  "git_rev": "1450364",
-  "rules_hash": "4ba89af65b8b",
-  "params_hash": "a3585b538aef",
+  "generated_at": "2026-11-10T05:56:33+00:00",
+  "git_rev": "4a9d759",
+  "rules_hash": "3e76439a5d55",
+  "params_hash": "066828f4c59a",
   "params_year": 2026
  },
  "items": []

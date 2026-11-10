@@ -1,7 +1,7 @@
 {
  "query": "cliff",
  "status": "sat",
- "elapsed_sec": 73.27,
+ "elapsed_sec": 67.27,
  "options": {
   "delta": 10000,
   "n": 5,
@@ -26,21 +26,24 @@
   "found_programs": [
    "LOCAL_WLF00006585",
    "BASIC_PENSION",
+   "LOCAL_WLF00004298",
    "NBLS_HOUSING",
    "LOCAL_WLF00005860",
+   "EITC",
+   "LOCAL_WLF00004032",
+   "ENERGY_VOUCHER",
    "LOCAL_WLF00005691",
    "NBLS_EDUCATION",
    "LOCAL_WLF00005865",
-   "LOCAL_WLF00004032",
    "LOCAL_WLF00004083",
    "LOCAL_WLF00005203"
   ]
  },
  "meta": {
-  "generated_at": "2026-11-10T04:57:39+00:00",
-  "git_rev": "1450364",
-  "rules_hash": "4ba89af65b8b",
-  "params_hash": "a3585b538aef",
+  "generated_at": "2026-11-10T05:56:04+00:00",
+  "git_rev": "4a9d759",
+  "rules_hash": "3e76439a5d55",
+  "params_hash": "066828f4c59a",
   "params_year": 2026
  },
  "items": [
@@ -49,90 +52,7 @@
    "household": {
     "hh_id": "cliff_LOCAL_WLF00006585_before",
     "region_sido": "경상북도",
-    "region_sigungu": "포항시",
-    "members": [
-     {
-      "age": 24,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 620000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": false,
-      "pregnant": false,
-      "earned_income": 0,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 610000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 610000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 3990000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 65,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 4710000,
-      "business_income": 0,
-      "other_income": 0
-     }
-    ],
-    "housing": "monthly_rent",
-    "rent_monthly": 10000,
-    "assets_housing": 0,
-    "assets_general": 0,
-    "assets_financial": 5000000,
-    "car_value": 0,
-    "debts": 0,
-    "single_parent": false,
-    "obligor_over_limit": false,
-    "obligor_medical_capable": false
-   },
-   "household_after": {
-    "hh_id": "cliff_LOCAL_WLF00006585_after",
-    "region_sido": "경상북도",
-    "region_sigungu": "포항시",
+    "region_sigungu": "의성군",
     "members": [
      {
       "age": 24,
@@ -150,6 +70,28 @@
       "sex": "M",
       "disability": "none",
       "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
       "employed": false,
       "pregnant": false,
       "earned_income": 0,
@@ -158,12 +100,12 @@
      },
      {
       "age": 17,
-      "sex": "M",
+      "sex": "F",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 610000,
+      "earned_income": 10000,
       "business_income": 0,
       "other_income": 0
      },
@@ -172,40 +114,101 @@
       "sex": "M",
       "disability": "none",
       "is_student": false,
-      "employed": true,
+      "employed": false,
       "pregnant": false,
-      "earned_income": 610000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 3990000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 65,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 4710000,
+      "earned_income": 0,
       "business_income": 0,
       "other_income": 0
      }
     ],
-    "housing": "monthly_rent",
-    "rent_monthly": 10000,
-    "assets_housing": 0,
+    "housing": "jeonse",
+    "rent_monthly": 0,
+    "assets_housing": 230000000,
     "assets_general": 0,
-    "assets_financial": 5000000,
+    "assets_financial": 0,
+    "car_value": 0,
+    "debts": 0,
+    "single_parent": false,
+    "obligor_over_limit": false,
+    "obligor_medical_capable": false
+   },
+   "household_after": {
+    "hh_id": "cliff_LOCAL_WLF00006585_after",
+    "region_sido": "경상북도",
+    "region_sigungu": "의성군",
+    "members": [
+     {
+      "age": 24,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 640000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 0
+     }
+    ],
+    "housing": "jeonse",
+    "rent_monthly": 0,
+    "assets_housing": 230000000,
+    "assets_general": 0,
+    "assets_financial": 0,
     "car_value": 0,
     "debts": 0,
     "single_parent": false,
@@ -215,15 +218,15 @@
    "facts": {
     "trigger_program": "LOCAL_WLF00006585",
     "delta": 10000,
-    "loss": 790000,
-    "disposable_before": 11681667,
-    "disposable_after": 10891667,
+    "loss": 990000,
+    "disposable_before": 1820417,
+    "disposable_after": 830417,
     "lost_programs": [
      "LOCAL_WLF00006585"
     ],
     "benefit_changes": {
      "LOCAL_WLF00006585": {
-      "before": 800000,
+      "before": 1000000,
       "after": 0
      }
     },
@@ -237,13 +240,13 @@
      "reasons": [
       {
        "label": "기준 중위소득 65% 이하",
-       "detail": "소득인정액 5,565,000원 / round(median_income(hh.size) * 65 / 100) 5,561,369원",
+       "detail": "소득인정액 5,562,200원 / round(median_income(hh.size) * 65 / 100) 5,561,369원",
        "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00006585 (청소년부모 아동양육비 추가 지원사업) (지원대상·선정기준·지원내용)"
       }
      ]
     }
    ],
-   "text": "[급여 절벽 #1] 6인 가구(10대 4명, 20대 1명, 60대 1명), 경상북도 포항시, 월세 10,000원, 월 소득 10,540,000원(근로 10,540,000원, 사업 0원, 기타 0원), 금융재산 5,000,000원\n  가구주 근로소득 620,000원 → 630,000원 (+10,000원) 이면 가처분소득 11,681,667원 → 10,891,667원 (−790,000원)\n  - 청소년부모 아동양육비 추가 지원사업: 800,000원 → 0원\n    · 청소년부모 아동양육비 추가 지원사업 탈락 사유: 기준 중위소득 65% 이하 — 소득인정액 5,565,000원 / round(median_income(hh.size) * 65 / 100) 5,561,369원 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00006585 (청소년부모 아동양육비 추가 지원사업) (지원대상·선정기준·지원내용)]"
+   "text": "[급여 절벽 #1] 6인 가구(10대 5명, 20대 1명), 경상북도 의성군, 전세, 월 소득 660,000원(근로 660,000원, 사업 0원, 기타 0원), 주거용재산 230,000,000원\n  가구주 근로소득 630,000원 → 640,000원 (+10,000원) 이면 가처분소득 1,820,417원 → 830,417원 (−990,000원)\n  - 청소년부모 아동양육비 추가 지원사업: 1,000,000원 → 0원\n    · 청소년부모 아동양육비 추가 지원사업 탈락 사유: 기준 중위소득 65% 이하 — 소득인정액 5,562,200원 / round(median_income(hh.size) * 65 / 100) 5,561,369원 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00006585 (청소년부모 아동양육비 추가 지원사업) (지원대상·선정기준·지원내용)]"
   },
   {
    "title": "급여 절벽 #2",
@@ -427,12 +430,262 @@
   {
    "title": "급여 절벽 #3",
    "household": {
+    "hh_id": "cliff_LOCAL_WLF00004298_before",
+    "region_sido": "경상북도",
+    "region_sigungu": "포항시",
+    "members": [
+     {
+      "age": 35,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 170000
+     },
+     {
+      "age": 12,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 12,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 10000
+     },
+     {
+      "age": 15,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 40000
+     },
+     {
+      "age": 12,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 30000
+     },
+     {
+      "age": 18,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 20000
+     }
+    ],
+    "housing": "own",
+    "rent_monthly": 0,
+    "assets_housing": 170000000,
+    "assets_general": 0,
+    "assets_financial": 70000000,
+    "car_value": 0,
+    "debts": 118000000,
+    "single_parent": true,
+    "obligor_over_limit": false,
+    "obligor_medical_capable": false
+   },
+   "household_after": {
+    "hh_id": "cliff_LOCAL_WLF00004298_after",
+    "region_sido": "경상북도",
+    "region_sigungu": "포항시",
+    "members": [
+     {
+      "age": 35,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 170000
+     },
+     {
+      "age": 12,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 12,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 10000
+     },
+     {
+      "age": 15,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 40000
+     },
+     {
+      "age": 12,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 30000
+     },
+     {
+      "age": 18,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 20000
+     }
+    ],
+    "housing": "own",
+    "rent_monthly": 0,
+    "assets_housing": 170000000,
+    "assets_general": 0,
+    "assets_financial": 70000000,
+    "car_value": 0,
+    "debts": 118000000,
+    "single_parent": true,
+    "obligor_over_limit": false,
+    "obligor_medical_capable": false
+   },
+   "facts": {
+    "trigger_program": "LOCAL_WLF00004298",
+    "delta": 10000,
+    "loss": 503859,
+    "disposable_before": 1281859,
+    "disposable_after": 778000,
+    "lost_programs": [
+     "ENERGY_VOUCHER",
+     "LOCAL_WLF00002989",
+     "LOCAL_WLF00004298",
+     "NBLS_EDUCATION"
+    ],
+    "benefit_changes": {
+     "ENERGY_VOUCHER": {
+      "before": 58442,
+      "after": 0
+     },
+     "LOCAL_WLF00004298": {
+      "before": 200000,
+      "after": 0
+     },
+     "NBLS_EDUCATION": {
+      "before": 255417,
+      "after": 0
+     }
+    },
+    "proven_max": false,
+    "plain_household": false
+   },
+   "lost": [
+    {
+     "program": "ENERGY_VOUCHER",
+     "name": "에너지바우처",
+     "reasons": [
+      {
+       "label": "다음 중 어느 것에도 해당하지 않음: 생계급여 수급, 의료급여 수급, 주거급여 수급, 교육급여 수급",
+       "detail": "",
+       "source": "에너지바우처 지원정보 (한국에너지공단) (신청대상(소득기준·세대원 특성기준))"
+      }
+     ]
+    },
+    {
+     "program": "LOCAL_WLF00002989",
+     "name": "저소득주민 자녀장학금",
+     "reasons": [
+      {
+       "label": "기초생활보장수급자 또는 차상위계층",
+       "detail": "",
+       "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00002989 (저소득주민 자녀장학금) (지원대상·선정기준·지원내용)"
+      }
+     ]
+    },
+    {
+     "program": "LOCAL_WLF00004298",
+     "name": "저소득가정 자녀 학습비 지원사업",
+     "reasons": [
+      {
+       "label": "기초생활수급자 또는 차상위계층",
+       "detail": "",
+       "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00004298 (저소득가정 자녀 학습비 지원사업) (지원대상·선정기준·지원내용)"
+      },
+      {
+       "label": "소득인정액 기준 중위소득 30% 이상 50% 이하",
+       "detail": "",
+       "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00004298 (저소득가정 자녀 학습비 지원사업) (지원대상·선정기준·지원내용)"
+      }
+     ]
+    },
+    {
+     "program": "NBLS_EDUCATION",
+     "name": "교육급여",
+     "reasons": [
+      {
+       "label": "소득인정액 ≤ 교육급여 선정기준(중위 50%)",
+       "detail": "소득인정액 4,283,400원 / 교육급여 선정기준 4,277,976원",
+       "source": "2026년 국민기초생활보장 사업안내 p.52 (교육급여 선정기준(중위 50%))"
+      }
+     ]
+    }
+   ],
+   "text": "[급여 절벽 #3] 6인 가구(10대 5명, 30대 1명, 학생 포함, 한부모), 경상북도 포항시, 자가, 월 소득 280,000원(근로 10,000원, 사업 0원, 기타 270,000원), 주거용재산 170,000,000원, 금융재산 70,000,000원, 부채 118,000,000원\n  가구주 근로소득 0원 → 10,000원 (+10,000원) 이면 가처분소득 1,281,859원 → 778,000원 (−503,859원)\n  - 에너지바우처: 58,442원 → 0원\n  - 저소득가정 자녀 학습비 지원사업: 200,000원 → 0원\n  - 교육급여: 255,417원 → 0원\n    · 에너지바우처 탈락 사유: 다음 중 어느 것에도 해당하지 않음: 생계급여 수급, 의료급여 수급, 주거급여 수급, 교육급여 수급 [근거: 에너지바우처 지원정보 (한국에너지공단) (신청대상(소득기준·세대원 특성기준))]\n    · 저소득주민 자녀장학금 탈락 사유: 기초생활보장수급자 또는 차상위계층 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00002989 (저소득주민 자녀장학금) (지원대상·선정기준·지원내용)]\n    · 저소득가정 자녀 학습비 지원사업 탈락 사유: 기초생활수급자 또는 차상위계층 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00004298 (저소득가정 자녀 학습비 지원사업) (지원대상·선정기준·지원내용)]\n    · 저소득가정 자녀 학습비 지원사업 탈락 사유: 소득인정액 기준 중위소득 30% 이상 50% 이하 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00004298 (저소득가정 자녀 학습비 지원사업) (지원대상·선정기준·지원내용)]\n    · 교육급여 탈락 사유: 소득인정액 ≤ 교육급여 선정기준(중위 50%) — 소득인정액 4,283,400원 / 교육급여 선정기준 4,277,976원 [근거: 2026년 국민기초생활보장 사업안내 p.52 (교육급여 선정기준(중위 50%))]"
+  },
+  {
+   "title": "급여 절벽 #4",
+   "household": {
     "hh_id": "cliff_NBLS_HOUSING_before",
     "region_sido": "서울특별시",
     "region_sigungu": null,
     "members": [
      {
-      "age": 35,
+      "age": 64,
       "sex": "F",
       "disability": "none",
       "is_student": false,
@@ -444,10 +697,10 @@
      }
     ],
     "housing": "monthly_rent",
-    "rent_monthly": 370000,
-    "assets_housing": 16000000,
+    "rent_monthly": 280000,
+    "assets_housing": 25000000,
     "assets_general": 0,
-    "assets_financial": 0,
+    "assets_financial": 5000000,
     "car_value": 0,
     "debts": 0,
     "single_parent": false,
@@ -460,7 +713,7 @@
     "region_sigungu": null,
     "members": [
      {
-      "age": 35,
+      "age": 64,
       "sex": "F",
       "disability": "none",
       "is_student": false,
@@ -472,10 +725,10 @@
      }
     ],
     "housing": "monthly_rent",
-    "rent_monthly": 370000,
-    "assets_housing": 16000000,
+    "rent_monthly": 280000,
+    "assets_housing": 25000000,
     "assets_general": 0,
-    "assets_financial": 0,
+    "assets_financial": 5000000,
     "car_value": 0,
     "debts": 0,
     "single_parent": false,
@@ -485,8 +738,8 @@
    "facts": {
     "trigger_program": "NBLS_HOUSING",
     "delta": 10000,
-    "loss": 238936,
-    "disposable_before": 2008244,
+    "loss": 233269,
+    "disposable_before": 2002577,
     "disposable_after": 1769308,
     "lost_programs": [
      "NBLS_HOUSING"
@@ -497,7 +750,7 @@
       "after": 9308
      },
      "NBLS_HOUSING": {
-      "before": 247667,
+      "before": 242000,
       "after": 0
      }
     },
@@ -517,32 +770,87 @@
      ]
     }
    ],
-   "text": "[급여 절벽 #3] 1인 가구(30대 1명), 서울특별시, 월세 370,000원, 월 소득 1,750,000원(근로 1,750,000원, 사업 0원, 기타 0원), 주거용재산 16,000,000원\n  가구주 근로소득 1,750,000원 → 1,760,000원 (+10,000원) 이면 가처분소득 2,008,244원 → 1,769,308원 (−238,936원)\n  - 근로장려금: 10,577원 → 9,308원\n  - 주거급여(임차급여): 247,667원 → 0원\n    · 주거급여(임차급여) 탈락 사유: 소득인정액 ≤ 주거급여 선정기준(중위 48%) — 소득인정액 1,232,000원 / 주거급여 선정기준 1,230,834원 [근거: 2026년 국민기초생활보장 사업안내 p.52 (주거급여 선정기준(중위 48%))]"
+   "text": "[급여 절벽 #4] 1인 가구(60대 1명), 서울특별시, 월세 280,000원, 월 소득 1,750,000원(근로 1,750,000원, 사업 0원, 기타 0원), 주거용재산 25,000,000원, 금융재산 5,000,000원\n  가구주 근로소득 1,750,000원 → 1,760,000원 (+10,000원) 이면 가처분소득 2,002,577원 → 1,769,308원 (−233,269원)\n  - 근로장려금: 10,577원 → 9,308원\n  - 주거급여(임차급여): 242,000원 → 0원\n    · 주거급여(임차급여) 탈락 사유: 소득인정액 ≤ 주거급여 선정기준(중위 48%) — 소득인정액 1,232,000원 / 주거급여 선정기준 1,230,834원 [근거: 2026년 국민기초생활보장 사업안내 p.52 (주거급여 선정기준(중위 48%))]"
   },
   {
-   "title": "급여 절벽 #4",
+   "title": "급여 절벽 #5",
    "household": {
     "hh_id": "cliff_LOCAL_WLF00005860_before",
     "region_sido": "경상북도",
     "region_sigungu": "포항시",
     "members": [
      {
-      "age": 34,
+      "age": 45,
       "sex": "F",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 3700000,
+      "earned_income": 240000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 64,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 200000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 30,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 190000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 30,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 70000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 30,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 34,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 13890000,
       "business_income": 0,
       "other_income": 0
      }
     ],
     "housing": "jeonse",
     "rent_monthly": 0,
-    "assets_housing": 119000000,
+    "assets_housing": 113000000,
     "assets_general": 0,
-    "assets_financial": 3000000,
+    "assets_financial": 0,
     "car_value": 0,
     "debts": 0,
     "single_parent": false,
@@ -555,22 +863,77 @@
     "region_sigungu": "포항시",
     "members": [
      {
-      "age": 34,
+      "age": 45,
       "sex": "F",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 3710000,
+      "earned_income": 250000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 64,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 200000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 30,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 190000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 30,
+      "sex": "F",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 70000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 30,
+      "sex": "M",
+      "disability": "none",
+      "is_student": true,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 34,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 13890000,
       "business_income": 0,
       "other_income": 0
      }
     ],
     "housing": "jeonse",
     "rent_monthly": 0,
-    "assets_housing": 119000000,
+    "assets_housing": 113000000,
     "assets_general": 0,
-    "assets_financial": 3000000,
+    "assets_financial": 0,
     "car_value": 0,
     "debts": 0,
     "single_parent": false,
@@ -581,8 +944,8 @@
     "trigger_program": "LOCAL_WLF00005860",
     "delta": 10000,
     "loss": 190000,
-    "disposable_before": 3941667,
-    "disposable_after": 3751667,
+    "disposable_before": 14841667,
+    "disposable_after": 14651667,
     "lost_programs": [
      "LOCAL_WLF00005860"
     ],
@@ -602,126 +965,13 @@
      "reasons": [
       {
        "label": "기준 중위소득 120% 이하",
-       "detail": "소득인정액 3,082,500원 / round(median_income(hh.size) * 120 / 100) 3,077,086원",
+       "detail": "소득인정액 10,273,300원 / round(median_income(hh.size) * 120 / 100) 10,267,142원",
        "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00005860 (영천시 청년근로자 월세 지원) (지원대상·선정기준·지원내용)"
       }
      ]
     }
    ],
-   "text": "[급여 절벽 #4] 1인 가구(30대 1명), 경상북도 포항시, 전세, 월 소득 3,700,000원(근로 3,700,000원, 사업 0원, 기타 0원), 주거용재산 119,000,000원, 금융재산 3,000,000원\n  가구주 근로소득 3,700,000원 → 3,710,000원 (+10,000원) 이면 가처분소득 3,941,667원 → 3,751,667원 (−190,000원)\n  - 영천시 청년근로자 월세 지원: 200,000원 → 0원\n    · 영천시 청년근로자 월세 지원 탈락 사유: 기준 중위소득 120% 이하 — 소득인정액 3,082,500원 / round(median_income(hh.size) * 120 / 100) 3,077,086원 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00005860 (영천시 청년근로자 월세 지원) (지원대상·선정기준·지원내용)]"
-  },
-  {
-   "title": "급여 절벽 #5",
-   "household": {
-    "hh_id": "cliff_LOCAL_WLF00005691_before",
-    "region_sido": "경상북도",
-    "region_sigungu": "의성군",
-    "members": [
-     {
-      "age": 39,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": false,
-      "pregnant": false,
-      "earned_income": 0,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 64,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 5780000,
-      "business_income": 0,
-      "other_income": 0
-     }
-    ],
-    "housing": "monthly_rent",
-    "rent_monthly": 0,
-    "assets_housing": 121000000,
-    "assets_general": 0,
-    "assets_financial": 1000000,
-    "car_value": 0,
-    "debts": 0,
-    "single_parent": false,
-    "obligor_over_limit": false,
-    "obligor_medical_capable": false
-   },
-   "household_after": {
-    "hh_id": "cliff_LOCAL_WLF00005691_after",
-    "region_sido": "경상북도",
-    "region_sigungu": "의성군",
-    "members": [
-     {
-      "age": 39,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 10000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 64,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 5780000,
-      "business_income": 0,
-      "other_income": 0
-     }
-    ],
-    "housing": "monthly_rent",
-    "rent_monthly": 0,
-    "assets_housing": 121000000,
-    "assets_general": 0,
-    "assets_financial": 1000000,
-    "car_value": 0,
-    "debts": 0,
-    "single_parent": false,
-    "obligor_over_limit": false,
-    "obligor_medical_capable": false
-   },
-   "facts": {
-    "trigger_program": "LOCAL_WLF00005691",
-    "delta": 10000,
-    "loss": 90000,
-    "disposable_before": 5921667,
-    "disposable_after": 5831667,
-    "lost_programs": [
-     "LOCAL_WLF00005691"
-    ],
-    "benefit_changes": {
-     "LOCAL_WLF00005691": {
-      "before": 100000,
-      "after": 0
-     }
-    },
-    "proven_max": true,
-    "plain_household": true
-   },
-   "lost": [
-    {
-     "program": "LOCAL_WLF00005691",
-     "name": "청년월세 지원사업",
-     "reasons": [
-      {
-       "label": "소득 기준중위소득 120% 이하",
-       "detail": "소득인정액 5,041,900원 / round(median_income(hh.size) * 120 / 100) 5,039,150원",
-       "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00005691 (청년월세 지원사업) (지원대상·선정기준·지원내용)"
-      }
-     ]
-    }
-   ],
-   "text": "[급여 절벽 #5] 2인 가구(30대 1명, 60대 1명), 경상북도 의성군, 월세, 월 소득 5,780,000원(근로 5,780,000원, 사업 0원, 기타 0원), 주거용재산 121,000,000원, 금융재산 1,000,000원\n  가구주 근로소득 0원 → 10,000원 (+10,000원) 이면 가처분소득 5,921,667원 → 5,831,667원 (−90,000원)\n  - 청년월세 지원사업: 100,000원 → 0원\n    · 청년월세 지원사업 탈락 사유: 소득 기준중위소득 120% 이하 — 소득인정액 5,041,900원 / round(median_income(hh.size) * 120 / 100) 5,039,150원 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00005691 (청년월세 지원사업) (지원대상·선정기준·지원내용)]"
+   "text": "[급여 절벽 #5] 6인 가구(30대 4명, 40대 1명, 60대 1명, 학생 포함), 경상북도 포항시, 전세, 월 소득 14,600,000원(근로 14,600,000원, 사업 0원, 기타 0원), 주거용재산 113,000,000원\n  가구주 근로소득 240,000원 → 250,000원 (+10,000원) 이면 가처분소득 14,841,667원 → 14,651,667원 (−190,000원)\n  - 영천시 청년근로자 월세 지원: 200,000원 → 0원\n    · 영천시 청년근로자 월세 지원 탈락 사유: 기준 중위소득 120% 이하 — 소득인정액 10,273,300원 / round(median_income(hh.size) * 120 / 100) 10,267,142원 [근거: 한국사회보장정보원 지자체복지서비스 상세 WLF00005860 (영천시 청년근로자 월세 지원) (지원대상·선정기준·지원내용)]"
   }
  ]
 }

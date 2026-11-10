@@ -160,10 +160,10 @@
  },
  "timings": {
   "extract": 0.1,
-  "impact": 20.6,
+  "impact": 20.5,
   "exclusion": 0.2,
-  "cliff": 2.7,
-  "loopholes": 9.8,
-  "total": 33.5
+  "cliff": 2.8,
+  "loopholes": 8.3,
+  "total": 31.9
  }
 }

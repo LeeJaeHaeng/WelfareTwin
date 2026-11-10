@@ -1,7 +1,7 @@
 {
  "query": "blindspot",
  "status": "sat",
- "elapsed_sec": 2.01,
+ "elapsed_sec": 2.16,
  "options": {
   "programs": [
    "NBLS_LIVELIHOOD",
@@ -13,10 +13,10 @@
   "n": 8
  },
  "meta": {
-  "generated_at": "2026-11-10T01:54:29+00:00",
-  "git_rev": "4de5d84",
-  "rules_hash": "7a88406dd02b",
-  "params_hash": "a3585b538aef",
+  "generated_at": "2026-11-10T05:54:57+00:00",
+  "git_rev": "4a9d759",
+  "rules_hash": "3e76439a5d55",
+  "params_hash": "066828f4c59a",
   "params_year": 2026
  },
  "items": [

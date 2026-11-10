@@ -45,7 +45,16 @@ uv run python -m welfaretwin.data.collect --source central --source local
 uv run python -m welfaretwin.rules.extract --service-id <ID>
 uv run python -m welfaretwin.verify.run --query blindspot
 uv run streamlit run app/dashboard.py
+uv run python -m welfaretwin.rules.pipeline run <servId...>   # LLM 추출 A·B → Z3 교차검증 → review/
+uv run python -m welfaretwin.rules.pipeline approve <ID>      # 사람 승인 → approved/
+uv run python -m welfaretwin.population.synth                 # 합성 인구
+uv run python -m welfaretwin.sim.scenario --preset demo       # 정책 시나리오(보정)
+uv run python -m welfaretwin.redteam.report --preset heating  # 레드팀
+uv run python -m welfaretwin.backtest.run                     # 백테스트
+uv run python -m welfaretwin.demo_bundle                      # 대시보드 사전 계산본
 ```
+- uv 가 PATH 에 없으면 `%APPDATA%/Python/Python313/Scripts/uv.exe`
+- LLM 모델: 규칙 추출 `WT_LLM_MODEL`(claude-opus-5), 에이전트·레드팀 `WT_LLM_MODEL_AGENT`(claude-haiku-4-5)
 
 ## 문서 지도
 - `docs/00_README.md` 전체 개요·문서 목록
@@ -59,3 +68,4 @@ uv run streamlit run app/dashboard.py
 - `docs/08_API_대시보드_설계.md` API·화면
 - `docs/09_테스트_검증계획.md`
 - `docs/10_데모_발표_시나리오.md`
+- `docs/11_질의응답_대비표.md` 질의응답 대비표(수치는 `reports/eval_*.md`)

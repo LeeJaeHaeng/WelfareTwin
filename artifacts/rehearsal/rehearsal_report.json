@@ -1,0 +1,158 @@
+{
+ "all_ok": true,
+ "rounds": 3,
+ "consecutive_clean_rounds": true,
+ "max_seconds": 5.3,
+ "results": [
+  {
+   "round": 1,
+   "page": 1,
+   "name": "법전 → 코드",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 1.5,
+   "within_30s": true
+  },
+  {
+   "round": 1,
+   "page": 2,
+   "name": "사각지대",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 2.9,
+   "within_30s": true
+  },
+  {
+   "round": 1,
+   "page": 3,
+   "name": "급여 절벽",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 3.4,
+   "within_30s": true
+  },
+  {
+   "round": 1,
+   "page": 4,
+   "name": "레드팀",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 5.3,
+   "within_30s": true
+  },
+  {
+   "round": 1,
+   "page": 5,
+   "name": "백테스트",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 1.5,
+   "within_30s": true
+  },
+  {
+   "round": 2,
+   "page": 1,
+   "name": "법전 → 코드",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 2.8,
+   "within_30s": true
+  },
+  {
+   "round": 2,
+   "page": 2,
+   "name": "사각지대",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 2.9,
+   "within_30s": true
+  },
+  {
+   "round": 2,
+   "page": 3,
+   "name": "급여 절벽",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 3.3,
+   "within_30s": true
+  },
+  {
+   "round": 2,
+   "page": 4,
+   "name": "레드팀",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 3.6,
+   "within_30s": true
+  },
+  {
+   "round": 2,
+   "page": 5,
+   "name": "백테스트",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 2.3,
+   "within_30s": true
+  },
+  {
+   "round": 3,
+   "page": 1,
+   "name": "법전 → 코드",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 3.4,
+   "within_30s": true
+  },
+  {
+   "round": 3,
+   "page": 2,
+   "name": "사각지대",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 2.5,
+   "within_30s": true
+  },
+  {
+   "round": 3,
+   "page": 3,
+   "name": "급여 절벽",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 3.5,
+   "within_30s": true
+  },
+  {
+   "round": 3,
+   "page": 4,
+   "name": "레드팀",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 3.4,
+   "within_30s": true
+  },
+  {
+   "round": 3,
+   "page": 5,
+   "name": "백테스트",
+   "ok": true,
+   "exceptions": 0,
+   "missing": [],
+   "seconds": 2.5,
+   "within_30s": true
+  }
+ ]
+}
