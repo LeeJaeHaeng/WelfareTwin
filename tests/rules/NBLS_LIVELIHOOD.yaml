@@ -2,7 +2,7 @@ program: NBLS_LIVELIHOOD
 cases:
   - name: 사업안내 예시 — 소득인정액 15만원 1인
     source: 사업안내 2026 p.239 생계급여액 산출 예시 (820,556 − 150,000 = 670,556 → 원단위 올림)
-    household: {region_sido: 세종특별자치시, members: [{age: 70, other_income: 150000}]}
+    household: {region_sido: 세종특별자치시, members: [{age: 50, other_income: 150000}]}
     expect: {eligible: true, benefit_monthly: 670560}
   - name: 사업안내 예시 — 19세 아들 취업 2인 가구
     source: 사업안내 2026 p.49 (근로소득 90만원 → 60만원 공제 후 30% 추가 = 69만원 공제, 소득인정액 21만원)
@@ -32,7 +32,7 @@ cases:
     expect_derived: {nbls_property_income: 2802600}
   - name: 사업안내 예시2 — 세종 주거용 7,800만 + 생업용 자동차(제외)
     source: 사업안내 2026 p.166 예시2 (7,800만 − 7,700만 = 100만 × 1.04%; 생업용 자동차는 재산 제외)
-    household: {region_sido: 세종특별자치시, housing: own, assets_housing: 78000000, members: [{age: 70}]}
+    household: {region_sido: 세종특별자치시, housing: own, assets_housing: 78000000, members: [{age: 50}]}
     expect: {eligible: true, benefit_monthly: 810160}
     expect_derived: {nbls_property_income: 10400}
   - name: 사업안내 예시 — 세종 주거용 1억5,600만
@@ -55,11 +55,15 @@ cases:
     household: {region_sido: 경상북도, members: [{age: 40, employed: true, earned_income: 1000000}]}
     expect: {eligible: true, benefit_monthly: 120560}
     expect_derived: {nbls_income_recognized: 700000}
-  - name: 65세 이상 근로소득 20만원 공제 후 30%
-    source: 사업안내 2026 p.105
+  - name: 65세 이상 근로소득 20만원 공제 후 30% + 기초연금 소득 반영
+    source: 사업안내 2026 p.105 (근로 50만 → 공제 29만 → 21만), p.122 (기초연금은 공적이전소득) → 소득인정액 210,000 + 349,700
     household: {region_sido: 경상북도, members: [{age: 70, employed: true, earned_income: 500000}]}
-    expect: {eligible: true, benefit_monthly: 610560}
-    expect_derived: {nbls_income_recognized: 210000}
+    expect: {eligible: true, benefit_monthly: 260860}
+    expect_derived: {nbls_income_recognized: 559700}
+  - name: 기초연금만 받는 무소득 노인 — 생계급여는 차액만
+    source: 사업안내 2026 p.122 (기초연금 소득 반영), p.238 (820,556 − 349,700 = 470,856 → 10원 올림)
+    household: {region_sido: 대구광역시, members: [{age: 75}]}
+    expect: {eligible: true, benefit_monthly: 470860}
   - name: 부채는 기본재산액과 함께 차감
     source: 사업안내 2026 p.163 (부채 차감 순서), p.165 (그 외 지역 기본재산액 5,300만)
     household: {region_sido: 경상북도, assets_general: 100000000, debts: 20000000, members: [{age: 45}]}

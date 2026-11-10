@@ -17,9 +17,13 @@ import numpy as np
 
 @dataclass
 class Marginal:
+    """axes 순서의 주변분포. groups={축: 매핑배열} 이면 그 축은 세부 구간을 그룹으로 묶어 맞춘다
+    (예: 5세 연령 구간 → 가계금융복지조사의 10세 연령 그룹)."""
+
     axes: tuple[int, ...]
     target: np.ndarray
     name: str = ""
+    groups: dict[int, np.ndarray] | None = None
 
 
 @dataclass
@@ -49,6 +53,22 @@ def _expand(f: np.ndarray, axes: tuple[int, ...], ndim: int) -> np.ndarray:
     return f.reshape(shape)
 
 
+def _grouped_project(w: np.ndarray, m: Marginal) -> np.ndarray:
+    cur = _project(w, m.axes)
+    for ax, mapping in (m.groups or {}).items():
+        k = m.axes.index(ax)
+        onehot = np.zeros((len(mapping), int(mapping.max()) + 1))
+        onehot[np.arange(len(mapping)), mapping] = 1.0
+        cur = np.moveaxis(np.tensordot(np.moveaxis(cur, k, -1), onehot, axes=1), -1, k)
+    return cur
+
+
+def _ungroup(f: np.ndarray, m: Marginal) -> np.ndarray:
+    for ax, mapping in (m.groups or {}).items():
+        f = np.take(f, mapping, axis=m.axes.index(ax))
+    return f
+
+
 def ipf(seed: np.ndarray, marginals: list[Marginal], tol: float = 1e-6, max_iter: int = 1000) -> IPFResult:
     w = np.asarray(seed, dtype=float).copy()
     if (w < 0).any():
@@ -57,7 +77,8 @@ def ipf(seed: np.ndarray, marginals: list[Marginal], tol: float = 1e-6, max_iter
     targets = []
     for m in marginals:
         t = np.asarray(m.target, dtype=float)
-        if t.shape != tuple(w.shape[a] for a in m.axes):
+        expect = tuple(int((m.groups or {})[a].max()) + 1 if a in (m.groups or {}) else w.shape[a] for a in m.axes)
+        if t.shape != expect:
             raise ValueError(f"주변분포 {m.name or m.axes} 모양 {t.shape} 이 축 크기와 다름")
         if (t < 0).any():
             raise ValueError(f"주변분포 {m.name or m.axes} 에 음수")
@@ -66,7 +87,7 @@ def ipf(seed: np.ndarray, marginals: list[Marginal], tol: float = 1e-6, max_iter
     def errors() -> dict[str, float]:
         out = {}
         for m, t in zip(marginals, targets):
-            cur = _project(w, m.axes)
+            cur = _grouped_project(w, m)
             denom = np.where(t > 0, t, 1.0)
             out[m.name or str(m.axes)] = float(np.max(np.abs(cur - t) / denom))
         return out
@@ -74,10 +95,10 @@ def ipf(seed: np.ndarray, marginals: list[Marginal], tol: float = 1e-6, max_iter
     it = 0
     for it in range(1, max_iter + 1):
         for m, t in zip(marginals, targets):
-            cur = _project(w, m.axes)
+            cur = _grouped_project(w, m)
             with np.errstate(divide="ignore", invalid="ignore"):
                 f = np.where(cur > 0, t / cur, 0.0)
-            w *= _expand(f, m.axes, w.ndim)
+            w *= _expand(_ungroup(f, m), m.axes, w.ndim)
         errs = errors()
         if max(errs.values()) <= tol:
             return IPFResult(w, it, max(errs.values()), errs, True)

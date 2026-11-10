@@ -20,5 +20,5 @@ cases:
     expect: {eligible: false}
   - name: 경계 — 2인 소득인정액 = 선정기준
     source: 사업안내 2026 p.51 (2인 1,679,717)
-    household: {region_sido: 경상북도, members: [{age: 70, other_income: 1679717}, {age: 68}]}
+    household: {region_sido: 경상북도, members: [{age: 50, other_income: 1679717}, {age: 48}]}
     expect: {eligible: true}

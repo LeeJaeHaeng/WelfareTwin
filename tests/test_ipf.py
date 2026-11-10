@@ -41,3 +41,17 @@ def test_integerize_sums_to_n_and_tracks_weights():
     counts = integerize(w, 1000, np.random.default_rng(1))
     assert counts.sum() == 1000
     np.testing.assert_allclose(counts / 1000, w / w.sum(), atol=0.002)
+
+
+def test_grouped_margin():
+    rng = np.random.default_rng(3)
+    truth = rng.random((4, 3)) * 100              # 축0: 세부 연령 4구간, 축1: 소득 3구간
+    mapping = np.array([0, 0, 1, 1])              # 세부 → 그룹 2개
+    fine = truth.sum(axis=1)
+    grouped = np.stack([truth[mapping == g].sum(axis=0) for g in range(2)])
+    r = ipf(np.ones_like(truth), [Marginal((0,), fine, "fine"),
+                                  Marginal((0, 1), grouped, "grouped", groups={0: mapping})])
+    assert r.converged
+    np.testing.assert_allclose(r.weights.sum(axis=1), fine, rtol=1e-5)
+    got = np.stack([r.weights[mapping == g].sum(axis=0) for g in range(2)])
+    np.testing.assert_allclose(got, grouped, rtol=1e-5)

@@ -55,6 +55,10 @@ def test_benefits_non_negative_and_zero_when_ineligible(hh):
 @settings(max_examples=150, deadline=None)
 @given(households, st.integers(0, 6), st.integers(1, 2_000_000))
 def test_income_recognized_monotone_in_earned_income(hh, idx, delta):
+    # 65세 이상이 있으면 근로소득 증가 → 기초연금 상실 → 소득인정액 감소가 실제로 가능하므로 제외
+    hh = hh.model_copy(deep=True)
+    for p in hh.members:
+        p.age = min(p.age, 64)
     i = idx % hh.size
     richer = hh.model_copy(deep=True)
     richer.members[i].earned_income += delta
@@ -66,6 +70,9 @@ def test_income_recognized_monotone_in_earned_income(hh, idx, delta):
 @given(households, st.sampled_from(["assets_housing", "assets_general", "assets_financial", "car_value"]),
        st.integers(1, 100_000_000))
 def test_income_recognized_monotone_in_assets(hh, field, delta):
+    hh = hh.model_copy(deep=True)
+    for p in hh.members:
+        p.age = min(p.age, 64)
     richer = hh.model_copy(update={field: getattr(hh, field) + delta})
     assert derived_value(richer, RS, "nbls_income_recognized") >= derived_value(hh, RS, "nbls_income_recognized")
 

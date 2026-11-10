@@ -69,8 +69,8 @@ def run(folder: Path, year: int = 2026, workers: int = 4, chunk: int = 2000) -> 
         for c in chunks:
             rows.extend(_evaluate_chunk(c))
     res = pd.DataFrame(rows).merge(hh_df[["hh_id", "weight", "region_sido"]], on="hh_id")
-    sizes = p_df.groupby("hh_id").size().rename("size")
-    res = res.join(sizes, on="hh_id")
+    per_hh = p_df.groupby("hh_id").agg(size=("age", "size"), n_elderly=("age", lambda a: int((a >= 65).sum())))
+    res = res.join(per_hh, on="hh_id")
     summary = summarize(res, year)
     summary["elapsed_sec"] = round(time.perf_counter() - t0, 1)
     summary["population"] = {"households": len(hh_df), "weighted_households": float(hh_df["weight"].sum()),
@@ -88,11 +88,41 @@ def summarize(res: pd.DataFrame, year: int) -> dict:
             "name": rs.programs[pid].name,
             "eligible_households": float(w.sum()),
             "eligible_persons": float((w * e["size"]).sum()),
+            "eligible_elderly": float((w * e["n_elderly"]).sum()),
             "eligible_share": float(w.sum() / g["weight"].sum()),
             "avg_benefit_monthly": float((w * e["benefit_monthly"]).sum() / w.sum()) if len(e) else 0.0,
             "monthly_budget": float((w * e["benefit_monthly"]).sum()),
             "by_sido": {k: float(v) for k, v in e.groupby("region_sido")["weight"].sum().items()},
         }
+    out["calibration"] = calibration(res, year)
+    return out
+
+
+NBLS = ["NBLS_LIVELIHOOD", "NBLS_MEDICAL", "NBLS_HOUSING", "NBLS_EDUCATION"]
+
+
+def calibration(res: pd.DataFrame, year: int) -> dict:
+    """기초생활보장(4개 급여 중 하나 이상) 자격 가구·인원 vs 실제 수급 실적(e-나라지표 2760, 가장 최근 연도).
+
+    자격 > 실적 의 차이는 '자격은 있으나 미수급'(비수급 빈곤층) + 모델 단순화 오차의 합이다(문서 06 §1.2).
+    """
+    any_ = res[res["program_id"].isin(NBLS)].groupby("hh_id").agg(
+        eligible=("eligible", "any"), weight=("weight", "first"), size=("size", "first"))
+    e = any_[any_["eligible"]]
+    sim_hh, sim_p = float(e["weight"].sum()), float((e["weight"] * e["size"]).sum())
+    out = {"nbls_any_eligible_households": sim_hh, "nbls_any_eligible_persons": sim_p}
+    stats = ROOT / "data" / "processed" / "stats"
+    try:
+        p = pd.read_csv(stats / "nbls_recipients.csv")
+        h = pd.read_csv(stats / "nbls_households_by_type.csv")
+        last = int(p["year"].max())
+        act_p = float(p.loc[p["year"] == last, "수급자수"].iloc[0]) * 1000
+        act_h = float(h.loc[h["year"] == last, "합계"].iloc[0])
+        out.update({"actual_year": last, "actual_households": act_h, "actual_persons": act_p,
+                    "ratio_households": sim_hh / act_h, "ratio_persons": sim_p / act_p,
+                    "source": "e-나라지표 2760 국민기초생활보장 수급 현황"})
+    except FileNotFoundError:
+        out["note"] = "실적 통계 없음 — python -m welfaretwin.data.stats 실행 필요"
     return out
 
 
@@ -112,8 +142,14 @@ def main(argv: list[str] | None = None) -> int:
                                                        encoding="utf-8")
     print(f"{summary['population']['households']:,}가구 평가 ({summary['elapsed_sec']}초)")
     for pid, s in summary["programs"].items():
-        print(f"  {s['name']}: 대상 {s['eligible_households']:,.0f}가구 / {s['eligible_persons']:,.0f}명 "
+        who = f"65세 이상 {s['eligible_elderly']:,.0f}명" if pid == "BASIC_PENSION" else f"{s['eligible_persons']:,.0f}명"
+        print(f"  {s['name']}: 대상 {s['eligible_households']:,.0f}가구 / {who} "
               f"({s['eligible_share']:.1%}), 평균 {s['avg_benefit_monthly']:,.0f}원, 월 재정 {s['monthly_budget'] / 1e8:,.0f}억원")
+    c = summary["calibration"]
+    if "actual_households" in c:
+        print(f"  [보정] 기초생활보장 자격(4개 급여 중 1개 이상) {c['nbls_any_eligible_households']:,.0f}가구 / "
+              f"{c['nbls_any_eligible_persons']:,.0f}명 vs {c['actual_year']}년 실제 수급 {c['actual_households']:,.0f}가구 / "
+              f"{c['actual_persons']:,.0f}명 → {c['ratio_households']:.2f}배 / {c['ratio_persons']:.2f}배")
     return 0
 
 

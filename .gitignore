@@ -21,3 +21,10 @@ data/processed/**
 
 # 제출 자료 압축본
 *.zip
+
+# 예외: KOSIS 공개 집계표 원문(합성 인구 재현용, 키 미포함)과 합성 인구 메타
+!data/raw/kosis/*.json
+!data/processed/population_meta.json
+
+# 시뮬레이션 상세 결과(재생성 가능)
+artifacts/sim/*.parquet
