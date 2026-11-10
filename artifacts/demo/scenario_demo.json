@@ -1,6 +1,6 @@
 {
  "calibration": {
-  "intercept_b": 1.6425802022790261,
+  "intercept_b": 1.6245919826261286,
   "target": {
    "year": 2025,
    "households": 2013319.0,
@@ -18,15 +18,15 @@
    "params": {},
    "behavior": "S0",
    "metrics": {
-    "eligible_households": 2673972.804580001,
-    "eligible_persons": 4501686.19208,
-    "expected_recipient_households": 2013318.9999999998,
-    "expected_recipient_persons": 3300500.0170628633,
-    "non_take_up_households": 660653.8045800014,
-    "take_up_rate": 0.7529317413219654,
-    "monthly_budget_won": 598125332820.6277,
-    "livelihood_eligible_households": 1418530.5380400005,
-    "livelihood_expected_recipients": 1092962.9827805688
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2013319.0,
+    "expected_recipient_persons": 3293268.409399166,
+    "non_take_up_households": 651655.830980001,
+    "take_up_rate": 0.7554739266560483,
+    "monthly_budget_won": 595271367745.2695,
+    "livelihood_eligible_households": 1424154.2715400006,
+    "livelihood_expected_recipients": 1098403.5813946407
    },
    "delta_vs_base": {
     "eligible_households": 0.0,
@@ -45,26 +45,26 @@
    "params": {},
    "behavior": "S1",
    "metrics": {
-    "eligible_households": 2673972.804580001,
-    "eligible_persons": 4501686.19208,
-    "expected_recipient_households": 2310788.7186469813,
-    "expected_recipient_persons": 3739901.4758438896,
-    "non_take_up_households": 363184.0859330199,
-    "take_up_rate": 0.8641780928695477,
-    "monthly_budget_won": 703316848777.134,
-    "livelihood_eligible_households": 1418530.5380400005,
-    "livelihood_expected_recipients": 1273892.6933545987
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2296559.8155911234,
+    "expected_recipient_persons": 3714104.1613043183,
+    "non_take_up_households": 368415.0153888776,
+    "take_up_rate": 0.8617566623496407,
+    "monthly_budget_won": 696486588956.4426,
+    "livelihood_eligible_households": 1424154.2715400006,
+    "livelihood_expected_recipients": 1270844.454605174
    },
    "delta_vs_base": {
     "eligible_households": 0.0,
     "eligible_persons": 0.0,
-    "expected_recipient_households": 297469.7186469815,
-    "expected_recipient_persons": 439401.4587810263,
-    "non_take_up_households": -297469.7186469815,
-    "take_up_rate": 0.11124635154758233,
-    "monthly_budget_won": 105191515956.50635,
+    "expected_recipient_households": 283240.8155911234,
+    "expected_recipient_persons": 420835.7519051526,
+    "non_take_up_households": -283240.8155911234,
+    "take_up_rate": 0.10628273569359237,
+    "monthly_budget_won": 101215221211.1731,
     "livelihood_eligible_households": 0.0,
-    "livelihood_expected_recipients": 180929.71057402994
+    "livelihood_expected_recipients": 172440.8732105333
    }
   },
   {
@@ -74,15 +74,15 @@
    },
    "behavior": "S0",
    "metrics": {
-    "eligible_households": 2673972.804580001,
-    "eligible_persons": 4501686.19208,
-    "expected_recipient_households": 2013318.9999999998,
-    "expected_recipient_persons": 3300500.0170628633,
-    "non_take_up_households": 660653.8045800014,
-    "take_up_rate": 0.7529317413219654,
-    "monthly_budget_won": 724644775661.9945,
-    "livelihood_eligible_households": 1635156.7524600006,
-    "livelihood_expected_recipients": 1256872.6068226888
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2013319.0,
+    "expected_recipient_persons": 3293268.409399166,
+    "non_take_up_households": 651655.830980001,
+    "take_up_rate": 0.7554739266560483,
+    "monthly_budget_won": 721713165360.9633,
+    "livelihood_eligible_households": 1640330.5872800008,
+    "livelihood_expected_recipients": 1263027.7943301788
    },
    "changes_vs_base": {
     "newly_included": {
@@ -101,9 +101,9 @@
     "expected_recipient_persons": 0.0,
     "non_take_up_households": 0.0,
     "take_up_rate": 0.0,
-    "monthly_budget_won": 126519442841.36682,
-    "livelihood_eligible_households": 216626.2144200001,
-    "livelihood_expected_recipients": 163909.62404212006
+    "monthly_budget_won": 126441797615.69373,
+    "livelihood_eligible_households": 216176.31574000022,
+    "livelihood_expected_recipients": 164624.21293553803
    }
   },
   {
@@ -113,15 +113,15 @@
    },
    "behavior": "S1",
    "metrics": {
-    "eligible_households": 2673972.804580001,
-    "eligible_persons": 4501686.19208,
-    "expected_recipient_households": 2310788.7186469813,
-    "expected_recipient_persons": 3739901.4758438896,
-    "non_take_up_households": 363184.0859330199,
-    "take_up_rate": 0.8641780928695477,
-    "monthly_budget_won": 849692219742.2666,
-    "livelihood_eligible_households": 1635156.7524600006,
-    "livelihood_expected_recipients": 1461031.2071912047
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2296559.8155911234,
+    "expected_recipient_persons": 3714104.1613043183,
+    "non_take_up_households": 368415.0153888776,
+    "take_up_rate": 0.8617566623496407,
+    "monthly_budget_won": 841553850400.9125,
+    "livelihood_eligible_households": 1640330.5872800008,
+    "livelihood_expected_recipients": 1457290.2753313172
    },
    "changes_vs_base": {
     "newly_included": {
@@ -136,16 +136,16 @@
    "delta_vs_base": {
     "eligible_households": 0.0,
     "eligible_persons": 0.0,
-    "expected_recipient_households": 297469.7186469815,
-    "expected_recipient_persons": 439401.4587810263,
-    "non_take_up_households": -297469.7186469815,
-    "take_up_rate": 0.11124635154758233,
-    "monthly_budget_won": 251566886921.63892,
-    "livelihood_eligible_households": 216626.2144200001,
-    "livelihood_expected_recipients": 368068.2244106359
+    "expected_recipient_households": 283240.8155911234,
+    "expected_recipient_persons": 420835.7519051526,
+    "non_take_up_households": -283240.8155911234,
+    "take_up_rate": 0.10628273569359237,
+    "monthly_budget_won": 246282482655.64294,
+    "livelihood_eligible_households": 216176.31574000022,
+    "livelihood_expected_recipients": 358886.6939366765
    }
   }
  ],
- "elapsed_sec": 132.9,
+ "elapsed_sec": 120.7,
  "sample_households": null
 }

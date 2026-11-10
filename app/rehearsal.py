@@ -37,9 +37,14 @@ def wait_idle(page, timeout_s: float = 60) -> None:
         page.wait_for_timeout(300)
 
 
-def run_round(pw, url: str, shots: Path | None, k: int) -> list[dict]:
+def run_round(pw, url: str, shots: Path | None, k: int, video: Path | None = None) -> list[dict]:
     browser = pw.chromium.launch()
-    page = browser.new_page(viewport={"width": 1920, "height": 1080})
+    ctx_opts = {"viewport": {"width": 1920, "height": 1080}}
+    if video:   # 발표 백업 영상(문서 10 §2) — 화면 전환 사이에 잠시 머문다
+        video.mkdir(parents=True, exist_ok=True)
+        ctx_opts.update(record_video_dir=str(video), record_video_size={"width": 1920, "height": 1080})
+    context = browser.new_context(**ctx_opts)
+    page = context.new_page()
     out = []
     for num, name, button, expects in STEPS:
         t0 = time.time()
@@ -62,9 +67,22 @@ def run_round(pw, url: str, shots: Path | None, k: int) -> list[dict]:
             if shots:
                 shots.mkdir(parents=True, exist_ok=True)
                 page.screenshot(path=str(shots / f"r{k}_p{num}.png"), full_page=True)
+            if video:
+                page.mouse.wheel(0, 600)
+                page.wait_for_timeout(2500)
+                page.mouse.wheel(0, -600)
+                page.wait_for_timeout(1500)
         except Exception as e:  # noqa: BLE001 — 리허설은 어떤 실패든 기록
             rec.update(error=str(e)[:300], seconds=round(time.time() - t0, 1))
         out.append(rec)
+    context.close()
+    if video:
+        vid = page.video.path() if page.video else None
+        if vid:
+            target = video / "demo_backup.webm"
+            if target.exists():
+                target.unlink()
+            Path(vid).rename(target)
     browser.close()
     return out
 
@@ -76,12 +94,13 @@ def main() -> int:
     ap.add_argument("--url", default="http://localhost:8765")
     ap.add_argument("--rounds", type=int, default=3)
     ap.add_argument("--shots", type=Path)
+    ap.add_argument("--video", type=Path, help="1회차를 녹화해 <폴더>/demo_backup.webm 으로 저장")
     ap.add_argument("--out", type=Path, default=Path("artifacts/rehearsal/rehearsal_report.json"))
     args = ap.parse_args()
     results = []
     with sync_playwright() as pw:
         for k in range(1, args.rounds + 1):
-            r = run_round(pw, args.url, args.shots if k == 1 else None, k)
+            r = run_round(pw, args.url, args.shots if k == 1 else None, k, args.video if k == 1 else None)
             results += r
             print(f"[{k}회차] " + " | ".join(f"{x['page']}:{'OK' if x['ok'] else 'FAIL'}({x['seconds']}s)" for x in r))
     all_ok = all(x["ok"] for x in results)

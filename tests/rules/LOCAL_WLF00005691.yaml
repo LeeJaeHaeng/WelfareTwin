@@ -8,13 +8,13 @@ cases:
     members:
     - age: 39
       sex: F
-      disability: mild
+      employed: true
+      earned_income: 10000
     housing: monthly_rent
     rent_monthly: 10000
     assets_housing: 113000000
-    assets_financial: 6000000
-    car_value: 3000000
-    debts: 61000000
+    assets_financial: 8000000
+    car_value: 1000000
   expect:
     eligible: true
     benefit_monthly: 100000
@@ -24,24 +24,18 @@ cases:
     region_sido: 경상북도
     region_sigungu: 구미시
     members:
-    - age: 64
-      sex: F
-      disability: mild
-      business_income: 210000
-      other_income: 20000
     - age: 65
       sex: F
+      disability: mild
       employed: true
-      earned_income: 1170000
-      business_income: 1180000
-      other_income: 1310000
+      earned_income: 190000
+      business_income: 20000
+      other_income: 880000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 112000000
-    assets_general: 1000000
-    assets_financial: 21000000
-    car_value: 1000000
-    debts: 58000000
+    assets_housing: 52000000
+    assets_financial: 19000000
+    debts: 13000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -54,18 +48,14 @@ cases:
     - age: 34
       sex: F
       disability: mild
-      business_income: 610000
-      other_income: 2070000
-    - age: 34
-      sex: F
       employed: true
-      earned_income: 1800000
-      other_income: 10000
+      earned_income: 10000
+      business_income: 190000
     housing: jeonse
-    assets_housing: 110000000
-    assets_financial: 6000000
-    car_value: 1000000
-    debts: 58000000
+    assets_housing: 113000000
+    assets_general: 2000000
+    car_value: 2000000
+    debts: 63000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -75,17 +65,18 @@ cases:
     region_sido: 경상북도
     region_sigungu: 구미시
     members:
-    - age: 19
+    - age: 34
+      sex: F
+      disability: mild
       employed: true
-      earned_income: 15440000
-      business_income: 590000
-      other_income: 3000000
+      earned_income: 10000
+      business_income: 600000
+      other_income: 10000
     housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 114000000
-    assets_financial: 7000000
-    car_value: 1000000
-    debts: 62000000
+    assets_housing: 112000000
+    assets_financial: 6000000
+    car_value: 4000000
+    debts: 60000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -96,15 +87,15 @@ cases:
     region_sigungu: 구미시
     members:
     - age: 34
+      sex: F
+      disability: mild
       employed: true
-      earned_income: 20000
-      business_income: 560000
+      earned_income: 10000
+      other_income: 240000
     housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 53000000
-    assets_general: 65000000
+    assets_housing: 177000000
     assets_financial: 6000000
-    debts: 1000000
+    debts: 60000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -114,14 +105,24 @@ cases:
     region_sido: 경상북도
     region_sigungu: 구미시
     members:
-    - age: 39
+    - age: 34
       employed: true
       earned_income: 10000
+    - age: 18
+      employed: true
+      earned_income: 630000
       other_income: 10000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 460000
+      business_income: 2720000
+      other_income: 20000
     housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 52000000
-    assets_financial: 7000000
+    rent_monthly: 190000
+    assets_housing: 1000000
+    assets_financial: 299000000
+    debts: 243000000
   expect:
     eligible: false
     benefit_monthly: 0

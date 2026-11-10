@@ -36,7 +36,8 @@ def render(r: RedTeamResult) -> str:
     period = "monthly" if "monthly" in p["benefit"] else "annual"
     lines.append(f"  - 급여({'월' if period == 'monthly' else '연'}): `{p['benefit'][period]}`")
     region = p.get("region") or {}
-    lines += ["", f"1. 영향: 대상 {im['eligible_households']:,.0f}가구(시도 단위 판정: {region.get('sido', '-')}) / "
+    where = " ".join(x for x in (region.get("sido"), region.get("sigungu")) if x) or "전국"
+    lines += ["", f"1. 영향: 대상 {im['eligible_households']:,.0f}가구({where}) / "
                   f"월 재정 {budget / 1e6:,.1f}백만원(전원 신청 가정) / 기존 제도와 중복: {overlap}"]
     lines.append("2. 배제 위험(조건 하나 때문에 탈락하는 가구 유형):")
     for e in r.exclusion[:4]:
@@ -60,7 +61,7 @@ def render(r: RedTeamResult) -> str:
     if r.extraction.get("not_modeled"):
         lines.append("   - 규칙으로 표현하지 못한 조건(담당자 확인 필요): "
                      + "; ".join(n["quote"] for n in r.extraction["not_modeled"]))
-    lines += ["", f"근거: 반례 가구는 Z3·평가기로 재확인한 값, 영향은 합성 가구 표본 {im['sample_households']:,}개 기준. "
+    lines += ["", f"근거: 반례 가구는 Z3·평가기로 재확인한 값, 영향은 {im.get('scope', '합성 가구')}({im['sample_households']:,}개) 기준. "
                   f"처리 시간 {r.timings['total']}초({', '.join(f'{k} {v}초' for k, v in r.timings.items() if k != 'total')})."]
     return "\n".join(lines)
 

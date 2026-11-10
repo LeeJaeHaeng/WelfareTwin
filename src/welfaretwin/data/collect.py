@@ -183,30 +183,32 @@ def main(argv: list[str] | None = None) -> int:
     limit = 1 if args.smoke else args.limit
     num_rows = 5 if args.smoke else None
 
-    try:
-        for source in dict.fromkeys(args.source):
-            extra = {}
-            if source == "local":
-                if args.ctpv:
-                    extra["ctpvNm"] = args.ctpv
-                if args.sgg:
-                    extra["sggNm"] = args.sgg
-            try:
-                collect_source(
-                    client, source, args.out, manifest,
-                    limit=limit, force=args.force or args.smoke,
-                    list_extra=extra, num_rows=num_rows, log=log,
-                )
-            finally:
-                write_manifest(manifest_path, scan_manifest(args.out))
-    except ApiError as e:
-        print(f"API 오류로 중단: {e}")
-        if e.code == "22":
-            print("  → 일일 호출 한도 초과. 내일 같은 명령을 다시 실행하면 받은 건은 건너뛰고 이어서 수집.")
-        if e.code == "30":
-            print("  → 미등록 키. 활용신청 승인 직후라면 1~2시간 뒤 다시 시도하고, Decoding 키인지 확인.")
-        return 1
-    return 0
+    failed = False
+    for source in dict.fromkeys(args.source):
+        extra = {}
+        if source == "local":
+            if args.ctpv:
+                extra["ctpvNm"] = args.ctpv
+            if args.sgg:
+                extra["sggNm"] = args.sgg
+        try:
+            collect_source(
+                client, source, args.out, manifest,
+                limit=limit, force=args.force or args.smoke,
+                list_extra=extra, num_rows=num_rows, log=log,
+            )
+        except ApiError as e:
+            failed = True
+            print(f"[{source}] API 오류로 중단: {e}")
+            if e.code == "22":   # 한도는 API(소스)별이므로 다음 소스는 계속 수집한다
+                print("  → 일일 호출 한도 초과. 내일 같은 명령을 다시 실행하면 받은 건은 건너뛰고 이어서 수집.")
+                continue
+            if e.code == "30":
+                print("  → 미등록 키. 활용신청 승인 직후라면 1~2시간 뒤 다시 시도하고, Decoding 키인지 확인.")
+            return 1
+        finally:
+            write_manifest(manifest_path, scan_manifest(args.out))
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

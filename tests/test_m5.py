@@ -75,7 +75,7 @@ def test_admin_burden_and_render():
                                   "benefit": {"monthly": "50000"}},
         extraction={"not_modeled": []},
         impact={"eligible_households": 1000.0, "monthly_budget_won_full_take_up": 5e7,
-                "overlap_rates": {"ENERGY_VOUCHER": 0.8}, "sample_households": 100},
+                "overlap_rates": {"ENERGY_VOUCHER": 0.8}, "sample_households": 100, "scope": "테스트"},
         admin=ad, timings={"total": 1.0, "extract": 0.5})
     md = render(r)
     for section in ("1. 영향", "2. 배제 위험", "3. 허점 위험", "4. 급여 절벽", "5. 행정 부담"):

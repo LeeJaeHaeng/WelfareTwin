@@ -4,17 +4,39 @@ cases:
   source: 'testgen: Z3 양성 예'
   household:
     region_sido: 대구광역시
+    region_sigungu: 서구
     members:
     - age: 65
+      other_income: 960000
+    - age: 30
+      sex: F
+      disability: mild
       employed: true
-      earned_income: 20000
-      business_income: 190000
+      earned_income: 770000
+    - age: 34
+      employed: true
+      earned_income: 610000
+      other_income: 10000
+    - age: 65
+      other_income: 3000000
+    - age: 64
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 1470000
+      other_income: 10000
+    - age: 65
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 570000
+      business_income: 10000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 146000000
-    assets_general: 1000000
+    assets_housing: 147000000
     assets_financial: 5000000
-    debts: 12000000
+    car_value: 1000000
+    debts: 71000000
   expect:
     eligible: true
     benefit_monthly: 16667
@@ -22,13 +44,17 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 대구광역시
+    region_sigungu: 서구
     members:
-    - age: 35
-    housing: monthly_rent
-    rent_monthly: 10000
+    - age: 34
+      disability: mild
+      employed: true
+      earned_income: 160000
+      business_income: 670000
+      other_income: 10000
+    housing: jeonse
     assets_housing: 147000000
-    assets_general: 3000000
-    debts: 74000000
+    assets_financial: 8000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -36,24 +62,46 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 대구광역시
+    region_sigungu: 서구
     members:
-    - age: 35
+    - age: 65
+      sex: F
       disability: mild
       employed: true
-      earned_income: 1180000
+      earned_income: 11710000
+    - age: 34
+      employed: true
+      earned_income: 610000
+      business_income: 6310000
+      other_income: 70000
+    - age: 34
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 8470000
+      other_income: 40000
     - age: 65
       disability: mild
       employed: true
-      earned_income: 1170000
-      business_income: 10100000
-      other_income: 10000
-    housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 147000000
-    assets_general: 882000000
-    assets_financial: 7000000
+      earned_income: 12820000
+      other_income: 30000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 7380000
+      business_income: 4280000
+      other_income: 60000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 3300000
+      other_income: 50000
+    housing: jeonse
+    assets_housing: 151000000
+    assets_financial: 81000000
     car_value: 40000000
-    debts: 953000000
+    debts: 76000000
   expect:
     eligible: false
     benefit_monthly: 0

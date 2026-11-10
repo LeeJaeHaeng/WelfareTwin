@@ -7,7 +7,8 @@
    - 2020 인구총조사 시도×연령×점유형태, 시도×점유형태×가구원수(비율을 2025 가구 수에 적용)
    - 2025 가계금융복지조사 가구주연령그룹×소득구간, 가구원수그룹×소득구간(비율을 2025 가구 수에 적용)
    에 동시에 맞춘다.
-2. 셀별 정수 표본 → 가구 생성. 가구원 구성·소득 배분·자산은 아래 ASSUMPTIONS 의 규칙(휴리스틱)으로.
+2. 셀별 정수 표본 → 가구 생성. 시군구는 2025 인구총조사 시군구×연령×가구원수 분포로 배정.
+   가구원 구성·소득 배분·자산은 아래 ASSUMPTIONS 의 규칙(휴리스틱)으로.
 3. data/processed/{households,persons}.parquet + population_meta.json (출처·IPF 오차·가정·검증)
 
 개인정보 없음: 집계표만 사용한다.
@@ -137,6 +138,7 @@ def generate(n: int = 100_000, seed: int = 20261110) -> tuple[pd.DataFrame, pd.D
     assets_q = S.assets_by_income_quintile()       # (5, [자산, 금융, 실물, 부채, 경상소득, 부채보유%])
     pct = S.income_net_worth_percentiles()
     dis = S.disability_prevalence()
+    sgg = S.households_sigungu_age_size()      # 시도 → (시군구 이름, 시군구×연령×가구원수 가구 수)
     q_cut = pct.data[1][[1, 3, 5, 7]]              # 소득 P20, P40, P60, P80 (만원)
     weight = ipf_info["total_households"] / n
     inc_cdf = PiecewiseCDF([0.0, *pct.data[1]], ASSUMPTIONS["income_tail_alpha"][0])
@@ -154,6 +156,10 @@ def generate(n: int = 100_000, seed: int = 20261110) -> tuple[pd.DataFrame, pd.D
             hh_id = f"H{k:06d}"
             sido = S.SIDO_NAMES[si]
             size = S.SIZES[zi]
+            sgg_names, sgg_arr = sgg.data[si]
+            pw = sgg_arr[:, ai, zi]
+            pw = pw if pw.sum() > 0 else sgg_arr.sum(axis=(1, 2))
+            sigungu = sgg_names[int(rng.choice(len(sgg_names), p=pw / pw.sum()))]
             tenure = S.TENURE[ti]
             lo, hi = S.AGE_BANDS[ai]
             head_age = int(rng.integers(max(lo, 18), hi + 1))
@@ -235,7 +241,7 @@ def generate(n: int = 100_000, seed: int = 20261110) -> tuple[pd.DataFrame, pd.D
                 housing, general, financial = 0.0, real, fin
             won = lambda x: int(round(max(0.0, x) * 10_000, -4))  # noqa: E731
             hh_rows.append({
-                "hh_id": hh_id, "region_sido": sido, "region_sigungu": None, "housing": tenure,
+                "hh_id": hh_id, "region_sido": sido, "region_sigungu": sigungu, "housing": tenure,
                 "rent_monthly": int(round(rent, -3)), "assets_housing": won(housing),
                 "assets_general": won(general), "assets_financial": won(financial),
                 "car_value": 0, "debts": won(debts), "single_parent": single_parent,
@@ -248,7 +254,7 @@ def generate(n: int = 100_000, seed: int = 20261110) -> tuple[pd.DataFrame, pd.D
     meta = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "n_households": len(hh), "n_persons": len(persons), "seed": seed, "weight": weight,
-        "sources": sources | {"income_sources": src_means.source, "assets": assets_q.source,
+        "sources": sources | {"sigungu": sgg.source, "income_sources": src_means.source, "assets": assets_q.source,
                               "percentiles": pct.source, "disability": dis.source},
         "ipf": ipf_info,
         "assumptions": {k: v[1] for k, v in ASSUMPTIONS.items()},

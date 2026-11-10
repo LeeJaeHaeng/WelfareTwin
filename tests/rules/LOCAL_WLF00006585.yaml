@@ -6,38 +6,48 @@ cases:
     region_sido: 경상북도
     region_sigungu: 포항시
     members:
-    - age: 19
-      sex: F
-      disability: mild
-    - age: 15
-      sex: F
+    - age: 24
       disability: mild
       employed: true
-      earned_income: 80000
-    housing: own
-    assets_housing: 1000000
-    assets_general: 21000000
-    debts: 1000000
+      earned_income: 610000
+    - age: 0
+      disability: mild
+    - age: 6
+      disability: mild
+    - age: 6
+    - age: 9
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 113000000
+    assets_financial: 6000000
+    debts: 61000000
   expect:
     eligible: true
-    benefit_monthly: 200000
+    benefit_monthly: 800000
 - name: 자동 — '기준 중위소득 65% 이하'만 불충족
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 경상북도
-    region_sigungu: 포항시
+    region_sigungu: 청송군
     members:
-    - age: 19
-      sex: F
-      business_income: 610000
-    - age: 15
+    - age: 24
       sex: F
       disability: mild
       employed: true
-      earned_income: 18090000
-      other_income: 2070000
-    housing: own
+      earned_income: 610000
+    - age: 9
+      other_income: 10000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 2060000
+      business_income: 900000
+      other_income: 950000
+    housing: jeonse
     assets_housing: 113000000
+    assets_financial: 22000000
+    car_value: 1000000
+    debts: 44000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -45,22 +55,20 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 경상북도
-    region_sigungu: 포항시
+    region_sigungu: 청송군
     members:
-    - age: 35
+    - age: 64
       sex: F
-      disability: mild
       employed: true
-      earned_income: 210000
+      earned_income: 10000
+      business_income: 3200000
     - age: 17
-      sex: F
-      disability: mild
+    - age: 35
       employed: true
-      earned_income: 2600000
-    housing: own
-    assets_housing: 114000000
-    assets_financial: 7000000
-    debts: 62000000
+      earned_income: 10000
+    housing: jeonse
+    assets_housing: 113000000
+    assets_financial: 9000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -68,19 +76,18 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 경상북도
-    region_sigungu: 포항시
+    region_sigungu: 청송군
     members:
-    - age: 19
+    - age: 24
+      sex: F
+      disability: mild
       employed: true
-      earned_income: 10000
-      business_income: 600000
-      other_income: 10000
-    housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 113000000
+      earned_income: 610000
+    housing: jeonse
+    assets_housing: 150000000
     assets_general: 1000000
-    assets_financial: 7000000
-    debts: 62000000
+    assets_financial: 6000000
+    debts: 60000000
   expect:
     eligible: false
     benefit_monthly: 0

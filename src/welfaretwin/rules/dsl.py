@@ -92,7 +92,7 @@ class Exclusion(BaseModel):
 
 
 class Region(BaseModel):
-    """지자체 사업 지역. 판정은 시도 일치만 본다(시군구는 기록용 — 합성 인구·Z3 에 시군구가 없어 시도 단위로 근사)."""
+    """지자체 사업 지역. 시도가 같고, 시군구가 있으면 시군구도 같아야 한다(가구에 시군구가 없으면 해당 없음)."""
 
     model_config = ConfigDict(extra="forbid")
 

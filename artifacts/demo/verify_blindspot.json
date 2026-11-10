@@ -1,7 +1,7 @@
 {
  "query": "blindspot",
  "status": "sat",
- "elapsed_sec": 2.16,
+ "elapsed_sec": 2.61,
  "options": {
   "programs": [
    "NBLS_LIVELIHOOD",
@@ -13,8 +13,8 @@
   "n": 8
  },
  "meta": {
-  "generated_at": "2026-11-10T05:54:57+00:00",
-  "git_rev": "4a9d759",
+  "generated_at": "2026-11-10T06:48:28+00:00",
+  "git_rev": "095cad8",
   "rules_hash": "3e76439a5d55",
   "params_hash": "066828f4c59a",
   "params_year": 2026
@@ -24,11 +24,11 @@
    "title": "사각지대 유형 #1",
    "household": {
     "hh_id": "blindspot_1",
-    "region_sido": "서울특별시",
-    "region_sigungu": null,
+    "region_sido": "전라남도",
+    "region_sigungu": "해남군",
     "members": [
      {
-      "age": 19,
+      "age": 32,
       "sex": "M",
       "disability": "none",
       "is_student": false,
@@ -39,9 +39,9 @@
       "other_income": 0
      }
     ],
-    "housing": "monthly_rent",
-    "rent_monthly": 230000,
-    "assets_housing": 112000000,
+    "housing": "own",
+    "rent_monthly": 0,
+    "assets_housing": 34000000,
     "assets_general": 0,
     "assets_financial": 5000000,
     "car_value": 0,
@@ -51,9 +51,9 @@
     "obligor_medical_capable": false
    },
    "facts": {
-    "income_recognized": 1003200,
+    "income_recognized": 868000,
     "median_income": 2564238,
-    "median_pct": 39.1,
+    "median_pct": 33.9,
     "actual_income": 1840000
    },
    "programs": [
@@ -63,7 +63,7 @@
      "reasons": [
       {
        "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
-       "detail": "소득인정액 1,003,200원 / 생계급여 선정기준(=지급기준) 820,556원",
+       "detail": "소득인정액 868,000원 / 생계급여 선정기준(=지급기준) 820,556원",
        "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
       }
      ]
@@ -91,87 +91,87 @@
      ]
     }
    ],
-   "text": "[사각지대 유형 #1] 1인 가구(10대 1명), 서울특별시, 월세 230,000원, 월 소득 1,840,000원(근로 1,840,000원, 사업 0원, 기타 0원), 주거용재산 112,000,000원, 금융재산 5,000,000원\n  → 소득인정액 1,003,200원 (기준중위소득의 39.1%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 1,003,200원 / 생계급여 선정기준(=지급기준) 820,556원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 22,080,000원 / 가구유형별 총소득 기준 22,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+   "text": "[사각지대 유형 #1] 1인 가구(30대 1명), 전라남도 해남군, 자가, 월 소득 1,840,000원(근로 1,840,000원, 사업 0원, 기타 0원), 주거용재산 34,000,000원, 금융재산 5,000,000원\n  → 소득인정액 868,000원 (기준중위소득의 33.9%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 868,000원 / 생계급여 선정기준(=지급기준) 820,556원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 22,080,000원 / 가구유형별 총소득 기준 22,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
   },
   {
    "title": "사각지대 유형 #2",
    "household": {
     "hh_id": "blindspot_2",
-    "region_sido": "경기도",
-    "region_sigungu": "가평군",
+    "region_sido": "서울특별시",
+    "region_sigungu": null,
     "members": [
      {
-      "age": 19,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 610000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 35,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": false,
-      "pregnant": false,
-      "earned_income": 0,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 35,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": false,
-      "pregnant": false,
-      "earned_income": 0,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 15,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 610000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 15,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 1000000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
       "age": 65,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 4690000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 15,
       "sex": "F",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 4660000,
+      "earned_income": 750000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 35,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 51,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 210000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 35,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 18,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 610000,
       "business_income": 0,
       "other_income": 0
      }
     ],
     "housing": "monthly_rent",
     "rent_monthly": 230000,
-    "assets_housing": 79000000,
+    "assets_housing": 65000000,
     "assets_general": 0,
-    "assets_financial": 0,
+    "assets_financial": 5000000,
     "car_value": 0,
     "debts": 0,
     "single_parent": false,
@@ -182,7 +182,7 @@
     "income_recognized": 3416000,
     "median_income": 8555952,
     "median_pct": 39.9,
-    "actual_income": 6880000
+    "actual_income": 6280000
    },
    "programs": [
     {
@@ -202,7 +202,7 @@
      "reasons": [
       {
        "label": "소득인정액 ≤ 선정기준액",
-       "detail": "소득인정액(기초연금) 2,471,667원 / 선정기준액 2,470,000원",
+       "detail": "소득인정액(기초연금) 2,471,000원 / 선정기준액 2,470,000원",
        "source": "보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)"
       }
      ]
@@ -213,23 +213,34 @@
      "reasons": [
       {
        "label": "총소득 < 가구유형별 기준",
-       "detail": "총소득(연) 82,560,000원 / 가구유형별 총소득 기준 44,000,000원",
+       "detail": "총소득(연) 75,360,000원 / 가구유형별 총소득 기준 44,000,000원",
        "source": "국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)"
       }
      ]
     }
    ],
-   "text": "[사각지대 유형 #2] 6인 가구(10대 3명, 30대 2명, 60대 1명), 경기도 가평군, 월세 230,000원, 월 소득 6,880,000원(근로 6,880,000원, 사업 0원, 기타 0원), 주거용재산 79,000,000원\n  → 소득인정액 3,416,000원 (기준중위소득의 39.9%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 3,416,000원 / 생계급여 선정기준(=지급기준) 2,737,905원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 소득인정액 ≤ 선정기준액 불충족 — 소득인정액(기초연금) 2,471,667원 / 선정기준액 2,470,000원 [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 82,560,000원 / 가구유형별 총소득 기준 44,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+   "text": "[사각지대 유형 #2] 6인 가구(10대 2명, 30대 2명, 50대 1명, 60대 1명), 서울특별시, 월세 230,000원, 월 소득 6,280,000원(근로 6,280,000원, 사업 0원, 기타 0원), 주거용재산 65,000,000원, 금융재산 5,000,000원\n  → 소득인정액 3,416,000원 (기준중위소득의 39.9%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 3,416,000원 / 생계급여 선정기준(=지급기준) 2,737,905원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 소득인정액 ≤ 선정기준액 불충족 — 소득인정액(기초연금) 2,471,000원 / 선정기준액 2,470,000원 [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 75,360,000원 / 가구유형별 총소득 기준 44,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
   },
   {
    "title": "사각지대 유형 #3",
    "household": {
     "hh_id": "blindspot_3",
-    "region_sido": "부산광역시",
+    "region_sido": "인천광역시",
     "region_sigungu": null,
     "members": [
      {
-      "age": 30,
+      "age": 35,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 18,
       "sex": "M",
       "disability": "none",
       "is_student": false,
@@ -240,20 +251,53 @@
       "other_income": 0
      },
      {
-      "age": 19,
+      "age": 18,
       "sex": "F",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 2480000,
+      "earned_income": 110000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 18,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 80000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 65,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 4690000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 18,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 120000,
       "business_income": 0,
       "other_income": 0
      }
     ],
-    "housing": "monthly_rent",
-    "rent_monthly": 390000,
-    "assets_housing": 86000000,
+    "housing": "jeonse",
+    "rent_monthly": 0,
+    "assets_housing": 81000000,
     "assets_general": 0,
     "assets_financial": 5000000,
     "car_value": 0,
@@ -263,9 +307,93 @@
     "obligor_medical_capable": false
    },
    "facts": {
-    "income_recognized": 1409600,
+    "income_recognized": 3184600,
+    "median_income": 8555952,
+    "median_pct": 37.2,
+    "actual_income": 5190000
+   },
+   "programs": [
+    {
+     "program": "NBLS_LIVELIHOOD",
+     "name": "생계급여",
+     "reasons": [
+      {
+       "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
+       "detail": "소득인정액 3,184,600원 / 생계급여 선정기준(=지급기준) 2,737,905원",
+       "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
+      }
+     ]
+    },
+    {
+     "program": "BASIC_PENSION",
+     "name": "기초연금",
+     "reasons": [
+      {
+       "label": "소득인정액 ≤ 선정기준액",
+       "detail": "소득인정액(기초연금) 2,471,000원 / 선정기준액 2,470,000원",
+       "source": "보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)"
+      }
+     ]
+    },
+    {
+     "program": "EITC",
+     "name": "근로장려금",
+     "reasons": [
+      {
+       "label": "총소득 < 가구유형별 기준",
+       "detail": "총소득(연) 62,280,000원 / 가구유형별 총소득 기준 32,000,000원",
+       "source": "국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)"
+      }
+     ]
+    }
+   ],
+   "text": "[사각지대 유형 #3] 6인 가구(10대 4명, 30대 1명, 60대 1명), 인천광역시, 전세, 월 소득 5,190,000원(근로 5,190,000원, 사업 0원, 기타 0원), 주거용재산 81,000,000원, 금융재산 5,000,000원\n  → 소득인정액 3,184,600원 (기준중위소득의 37.2%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 3,184,600원 / 생계급여 선정기준(=지급기준) 2,737,905원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 소득인정액 ≤ 선정기준액 불충족 — 소득인정액(기초연금) 2,471,000원 / 선정기준액 2,470,000원 [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 62,280,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+  },
+  {
+   "title": "사각지대 유형 #4",
+   "household": {
+    "hh_id": "blindspot_4",
+    "region_sido": "경상북도",
+    "region_sigungu": "경주시",
+    "members": [
+     {
+      "age": 34,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 2650000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 34,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 20000,
+      "business_income": 0,
+      "other_income": 0
+     }
+    ],
+    "housing": "monthly_rent",
+    "rent_monthly": 230000,
+    "assets_housing": 54000000,
+    "assets_general": 0,
+    "assets_financial": 5000000,
+    "car_value": 0,
+    "debts": 0,
+    "single_parent": false,
+    "obligor_over_limit": false,
+    "obligor_medical_capable": false
+   },
+   "facts": {
+    "income_recognized": 1445400,
     "median_income": 4199292,
-    "median_pct": 33.6,
+    "median_pct": 34.4,
     "actual_income": 2670000
    },
    "programs": [
@@ -275,7 +403,7 @@
      "reasons": [
       {
        "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
-       "detail": "소득인정액 1,409,600원 / 생계급여 선정기준(=지급기준) 1,343,773원",
+       "detail": "소득인정액 1,445,400원 / 생계급여 선정기준(=지급기준) 1,343,773원",
        "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
       }
      ]
@@ -303,17 +431,112 @@
      ]
     }
    ],
-   "text": "[사각지대 유형 #3] 2인 가구(10대 1명, 30대 1명), 부산광역시, 월세 390,000원, 월 소득 2,670,000원(근로 2,670,000원, 사업 0원, 기타 0원), 주거용재산 86,000,000원, 금융재산 5,000,000원\n  → 소득인정액 1,409,600원 (기준중위소득의 33.6%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 1,409,600원 / 생계급여 선정기준(=지급기준) 1,343,773원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 32,040,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+   "text": "[사각지대 유형 #4] 2인 가구(30대 2명), 경상북도 경주시, 월세 230,000원, 월 소득 2,670,000원(근로 2,670,000원, 사업 0원, 기타 0원), 주거용재산 54,000,000원, 금융재산 5,000,000원\n  → 소득인정액 1,445,400원 (기준중위소득의 34.4%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 1,445,400원 / 생계급여 선정기준(=지급기준) 1,343,773원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 32,040,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
   },
   {
-   "title": "사각지대 유형 #4",
+   "title": "사각지대 유형 #5",
    "household": {
-    "hh_id": "blindspot_4",
+    "hh_id": "blindspot_5",
     "region_sido": "서울특별시",
     "region_sigungu": null,
     "members": [
      {
       "age": 19,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 1260000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 18,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 1150000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 18,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 1260000,
+      "business_income": 0,
+      "other_income": 0
+     }
+    ],
+    "housing": "own",
+    "rent_monthly": 0,
+    "assets_housing": 173000000,
+    "assets_general": 0,
+    "assets_financial": 4000000,
+    "car_value": 0,
+    "debts": 0,
+    "single_parent": false,
+    "obligor_over_limit": false,
+    "obligor_medical_capable": false
+   },
+   "facts": {
+    "income_recognized": 2109900,
+    "median_income": 5359036,
+    "median_pct": 39.4,
+    "actual_income": 3670000
+   },
+   "programs": [
+    {
+     "program": "NBLS_LIVELIHOOD",
+     "name": "생계급여",
+     "reasons": [
+      {
+       "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
+       "detail": "소득인정액 2,109,900원 / 생계급여 선정기준(=지급기준) 1,714,892원",
+       "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
+      }
+     ]
+    },
+    {
+     "program": "BASIC_PENSION",
+     "name": "기초연금",
+     "reasons": [
+      {
+       "label": "만 65세 이상",
+       "detail": "65세 이상 가구원 수 0 (기준 1)",
+       "source": "보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)"
+      }
+     ]
+    },
+    {
+     "program": "EITC",
+     "name": "근로장려금",
+     "reasons": [
+      {
+       "label": "총소득 < 가구유형별 기준",
+       "detail": "총소득(연) 44,040,000원 / 가구유형별 총소득 기준 44,000,000원",
+       "source": "국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)"
+      }
+     ]
+    }
+   ],
+   "text": "[사각지대 유형 #5] 3인 가구(10대 3명), 서울특별시, 자가, 월 소득 3,670,000원(근로 3,670,000원, 사업 0원, 기타 0원), 주거용재산 173,000,000원, 금융재산 4,000,000원\n  → 소득인정액 2,109,900원 (기준중위소득의 39.4%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 2,109,900원 / 생계급여 선정기준(=지급기준) 1,714,892원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 44,040,000원 / 가구유형별 총소득 기준 44,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+  },
+  {
+   "title": "사각지대 유형 #6",
+   "household": {
+    "hh_id": "blindspot_6",
+    "region_sido": "서울특별시",
+    "region_sigungu": null,
+    "members": [
+     {
+      "age": 30,
       "sex": "M",
       "disability": "none",
       "is_student": false,
@@ -336,10 +559,10 @@
      }
     ],
     "housing": "monthly_rent",
-    "rent_monthly": 390000,
+    "rent_monthly": 230000,
     "assets_housing": 98000000,
     "assets_general": 0,
-    "assets_financial": 0,
+    "assets_financial": 5000000,
     "car_value": 0,
     "debts": 0,
     "single_parent": false,
@@ -387,162 +610,23 @@
      ]
     }
    ],
-   "text": "[사각지대 유형 #4] 2인 가구(10대 2명), 서울특별시, 월세 390,000원, 월 소득 2,750,000원(근로 2,750,000원, 사업 0원, 기타 0원), 주거용재산 98,000,000원\n  → 소득인정액 1,344,000원 (기준중위소득의 32.0%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 1,344,000원 / 생계급여 선정기준(=지급기준) 1,343,773원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 33,000,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+   "text": "[사각지대 유형 #6] 2인 가구(10대 1명, 30대 1명), 서울특별시, 월세 230,000원, 월 소득 2,750,000원(근로 2,750,000원, 사업 0원, 기타 0원), 주거용재산 98,000,000원, 금융재산 5,000,000원\n  → 소득인정액 1,344,000원 (기준중위소득의 32.0%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 1,344,000원 / 생계급여 선정기준(=지급기준) 1,343,773원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 33,000,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
   },
   {
-   "title": "사각지대 유형 #5",
+   "title": "사각지대 유형 #7",
    "household": {
-    "hh_id": "blindspot_5",
-    "region_sido": "서울특별시",
-    "region_sigungu": null,
+    "hh_id": "blindspot_7",
+    "region_sido": "경기도",
+    "region_sigungu": "가평군",
     "members": [
      {
-      "age": 35,
+      "age": 34,
       "sex": "M",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 210000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 18,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 120000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 18,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 90000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 18,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 10000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 18,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 610000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 65,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 4690000,
-      "business_income": 0,
-      "other_income": 0
-     }
-    ],
-    "housing": "monthly_rent",
-    "rent_monthly": 230000,
-    "assets_housing": 98000000,
-    "assets_general": 0,
-    "assets_financial": 5000000,
-    "car_value": 0,
-    "debts": 0,
-    "single_parent": false,
-    "obligor_over_limit": false,
-    "obligor_medical_capable": false
-   },
-   "facts": {
-    "income_recognized": 3297000,
-    "median_income": 8555952,
-    "median_pct": 38.5,
-    "actual_income": 5730000
-   },
-   "programs": [
-    {
-     "program": "NBLS_LIVELIHOOD",
-     "name": "생계급여",
-     "reasons": [
-      {
-       "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
-       "detail": "소득인정액 3,297,000원 / 생계급여 선정기준(=지급기준) 2,737,905원",
-       "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
-      }
-     ]
-    },
-    {
-     "program": "BASIC_PENSION",
-     "name": "기초연금",
-     "reasons": [
-      {
-       "label": "소득인정액 ≤ 선정기준액",
-       "detail": "소득인정액(기초연금) 2,471,000원 / 선정기준액 2,470,000원",
-       "source": "보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)"
-      }
-     ]
-    },
-    {
-     "program": "EITC",
-     "name": "근로장려금",
-     "reasons": [
-      {
-       "label": "총소득 < 가구유형별 기준",
-       "detail": "총소득(연) 68,760,000원 / 가구유형별 총소득 기준 44,000,000원",
-       "source": "국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)"
-      }
-     ]
-    }
-   ],
-   "text": "[사각지대 유형 #5] 6인 가구(10대 4명, 30대 1명, 60대 1명), 서울특별시, 월세 230,000원, 월 소득 5,730,000원(근로 5,730,000원, 사업 0원, 기타 0원), 주거용재산 98,000,000원, 금융재산 5,000,000원\n  → 소득인정액 3,297,000원 (기준중위소득의 38.5%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 3,297,000원 / 생계급여 선정기준(=지급기준) 2,737,905원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 소득인정액 ≤ 선정기준액 불충족 — 소득인정액(기초연금) 2,471,000원 / 선정기준액 2,470,000원 [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 68,760,000원 / 가구유형별 총소득 기준 44,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
-  },
-  {
-   "title": "사각지대 유형 #6",
-   "household": {
-    "hh_id": "blindspot_6",
-    "region_sido": "서울특별시",
-    "region_sigungu": null,
-    "members": [
-     {
-      "age": 19,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 610000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 610000,
+      "earned_income": 3880000,
       "business_income": 0,
       "other_income": 0
      },
@@ -553,7 +637,18 @@
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 610000,
+      "earned_income": 30000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 35,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 180000,
       "business_income": 0,
       "other_income": 0
      },
@@ -569,31 +664,20 @@
       "other_income": 0
      },
      {
-      "age": 17,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 620000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
       "age": 15,
-      "sex": "M",
+      "sex": "F",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 230000,
+      "earned_income": 80000,
       "business_income": 0,
       "other_income": 0
      }
     ],
     "housing": "monthly_rent",
-    "rent_monthly": 390000,
-    "assets_housing": 235000000,
+    "rent_monthly": 230000,
+    "assets_housing": 73000000,
     "assets_general": 0,
     "assets_financial": 5000000,
     "car_value": 0,
@@ -603,10 +687,10 @@
     "obligor_medical_capable": false
    },
    "facts": {
-    "income_recognized": 3421300,
-    "median_income": 8555952,
-    "median_pct": 40.0,
-    "actual_income": 2680000
+    "income_recognized": 2422000,
+    "median_income": 7556719,
+    "median_pct": 32.1,
+    "actual_income": 4170000
    },
    "programs": [
     {
@@ -615,102 +699,7 @@
      "reasons": [
       {
        "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
-       "detail": "소득인정액 3,421,300원 / 생계급여 선정기준(=지급기준) 2,737,905원",
-       "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
-      }
-     ]
-    },
-    {
-     "program": "BASIC_PENSION",
-     "name": "기초연금",
-     "reasons": [
-      {
-       "label": "만 65세 이상",
-       "detail": "65세 이상 가구원 수 0 (기준 1)",
-       "source": "보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)"
-      }
-     ]
-    },
-    {
-     "program": "EITC",
-     "name": "근로장려금",
-     "reasons": [
-      {
-       "label": "재산 합계 < 2.4억원",
-       "detail": "재산 합계(부채 미차감) 240,000,000원 / 재산 기준 240,000,000원",
-       "source": "국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)"
-      }
-     ]
-    }
-   ],
-   "text": "[사각지대 유형 #6] 6인 가구(10대 5명, 10세 미만 1명), 서울특별시, 월세 390,000원, 월 소득 2,680,000원(근로 2,680,000원, 사업 0원, 기타 0원), 주거용재산 235,000,000원, 금융재산 5,000,000원\n  → 소득인정액 3,421,300원 (기준중위소득의 40.0%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 3,421,300원 / 생계급여 선정기준(=지급기준) 2,737,905원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 재산 합계 < 2.4억원 불충족 — 재산 합계(부채 미차감) 240,000,000원 / 재산 기준 240,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
-  },
-  {
-   "title": "사각지대 유형 #7",
-   "household": {
-    "hh_id": "blindspot_7",
-    "region_sido": "서울특별시",
-    "region_sigungu": null,
-    "members": [
-     {
-      "age": 31,
-      "sex": "M",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 170000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 3050000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 17,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 130000,
-      "business_income": 0,
-      "other_income": 0
-     }
-    ],
-    "housing": "monthly_rent",
-    "rent_monthly": 380000,
-    "assets_housing": 98000000,
-    "assets_general": 0,
-    "assets_financial": 5000000,
-    "car_value": 0,
-    "debts": 0,
-    "single_parent": false,
-    "obligor_over_limit": false,
-    "obligor_medical_capable": false
-   },
-   "facts": {
-    "income_recognized": 1715000,
-    "median_income": 5359036,
-    "median_pct": 32.0,
-    "actual_income": 3350000
-   },
-   "programs": [
-    {
-     "program": "NBLS_LIVELIHOOD",
-     "name": "생계급여",
-     "reasons": [
-      {
-       "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
-       "detail": "소득인정액 1,715,000원 / 생계급여 선정기준(=지급기준) 1,714,892원",
+       "detail": "소득인정액 2,422,000원 / 생계급여 선정기준(=지급기준) 2,418,150원",
        "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
       }
      ]
@@ -732,13 +721,13 @@
      "reasons": [
       {
        "label": "총소득 < 가구유형별 기준",
-       "detail": "총소득(연) 40,200,000원 / 가구유형별 총소득 기준 32,000,000원",
+       "detail": "총소득(연) 50,040,000원 / 가구유형별 총소득 기준 32,000,000원",
        "source": "국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)"
       }
      ]
     }
    ],
-   "text": "[사각지대 유형 #7] 3인 가구(10대 2명, 30대 1명), 서울특별시, 월세 380,000원, 월 소득 3,350,000원(근로 3,350,000원, 사업 0원, 기타 0원), 주거용재산 98,000,000원, 금융재산 5,000,000원\n  → 소득인정액 1,715,000원 (기준중위소득의 32.0%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 1,715,000원 / 생계급여 선정기준(=지급기준) 1,714,892원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 40,200,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+   "text": "[사각지대 유형 #7] 5인 가구(10대 2명, 10세 미만 1명, 30대 2명), 경기도 가평군, 월세 230,000원, 월 소득 4,170,000원(근로 4,170,000원, 사업 0원, 기타 0원), 주거용재산 73,000,000원, 금융재산 5,000,000원\n  → 소득인정액 2,422,000원 (기준중위소득의 32.1%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 2,422,000원 / 생계급여 선정기준(=지급기준) 2,418,150원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 50,040,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
   },
   {
    "title": "사각지대 유형 #8",
@@ -752,53 +741,20 @@
       "sex": "M",
       "disability": "none",
       "is_student": false,
-      "employed": true,
+      "employed": false,
       "pregnant": false,
-      "earned_income": 140000,
+      "earned_income": 0,
       "business_income": 0,
       "other_income": 0
      },
      {
-      "age": 35,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 70000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 35,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 40000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 18,
+      "age": 17,
       "sex": "M",
       "disability": "none",
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 110000,
-      "business_income": 0,
-      "other_income": 0
-     },
-     {
-      "age": 18,
-      "sex": "F",
-      "disability": "none",
-      "is_student": false,
-      "employed": true,
-      "pregnant": false,
-      "earned_income": 130000,
+      "earned_income": 3020000,
       "business_income": 0,
       "other_income": 0
      },
@@ -809,14 +765,25 @@
       "is_student": false,
       "employed": true,
       "pregnant": false,
-      "earned_income": 3870000,
+      "earned_income": 30000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 17,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 170000,
       "business_income": 0,
       "other_income": 0
      }
     ],
-    "housing": "jeonse",
+    "housing": "own",
     "rent_monthly": 0,
-    "assets_housing": 80000000,
+    "assets_housing": 134000000,
     "assets_general": 0,
     "assets_financial": 5000000,
     "car_value": 0,
@@ -826,10 +793,10 @@
     "obligor_medical_capable": false
    },
    "facts": {
-    "income_recognized": 2884000,
-    "median_income": 8555952,
-    "median_pct": 33.7,
-    "actual_income": 4360000
+    "income_recognized": 2079000,
+    "median_income": 6494738,
+    "median_pct": 32.0,
+    "actual_income": 3220000
    },
    "programs": [
     {
@@ -838,7 +805,7 @@
      "reasons": [
       {
        "label": "소득인정액 ≤ 생계급여 선정기준(중위 32%)",
-       "detail": "소득인정액 2,884,000원 / 생계급여 선정기준(=지급기준) 2,737,905원",
+       "detail": "소득인정액 2,079,000원 / 생계급여 선정기준(=지급기준) 2,078,316원",
        "source": "2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)"
       }
      ]
@@ -860,13 +827,13 @@
      "reasons": [
       {
        "label": "총소득 < 가구유형별 기준",
-       "detail": "총소득(연) 52,320,000원 / 가구유형별 총소득 기준 32,000,000원",
+       "detail": "총소득(연) 38,640,000원 / 가구유형별 총소득 기준 32,000,000원",
        "source": "국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)"
       }
      ]
     }
    ],
-   "text": "[사각지대 유형 #8] 6인 가구(10대 2명, 30대 4명), 서울특별시, 전세, 월 소득 4,360,000원(근로 4,360,000원, 사업 0원, 기타 0원), 주거용재산 80,000,000원, 금융재산 5,000,000원\n  → 소득인정액 2,884,000원 (기준중위소득의 33.7%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 2,884,000원 / 생계급여 선정기준(=지급기준) 2,737,905원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 52,320,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
+   "text": "[사각지대 유형 #8] 4인 가구(10대 2명, 30대 2명), 서울특별시, 자가, 월 소득 3,220,000원(근로 3,220,000원, 사업 0원, 기타 0원), 주거용재산 134,000,000원, 금융재산 5,000,000원\n  → 소득인정액 2,079,000원 (기준중위소득의 32.0%)\n  - 생계급여: 소득인정액 ≤ 생계급여 선정기준(중위 32%) 불충족 — 소득인정액 2,079,000원 / 생계급여 선정기준(=지급기준) 2,078,316원 [근거: 2026년 국민기초생활보장 사업안내 p.51 (2026년 가구규모별·급여종류별 수급자 선정기준)]\n  - 기초연금: 만 65세 이상 불충족 — 65세 이상 가구원 수 0 (기준 1) [근거: 보건복지부고시 제2026-156호 (기초연금 선정기준액·기준연금액·소득인정액 산정 세부기준) (제2조 선정기준액·제3조 기준연금액)]\n  - 근로장려금: 총소득 < 가구유형별 기준 불충족 — 총소득(연) 38,640,000원 / 가구유형별 총소득 기준 32,000,000원 [근거: 국세청 근로·자녀장려금 신청자격 (2025년 귀속) (가구유형·총소득·재산 기준)]"
   }
  ]
 }

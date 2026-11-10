@@ -2,7 +2,7 @@
  "all_ok": true,
  "rounds": 3,
  "consecutive_clean_rounds": true,
- "max_seconds": 5.3,
+ "max_seconds": 3.7,
  "results": [
   {
    "round": 1,
@@ -11,7 +11,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 1.5,
+   "seconds": 2.4,
    "within_30s": true
   },
   {
@@ -31,7 +31,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 3.4,
+   "seconds": 2.2,
    "within_30s": true
   },
   {
@@ -41,7 +41,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 5.3,
+   "seconds": 3.6,
    "within_30s": true
   },
   {
@@ -51,7 +51,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 1.5,
+   "seconds": 2.3,
    "within_30s": true
   },
   {
@@ -81,7 +81,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 3.3,
+   "seconds": 2.3,
    "within_30s": true
   },
   {
@@ -101,7 +101,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 2.3,
+   "seconds": 2.4,
    "within_30s": true
   },
   {
@@ -111,7 +111,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 3.4,
+   "seconds": 2.8,
    "within_30s": true
   },
   {
@@ -121,7 +121,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 2.5,
+   "seconds": 3.0,
    "within_30s": true
   },
   {
@@ -131,7 +131,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 3.5,
+   "seconds": 3.2,
    "within_30s": true
   },
   {
@@ -141,7 +141,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 3.4,
+   "seconds": 3.7,
    "within_30s": true
   },
   {
@@ -151,7 +151,7 @@
    "ok": true,
    "exceptions": 0,
    "missing": [],
-   "seconds": 2.5,
+   "seconds": 2.4,
    "within_30s": true
   }
  ]

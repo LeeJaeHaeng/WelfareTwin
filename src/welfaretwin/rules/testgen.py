@@ -12,13 +12,11 @@ import z3
 from welfaretwin.model import Household
 from welfaretwin.rules.dsl import AllCond, ExprCond, Program
 from welfaretwin.rules.engine import RuleSet, evaluate
-from welfaretwin.verify.encoder import REGION_PROFILES, Encoder, SymHousehold
+from welfaretwin.verify.encoder import Encoder, SymHousehold
 from welfaretwin.verify.queries import _base_solver
 
 
 def _to_case(name: str, hh: Household, program: Program, rs: RuleSet, source: str) -> dict:
-    if program.region and program.region.sigungu and not program.region.sido.endswith("광역시"):
-        hh = hh.model_copy(update={"region_sigungu": program.region.sigungu})
     d = {x.program_id: x for x in evaluate(hh, rs, [program.id])}[program.id]
     body = hh.model_dump(exclude={"hh_id"}, exclude_defaults=True)
     body["members"] = [m for m in body.get("members", [])] or [{"age": hh.members[0].age}]
@@ -28,17 +26,16 @@ def _to_case(name: str, hh: Household, program: Program, rs: RuleSet, source: st
 
 def generate(program: Program, rs: RuleSet, timeout_ms: int = 10_000, plain: bool = False) -> list[dict]:
     """plain=True 이면 '평범한 가구'(장애·부채·자동차·사업소득 없음 등)를 우선하는 소프트 제약(레드팀 배제 분석용)."""
-    shh = SymHousehold()
+    shh = SymHousehold(rs=rs)
     enc = Encoder(rs, shh)
     s = _base_solver(shh, True, True, timeout_ms, optimize=plain)
     if plain:
         for c, w in shh.plain():
             s.add_soft(c, w)
-    if program.region:   # 해당 시도 프로필만(시도·시/군 구분이 같은 대표 지역)
-        idx = [i for i, (_, sido, sgg) in enumerate(REGION_PROFILES) if sido == program.region.sido]
-        sgg = program.region.sigungu or ""
-        kind = [i for i in idx if (REGION_PROFILES[i][2] or "").endswith(sgg[-1:])] if sgg else []
-        s.add(z3.Or([shh.region == i for i in (kind or idx)]))
+    if program.region:   # 해당 지역 프로필만(시군구 사업이면 그 시군구)
+        idx = [i for i, (_, sido, sgg) in enumerate(shh.profiles)
+               if sido == program.region.sido and (not program.region.sigungu or sgg == program.region.sigungu)]
+        s.add(z3.Or([shh.region == i for i in idx]))
     conds = program.eligibility.all if isinstance(program.eligibility, AllCond) else [program.eligibility]
     zc = [enc.cond(c, program) for c in conds]
     cases = []

@@ -7,20 +7,31 @@ cases:
     region_sigungu: 경주시
     members:
     - age: 65
+      sex: F
       disability: mild
-      other_income: 2480000
+      other_income: 2380000
     - age: 15
+      sex: F
+      disability: mild
       employed: true
       earned_income: 190000
+    - age: 19
+      employed: true
+      earned_income: 10000
+      business_income: 360000
+    - age: 17
+      disability: mild
+      employed: true
+      earned_income: 40000
+    - age: 64
+      disability: mild
     - age: 15
       disability: mild
       employed: true
-      earned_income: 90000
-    housing: monthly_rent
-    rent_monthly: 10000
+      earned_income: 30000
+    housing: own
     assets_housing: 114000000
-    assets_financial: 20000000
-    debts: 75000000
+    assets_financial: 21000000
     single_parent: true
   expect:
     eligible: true
@@ -31,22 +42,29 @@ cases:
     region_sido: 경상북도
     region_sigungu: 경주시
     members:
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 50000
+      business_income: 560000
+      other_income: 1790000
     - age: 35
       disability: mild
-      business_income: 210000
-    - age: 15
-      disability: mild
+      business_income: 270000
+      other_income: 30000
+    - age: 35
       employed: true
       earned_income: 610000
-    - age: 15
-      disability: mild
+      other_income: 10000
+    - age: 35
       employed: true
-      earned_income: 4250000
+      earned_income: 10000
+      other_income: 20000
     housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 112000000
-    assets_general: 1000000
-    assets_financial: 9000000
+    rent_monthly: 40000
+    assets_housing: 1000000
+    assets_financial: 57000000
+    car_value: 1000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -56,21 +74,27 @@ cases:
     region_sido: 경상북도
     region_sigungu: 경주시
     members:
+    - age: 35
+      employed: true
+      earned_income: 10000
+      business_income: 590000
+    - age: 15
+      disability: mild
+      employed: true
+      earned_income: 100000
     - age: 65
       disability: mild
-      other_income: 90000
-    - age: 15
+      employed: true
+      earned_income: 210000
+    - age: 65
       disability: mild
       employed: true
-      earned_income: 610000
-    - age: 15
-      disability: mild
-      employed: true
-      earned_income: 610000
+      earned_income: 10000
+      business_income: 19180000
     housing: monthly_rent
-    rent_monthly: 10000
+    rent_monthly: 40000
     assets_housing: 85000000
-    assets_financial: 7000000
+    assets_financial: 5000000
     car_value: 40000000
     debts: 33000000
     single_parent: true

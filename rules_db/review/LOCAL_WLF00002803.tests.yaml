@@ -4,30 +4,37 @@ cases:
   source: 'testgen: Z3 양성 예'
   household:
     region_sido: 대구광역시
+    region_sigungu: 서구
     members:
-    - age: 64
-      employed: true
-      earned_income: 10000
-    - age: 65
-      employed: true
-      earned_income: 210000
+    - age: 30
+      sex: F
+      business_income: 610000
     - age: 15
-      employed: true
-      earned_income: 610000
-    - age: 34
-      business_income: 570000
-    - age: 35
-      other_income: 10000
-    - age: 64
       sex: F
       employed: true
-      earned_income: 10000
-      business_income: 15890000
+      earned_income: 910000
+    - age: 15
+      employed: true
+      earned_income: 1820000
+    - age: 15
+      sex: F
+      employed: true
+      earned_income: 2440000
+    - age: 15
+      sex: F
+      employed: true
+      earned_income: 1840000
+    - age: 15
+      sex: F
+      employed: true
+      earned_income: 2200000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 134000000
+    assets_housing: 78000000
     assets_general: 1000000
+    assets_financial: 244000000
     car_value: 40000000
+    debts: 1000000
     single_parent: true
   expect:
     eligible: true
@@ -36,32 +43,42 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 대구광역시
+    region_sigungu: 서구
     members:
     - age: 65
-      employed: true
-      earned_income: 10000
-      business_income: 180000
-    - age: 65
+      sex: F
       disability: mild
-      employed: true
-      earned_income: 10000
-      business_income: 3710000
-      other_income: 30000
-    - age: 34
-      employed: true
-      earned_income: 430000
-      business_income: 180000
-      other_income: 10000
+      other_income: 2460000
     - age: 15
       sex: F
       employed: true
-      earned_income: 190000
-      other_income: 20000
+      earned_income: 1680000
+    - age: 15
+      disability: mild
+      employed: true
+      earned_income: 10000
+    - age: 15
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 660000
+    - age: 15
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 60000
+    - age: 15
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 380000
     housing: monthly_rent
-    rent_monthly: 190000
-    assets_general: 2000000
+    rent_monthly: 10000
+    assets_housing: 3000000
+    assets_general: 1000000
     assets_financial: 82000000
-    debts: 1000000
+    debts: 2000000
+    single_parent: true
   expect:
     eligible: false
     benefit_monthly: 0
@@ -69,33 +86,21 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 대구광역시
+    region_sigungu: 서구
     members:
-    - age: 34
-      employed: true
-      earned_income: 10000
-      business_income: 600000
-    - age: 34
-      employed: true
-      earned_income: 10000
-      business_income: 70000
-    - age: 64
-      employed: true
-      earned_income: 10000
-    - age: 64
+    - age: 19
       sex: F
       employed: true
-      earned_income: 10000
-    - age: 19
-      employed: true
-      earned_income: 210000
-      business_income: 10000
-    - age: 19
-      employed: true
-      earned_income: 10000
+      earned_income: 20000
+      business_income: 590000
+      other_income: 10000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_financial: 82000000
-    car_value: 40000000
+    assets_housing: 147000000
+    assets_general: 1000000
+    assets_financial: 109000000
+    car_value: 2000000
+    debts: 72000000
   expect:
     eligible: false
     benefit_monthly: 0

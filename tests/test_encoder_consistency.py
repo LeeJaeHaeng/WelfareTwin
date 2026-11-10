@@ -16,7 +16,7 @@ from welfaretwin.verify.encoder import REGION_PROFILES, Encoder, SymHousehold, c
 
 N = int(os.environ.get("WT_CONSISTENCY_N", "200"))
 RS = load_ruleset()
-SHH = SymHousehold()
+SHH = SymHousehold(rs=RS)
 ENC = Encoder(RS, SHH)
 
 
@@ -35,7 +35,7 @@ def random_household(rng: random.Random, i: int) -> Household:
             earned_income=money(3_500_000) if age >= 15 else 0,
             business_income=money(1_000_000, 0.8) if age >= 19 else 0,
             other_income=money(1_500_000, 0.7)))
-    _, sido, sgg = rng.choice(REGION_PROFILES)
+    _, sido, sgg = rng.choice(SHH.profiles)
     housing = rng.choice(["own", "jeonse", "monthly_rent", "other"])
     return Household(
         hh_id=f"r{i}", region_sido=sido, region_sigungu=sgg, members=members, housing=housing,

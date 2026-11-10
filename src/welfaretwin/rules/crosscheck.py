@@ -26,7 +26,7 @@ def _pair_ruleset(a: Program, b: Program, base: RuleSet) -> tuple[RuleSet, str, 
 
 def compare(a: Program, b: Program, base: RuleSet, timeout_ms: int = 15_000) -> dict:
     rs, ia, ib = _pair_ruleset(a, b, base)
-    shh = SymHousehold()
+    shh = SymHousehold(rs=rs)
     enc = Encoder(rs, shh)
     s = _base_solver(shh, True, True, timeout_ms)   # 현실성 + 읽기 쉬운 금액 단위
     out: dict = {}

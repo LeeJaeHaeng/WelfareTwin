@@ -38,6 +38,7 @@ class PolicyChange:
     name: str = "현행"
     params: dict[str, object] = field(default_factory=dict)       # params 값 덮어쓰기
     extra_programs: list[dict] = field(default_factory=list)       # 신규 사업(규칙 dict)
+    population_scale: dict[str, float] = field(default_factory=dict)  # 인구 금액 열 배율(백테스트 연도 보정)
 
 
 def build_ruleset(change: PolicyChange, year: int = 2026) -> RuleSet:
@@ -62,13 +63,27 @@ def _eval_chunk(args) -> list[tuple]:
 
 
 def evaluate_population(change: PolicyChange, program_ids: list[str], sample: int | None = None,
-                        workers: int = 6, seed: int = 0) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+                        workers: int = 6, seed: int = 0,
+                        region: tuple[str, str | None] | None = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """region=(시도, 시군구) 이면 그 지역 가구만 전부 평가(표본 추출 없음 — 지자체 사업 영향 분석용)."""
     hh, persons = load_population(ROOT / "data" / "processed")
+    if region:
+        mask = hh["region_sido"] == region[0]
+        if region[1]:
+            mask &= hh["region_sigungu"] == region[1]
+        hh = hh[mask]
+        persons = persons[persons["hh_id"].isin(hh["hh_id"])]
+        sample = None
     if sample and sample < len(hh):
         total = len(hh)
         hh = hh.sample(sample, random_state=seed).copy()
         hh["weight"] = hh["weight"] * (total / sample)
         persons = persons[persons["hh_id"].isin(hh["hh_id"])]
+    if change.population_scale:
+        hh, persons = hh.copy(), persons.copy()
+        for col, f in change.population_scale.items():
+            df = persons if col in persons.columns else hh
+            df[col] = (df[col] * f).round().astype("int64")
     objs = to_households(hh, persons)
     chunks = [(objs[i:i + 1500], change, program_ids) for i in range(0, len(objs), 1500)]
     with ProcessPoolExecutor(max_workers=workers) as ex:
@@ -169,7 +184,8 @@ def compare(changes: list[tuple[PolicyChange, str]], sample: int | None = None, 
     actual = actual_recipients()
     tables, results = {}, []
     for change, scen in changes:
-        key = json.dumps({"p": change.params, "x": [d["id"] for d in change.extra_programs]}, sort_keys=True)
+        key = json.dumps({"p": change.params, "x": [d["id"] for d in change.extra_programs],
+                          "s": change.population_scale}, sort_keys=True)
         if key not in tables:
             res, hh, persons = evaluate_population(change, NBLS, sample=sample, workers=workers)
             tables[key] = household_table(res, hh, persons)

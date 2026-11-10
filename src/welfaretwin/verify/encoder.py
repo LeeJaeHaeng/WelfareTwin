@@ -5,7 +5,8 @@
 
 기호 가구(SymHousehold)
 - 가구원 슬롯 MAX_MEMBERS 개, i < size 인 슬롯만 활성(sum/count 는 활성 슬롯만 합산)
-- 지역은 REGION_PROFILES 중 하나(지역 구분 함수는 engine 의 것을 그대로 재사용)
+- 지역은 프로필 목록 중 하나: 기본 REGION_PROFILES + 규칙 세트의 지자체 사업 시군구(profiles_for).
+  지역 구분 함수는 engine 의 것을 그대로 재사용
 - 문자열 값(주거 형태, 지역 구분, 가구유형 등)은 '조건 → 값' 목록(SymEnum)으로 다룬다
 """
 
@@ -173,9 +174,21 @@ class SymPerson:
         return [self.disability == 0, z3.Not(self.pregnant), self.business_income == 0, self.other_income == 0]
 
 
+def profiles_for(rs: RuleSet | None) -> list[tuple[str, str, str | None]]:
+    """기본 프로필 + 규칙 세트에 나오는 지자체 사업 시군구(그 지역 가구를 Z3 가 직접 다루도록)."""
+    out = list(REGION_PROFILES)
+    seen = {(sido, sgg) for _, sido, sgg in out}
+    for p in (rs.programs.values() if rs else []):
+        if p.region and p.region.sigungu and (p.region.sido, p.region.sigungu) not in seen:
+            out.append((f"{p.region.sido} {p.region.sigungu}", p.region.sido, p.region.sigungu))
+            seen.add((p.region.sido, p.region.sigungu))
+    return out
+
+
 class SymHousehold:
-    def __init__(self, prefix: str = "hh") -> None:
+    def __init__(self, prefix: str = "hh", rs: RuleSet | None = None) -> None:
         self.prefix = prefix
+        self.profiles = profiles_for(rs)
         self.size = z3.Int(f"{prefix}_size")
         self.region = z3.Int(f"{prefix}_region")
         self.housing = z3.Int(f"{prefix}_housing")
@@ -195,7 +208,7 @@ class SymHousehold:
 
     def domain(self) -> list[z3.BoolRef]:
         c = [self.size >= 1, self.size <= MAX_MEMBERS,
-             self.region >= 0, self.region < len(REGION_PROFILES),
+             self.region >= 0, self.region < len(self.profiles),
              self.housing >= 0, self.housing < len(HOUSING),
              self.rent_monthly >= 0, self.rent_monthly <= MAX_RENT]
         for v in (self.assets_housing, self.assets_general, self.assets_financial, self.car_value, self.debts):
@@ -212,6 +225,9 @@ class SymHousehold:
              self.debts <= self.assets_housing + self.assets_general + self.assets_financial,
              self.members[0].age >= 19,                       # 가구주는 성인
              z3.Implies(self.single_parent, self.feature("n_child") >= 1)]
+        # 18세 미만 가구원은 가구주보다 15살 이상 어림(가구주의 자녀·손자녀로 보는 근사)
+        c += [z3.Implies(z3.And(self.active(i), m.age < 18), self.members[0].age - m.age >= 15)
+              for i, m in enumerate(self.members) if i > 0]
         for i, m in enumerate(self.members):
             c += [z3.Implies(self.active(i), z) for z in m.realism()]
         return c
@@ -221,13 +237,14 @@ class SymHousehold:
         c = [(z3.Not(self.obligor_over_limit), 5), (z3.Not(self.obligor_medical_capable), 5),
              (z3.Not(self.single_parent), 2), (self.debts == 0, 3), (self.car_value == 0, 3),
              (self.assets_financial <= 5_000_000, 2), (self.assets_general == 0, 2),
-             (self.assets_housing <= 300_000_000, 2), (self.feature("n_elderly") <= 2, 2)]
+             (self.assets_housing <= 300_000_000, 2), (self.feature("n_elderly") <= 2, 2),
+             (self.feature("n_child") <= 3, 2)]
         for i, m in enumerate(self.members):
             c += [(z3.Implies(self.active(i), x), 1) for x in m.plain()]
         return c
 
     def _region_enum(self, fn) -> SymEnum:
-        return SymEnum([(self.region == i, fn(sido, sgg)) for i, (_, sido, sgg) in enumerate(REGION_PROFILES)])
+        return SymEnum([(self.region == i, fn(sido, sgg)) for i, (_, sido, sgg) in enumerate(self.profiles)])
 
     def feature(self, name: str) -> Any:
         ms = list(enumerate(self.members))
@@ -253,7 +270,7 @@ class SymHousehold:
     # --- 구체 가구와의 변환
     def bind(self, hh: Household) -> list[tuple[z3.ExprRef, z3.ExprRef]]:
         """구체 가구 값으로 치환할 (변수, 값) 목록."""
-        idx = region_index(hh)
+        idx = region_index(hh, self.profiles)
         pairs = [(self.size, z3.IntVal(hh.size)), (self.region, z3.IntVal(idx)),
                  (self.housing, z3.IntVal(HOUSING.index(hh.housing)))]
         for f in ("rent_monthly", "assets_housing", "assets_general", "assets_financial", "car_value", "debts"):
@@ -273,7 +290,7 @@ class SymHousehold:
     def decode(self, model: z3.ModelRef, hh_id: str = "counterexample") -> Household:
         iv = lambda v: model.eval(v, model_completion=True).as_long()  # noqa: E731
         bv = lambda v: z3.is_true(model.eval(v, model_completion=True))  # noqa: E731
-        _, sido, sgg = REGION_PROFILES[iv(self.region)]
+        _, sido, sgg = self.profiles[iv(self.region)]
         members = []
         for m in self.members[: iv(self.size)]:
             members.append(Person(
@@ -290,10 +307,16 @@ class SymHousehold:
             obligor_medical_capable=bv(self.obligor_medical_capable))
 
 
-def region_index(hh: Household) -> int:
+def region_index(hh: Household, profiles: list | None = None) -> int:
+    """구체 가구의 지역 → 프로필 인덱스. 시도·시군구가 정확히 같은 프로필 우선, 없으면 지역 구분 3종이 같은 프로필
+    (그 경우 시군구 이름은 다르므로 시군구 사업 판정은 양쪽 모두 '해당 없음'으로 일치)."""
+    profiles = profiles or REGION_PROFILES
+    for i, (_, sido, sgg) in enumerate(profiles):
+        if sido == hh.region_sido and (sgg or None) == (hh.region_sigungu or None):
+            return i
     key = (region_group(hh.region_sido, hh.region_sigungu), housing_zone(hh.region_sido, hh.region_sigungu),
            bp_region(hh.region_sido, hh.region_sigungu), hh.region_sido)
-    for i, (_, sido, sgg) in enumerate(REGION_PROFILES):
+    for i, (_, sido, sgg) in enumerate(profiles):
         if (region_group(sido, sgg), housing_zone(sido, sgg), bp_region(sido, sgg), sido) == key:
             return i
     raise EncodeError(f"지역 프로필에 없는 지역: {hh.region_sido} {hh.region_sigungu}")
@@ -304,6 +327,11 @@ class Encoder:
 
     def __init__(self, rs: RuleSet, shh: SymHousehold) -> None:
         self.rs, self.h = rs, shh
+        have = {(sido, sgg) for _, sido, sgg in shh.profiles}
+        missing = [p.id for p in rs.programs.values()
+                   if p.region and p.region.sigungu and (p.region.sido, p.region.sigungu) not in have]
+        if missing:   # 프로필에 없는 시군구 사업은 Z3 에서 '아무도 못 받는' 규칙으로 보이므로 막는다
+            raise EncodeError(f"지역 프로필에 없는 시군구 사업: {missing} — SymHousehold(rs=...) 로 만들 것")
         self._lib: dict[str, Any] = {}
         self._prog: dict[tuple[str, str], Any] = {}
         self._elig0: dict[str, z3.BoolRef] = {}
@@ -319,7 +347,10 @@ class Encoder:
             def run():
                 c = self.cond(prog.eligibility, prog)
                 if prog.region is not None:
-                    c = z3.And(self.h.feature("region_sido").eq(prog.region.sido), c)
+                    reg = self.h.feature("region_sido").eq(prog.region.sido)
+                    if prog.region.sigungu:
+                        reg = z3.And(reg, self.h.feature("region_sigungu").eq(prog.region.sigungu))
+                    c = z3.And(reg, c)
                 return c
             self._elig0[pid] = self._guard(f"elig:{pid}", run)
         return self._elig0[pid]

@@ -174,3 +174,26 @@ def disability_prevalence() -> Table:
     src = {"disabled": _src("117", "DT_11761_N008", "시도별 장애정도별 등록장애인수", 2025, rows),
            "population": _src("101", "DT_1IN1502", "인구, 가구 및 주택", 2025, pop)}
     return Table(disabled / population[:, None], src)
+
+
+def is_sigungu_code(code: str) -> bool:
+    """5자리 시군구 코드(동부·읍부·면부 003~005 와 일반구(끝자리 1~9) 제외)."""
+    return len(code) == 5 and code[2:] not in ("003", "004", "005") and code.endswith("0")
+
+
+def households_sigungu_age_size() -> Table:
+    """2025 인구총조사: 시도별 시군구 × 가구주 연령(15) × 가구원수(6). data = {시도 인덱스: (시군구 이름 목록, 배열)}."""
+    rows = fetch("101", "DT_1JC1511", itm_id="T210 T220 T230 T240 T250 T260 T270",
+                 objs={"objL1": "ALL", "objL2": "015 " + " ".join(AGE_CODES)})
+    itm = {"T210": 0, "T220": 1, "T230": 2, "T240": 3, "T250": 4, "T260": 5, "T270": 5}
+    age_idx = {c: i for i, c in enumerate(AGE_CODES)} | {"015": 0}
+    by_sido: dict[int, dict[str, np.ndarray]] = {}
+    for r in rows:
+        code, v = r["C1"], to_float(r["DT"])
+        if v is None or not is_sigungu_code(code) or code[:2] not in SIDO_CODES or r["C2"] not in age_idx:
+            continue
+        si = SIDO_CODES.index(code[:2])
+        a = by_sido.setdefault(si, {}).setdefault(r["C1_NM"], np.zeros((len(AGE_BANDS), len(SIZES))))
+        a[age_idx[r["C2"]], itm[r["ITM_ID"]]] += v
+    data = {si: (list(d), np.stack(list(d.values()))) for si, d in by_sido.items()}
+    return Table(data, _src("101", "DT_1JC1511", "가구주의 연령 및 가구원수별 가구(일반가구) - 시군구", 2025, rows))

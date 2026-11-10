@@ -6,14 +6,20 @@ cases:
     region_sido: 경상북도
     region_sigungu: 영천시
     members:
-    - age: 35
+    - age: 19
+      sex: F
+      disability: mild
+    - age: 34
+      disability: mild
       employed: true
-      earned_income: 610000
-      business_income: 1140000
-    housing: jeonse
-    assets_housing: 113000000
-    car_value: 1000000
-    debts: 61000000
+      earned_income: 180000
+      business_income: 150000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 53000000
+    assets_general: 1000000
+    car_value: 3000000
+    debts: 2000000
   expect:
     eligible: true
     benefit_monthly: 200000
@@ -23,22 +29,37 @@ cases:
     region_sido: 경상북도
     region_sigungu: 영천시
     members:
-    - age: 46
-      employed: true
-      earned_income: 110000
-    - age: 46
+    - age: 65
       sex: F
+      business_income: 220000
+      other_income: 260000
+    - age: 64
       disability: mild
       employed: true
-      earned_income: 200000
+      earned_income: 350000
+    - age: 46
+      sex: F
+      employed: true
+      earned_income: 10000
     - age: 65
       sex: F
       disability: mild
-      other_income: 2500000
-    housing: jeonse
+      employed: true
+      earned_income: 10000
+      business_income: 190000
+      other_income: 3000000
+    - age: 65
+      business_income: 210000
+      other_income: 10000
+    - age: 65
+      disability: mild
+      business_income: 150000
+    housing: monthly_rent
+    rent_monthly: 10000
     assets_housing: 113000000
-    car_value: 1000000
-    debts: 61000000
+    assets_financial: 300000000
+    car_value: 3000000
+    debts: 294000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -48,16 +69,45 @@ cases:
     region_sido: 경상북도
     region_sigungu: 영천시
     members:
-    - age: 34
+    - age: 35
+      sex: F
       disability: mild
       employed: true
+      earned_income: 200000
+      business_income: 10000
+      other_income: 3000000
+    - age: 19
+      disability: mild
+      employed: true
+      earned_income: 610000
+      business_income: 15580000
+      other_income: 10000
+    - age: 34
+      sex: F
+      employed: true
       earned_income: 10000
-      business_income: 450000
-    housing: jeonse
-    assets_housing: 1000000
-    assets_general: 45000000
-    assets_financial: 12000000
-    car_value: 64000000
+      business_income: 4310000
+      other_income: 3000000
+    - age: 18
+      disability: mild
+      employed: true
+      earned_income: 180000
+    - age: 19
+      disability: mild
+      employed: true
+      earned_income: 190000
+    - age: 19
+      disability: mild
+      employed: true
+      earned_income: 610000
+      business_income: 9530000
+      other_income: 3000000
+    housing: monthly_rent
+    rent_monthly: 210000
+    assets_housing: 113000000
+    assets_financial: 48000000
+    car_value: 2000000
+    debts: 61000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -67,31 +117,42 @@ cases:
     region_sido: 경상북도
     region_sigungu: 영천시
     members:
-    - age: 19
-      disability: mild
-      employed: true
-      earned_income: 210000
-      business_income: 110000
-    - age: 46
-      sex: F
-      employed: true
-      earned_income: 1430000
-    - age: 35
+    - age: 34
       sex: F
       employed: true
       earned_income: 10000
+      business_income: 350000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 200000
+      business_income: 10000
+    - age: 34
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 600000
+      business_income: 2430000
     - age: 46
+      employed: true
+      earned_income: 10000
+      business_income: 10000
+    - age: 65
       disability: mild
       employed: true
       earned_income: 10000
-      business_income: 190000
-    - age: 64
-      sex: F
+      business_income: 3890000
+    - age: 34
       disability: mild
-    housing: jeonse
-    assets_housing: 53000000
-    assets_financial: 134000000
-    debts: 44000000
+      employed: true
+      earned_income: 610000
+    housing: monthly_rent
+    rent_monthly: 210000
+    assets_housing: 113000000
+    assets_general: 1000000
+    assets_financial: 69000000
+    car_value: 2000000
+    debts: 62000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -101,15 +162,42 @@ cases:
     region_sido: 경상북도
     region_sigungu: 영천시
     members:
-    - age: 34
+    - age: 65
+      sex: F
+      disability: mild
       employed: true
       earned_income: 10000
-      business_income: 50000
+      business_income: 3770000
+      other_income: 10000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 30000
+      business_income: 180000
+    - age: 19
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 190000
+    - age: 46
+      employed: true
+      earned_income: 10000
+      business_income: 4060000
+    - age: 34
+      disability: mild
+      employed: true
+      earned_income: 980000
+      business_income: 590000
+    - age: 46
+      disability: mild
+      employed: true
+      earned_income: 210000
     housing: own
-    assets_housing: 1000000
-    assets_general: 35000000
-    assets_financial: 9000000
-    car_value: 3000000
+    assets_housing: 54000000
+    assets_financial: 7000000
+    car_value: 2000000
+    debts: 2000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -119,13 +207,16 @@ cases:
     region_sido: 경상북도
     region_sigungu: 영천시
     members:
-    - age: 45
+    - age: 19
       sex: F
       employed: true
-      earned_income: 10000
-    housing: jeonse
+      earned_income: 610000
+      other_income: 970000
+    housing: monthly_rent
+    rent_monthly: 30000
     assets_housing: 113000000
-    debts: 61000000
+    assets_financial: 6000000
+    debts: 62000000
   expect:
     eligible: false
     benefit_monthly: 0

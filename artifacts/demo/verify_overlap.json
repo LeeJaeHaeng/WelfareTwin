@@ -1,7 +1,7 @@
 {
  "query": "overlap",
  "status": "unsat",
- "elapsed_sec": 3.09,
+ "elapsed_sec": 4.14,
  "options": {
   "exclusion_pairs": [],
   "dead_rules": [],
@@ -213,10 +213,6 @@
    ],
    [
     "LOCAL_WLF00002803",
-    "LOCAL_WLF00004553"
-   ],
-   [
-    "LOCAL_WLF00002803",
     "NBLS_EDUCATION"
    ],
    [
@@ -238,30 +234,6 @@
    [
     "LOCAL_WLF00002871",
     "NBLS_MEDICAL"
-   ],
-   [
-    "LOCAL_WLF00002989",
-    "LOCAL_WLF00004032"
-   ],
-   [
-    "LOCAL_WLF00002989",
-    "LOCAL_WLF00004298"
-   ],
-   [
-    "LOCAL_WLF00002989",
-    "LOCAL_WLF00005203"
-   ],
-   [
-    "LOCAL_WLF00002989",
-    "LOCAL_WLF00005691"
-   ],
-   [
-    "LOCAL_WLF00002989",
-    "LOCAL_WLF00005860"
-   ],
-   [
-    "LOCAL_WLF00002989",
-    "LOCAL_WLF00005865"
    ],
    [
     "LOCAL_WLF00002989",
@@ -282,26 +254,6 @@
    [
     "LOCAL_WLF00002989",
     "NBLS_MEDICAL"
-   ],
-   [
-    "LOCAL_WLF00004032",
-    "LOCAL_WLF00004298"
-   ],
-   [
-    "LOCAL_WLF00004032",
-    "LOCAL_WLF00005203"
-   ],
-   [
-    "LOCAL_WLF00004032",
-    "LOCAL_WLF00005691"
-   ],
-   [
-    "LOCAL_WLF00004032",
-    "LOCAL_WLF00005860"
-   ],
-   [
-    "LOCAL_WLF00004032",
-    "LOCAL_WLF00005865"
    ],
    [
     "LOCAL_WLF00004032",
@@ -345,22 +297,6 @@
    ],
    [
     "LOCAL_WLF00004298",
-    "LOCAL_WLF00005203"
-   ],
-   [
-    "LOCAL_WLF00004298",
-    "LOCAL_WLF00005691"
-   ],
-   [
-    "LOCAL_WLF00004298",
-    "LOCAL_WLF00005860"
-   ],
-   [
-    "LOCAL_WLF00004298",
-    "LOCAL_WLF00005865"
-   ],
-   [
-    "LOCAL_WLF00004298",
     "LOCAL_WLF00006585"
    ],
    [
@@ -397,18 +333,6 @@
    ],
    [
     "LOCAL_WLF00005203",
-    "LOCAL_WLF00005691"
-   ],
-   [
-    "LOCAL_WLF00005203",
-    "LOCAL_WLF00005860"
-   ],
-   [
-    "LOCAL_WLF00005203",
-    "LOCAL_WLF00005865"
-   ],
-   [
-    "LOCAL_WLF00005203",
     "LOCAL_WLF00006585"
    ],
    [
@@ -426,14 +350,6 @@
    [
     "LOCAL_WLF00005203",
     "NBLS_MEDICAL"
-   ],
-   [
-    "LOCAL_WLF00005691",
-    "LOCAL_WLF00005860"
-   ],
-   [
-    "LOCAL_WLF00005691",
-    "LOCAL_WLF00005865"
    ],
    [
     "LOCAL_WLF00005691",
@@ -514,8 +430,8 @@
   ]
  },
  "meta": {
-  "generated_at": "2026-11-10T05:56:33+00:00",
-  "git_rev": "4a9d759",
+  "generated_at": "2026-11-10T06:50:16+00:00",
+  "git_rev": "095cad8",
   "rules_hash": "3e76439a5d55",
   "params_hash": "066828f4c59a",
   "params_year": 2026

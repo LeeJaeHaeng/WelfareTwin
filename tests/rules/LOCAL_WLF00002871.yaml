@@ -9,15 +9,13 @@ cases:
     - age: 80
       disability: mild
       employed: true
-      earned_income: 10000
-      business_income: 80000
-      other_income: 10000
+      earned_income: 210000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 55000000
+    assets_housing: 113000000
     assets_general: 1000000
     assets_financial: 6000000
-    debts: 1000000
+    debts: 43000000
   expect:
     eligible: true
     benefit_monthly: 0
@@ -29,14 +27,12 @@ cases:
     members:
     - age: 34
       sex: F
-      disability: mild
       employed: true
-      earned_income: 190000
-      business_income: 20000
+      earned_income: 1030000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 52000000
-    assets_financial: 5000000
+    assets_housing: 113000000
+    assets_financial: 7000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -46,42 +42,37 @@ cases:
     region_sido: 경상북도
     region_sigungu: 청도군
     members:
+    - age: 63
+      sex: F
+      employed: true
+      earned_income: 10000
+      business_income: 1540000
+    - age: 19
+      employed: true
+      earned_income: 610000
+      business_income: 120000
+    - age: 80
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 60000
+      other_income: 10000
+    - age: 64
+      employed: true
+      earned_income: 620000
+      business_income: 630000
+      other_income: 10000
     - age: 34
       sex: F
       disability: mild
-      employed: true
-      earned_income: 590000
-      business_income: 20000
-    - age: 80
-      sex: F
-      disability: mild
-      employed: true
-      earned_income: 460000
-    - age: 30
-      disability: mild
-      business_income: 210000
+      business_income: 610000
       other_income: 10000
-    - age: 30
-      disability: mild
-      employed: true
-      earned_income: 160000
-      business_income: 40000
-      other_income: 20000
-    - age: 30
-      sex: F
-      business_income: 260000
-      other_income: 30000
-    - age: 30
-      disability: mild
-      employed: true
-      earned_income: 440000
-      business_income: 450000
-      other_income: 10000
+    - age: 18
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 115000000
-    assets_financial: 41000000
-    debts: 63000000
+    assets_housing: 52000000
+    assets_financial: 5000000
+    debts: 37000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -94,16 +85,13 @@ cases:
     - age: 80
       disability: mild
       employed: true
-      earned_income: 1170000
-      business_income: 1470000
-      other_income: 10000
-    housing: monthly_rent
-    rent_monthly: 10000
+      earned_income: 1050000
+    housing: jeonse
     assets_housing: 113000000
     assets_general: 1000000
-    assets_financial: 300000000
-    car_value: 39000000
-    debts: 62000000
+    assets_financial: 21000000
+    car_value: 34000000
+    debts: 69000000
   expect:
     eligible: false
     benefit_monthly: 0

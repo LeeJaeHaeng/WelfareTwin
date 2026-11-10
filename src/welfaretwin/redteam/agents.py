@@ -67,10 +67,18 @@ def program_from_proposal(text: str) -> tuple[Program, dict, dict]:
     return Program.model_validate(prog_dict), prog_dict, info
 
 
+def _region(prog_dict: dict) -> tuple[str, str | None] | None:
+    r = prog_dict.get("region") or {}
+    return (r["sido"], r.get("sigungu") or None) if r.get("sido") else None
+
+
 def impact(prog_dict: dict, sample: int, workers: int) -> dict:
+    """지역 사업이면 그 지역 합성 가구 전부를, 아니면 전국 표본을 평가."""
     change = PolicyChange("사업안", extra_programs=[prog_dict])
     pid = prog_dict["id"]
-    res, hh, _ = evaluate_population(change, [pid, *OVERLAP_CANDIDATES], sample=sample, workers=workers)
+    region = _region(prog_dict)
+    res, hh, _ = evaluate_population(change, [pid, *OVERLAP_CANDIDATES], sample=sample, workers=workers,
+                                     region=region)
     piv = res.pivot_table(index="hh_id", columns="program_id", values="eligible", aggfunc="first")
     ben = res[res["program_id"] == pid].set_index("hh_id")["benefit_monthly"]
     w = hh.set_index("hh_id")["weight"]
@@ -82,7 +90,8 @@ def impact(prog_dict: dict, sample: int, workers: int) -> dict:
     for other in OVERLAP_CANDIDATES:
         if len(e):
             out["overlap_rates"][other] = float((w.loc[e] * piv.loc[e, other]).sum() / w.loc[e].sum())
-    out["sample_households"] = sample
+    out["sample_households"] = len(hh)
+    out["scope"] = (f"{region[0]} {region[1] or ''}".strip() + " 합성 가구 전체") if region else f"전국 표본 {sample:,}가구"
     return out
 
 
@@ -130,12 +139,20 @@ REMEDIES = {
 
 
 def loopholes(prog: Program, rs: RuleSet, sample: int) -> list[dict]:
-    """방어 목적: 작은 조작으로 자격을 얻게 되는 가구 비율 — 규칙상 허점과 보완안만 서술한다."""
+    """방어 목적: 작은 조작으로 자격을 얻게 되는 가구 수 — 규칙상 허점과 보완안만 서술한다.
+    지역 사업이면 그 지역 합성 가구 전부(가구 가중치로 환산), 아니면 전국 표본."""
     from welfaretwin.sim.static import ROOT, load_population
     hh, persons = load_population(ROOT / "data" / "processed")
-    hh = hh.sample(min(sample, len(hh)), random_state=1)
+    if prog.region:
+        mask = hh["region_sido"] == prog.region.sido
+        if prog.region.sigungu:
+            mask &= hh["region_sigungu"] == prog.region.sigungu
+        hh = hh[mask]
+        scale = float(hh["weight"].iloc[0]) if len(hh) else 0.0
+    else:
+        hh = hh.sample(min(sample, len(hh)), random_state=1)
+        scale = 22_494_934 / len(hh) if len(hh) else 0   # 2025 일반가구 수 / 표본
     persons = persons[persons["hh_id"].isin(hh["hh_id"])]
-    scale = 22_494_934 / len(hh) if len(hh) else 0   # 2025 일반가구 수 / 표본
     found: dict[str, dict] = {}
     for h in to_households(hh, persons):
         if {d.program_id: d.eligible for d in evaluate(h, rs, [prog.id])}[prog.id]:

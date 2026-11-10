@@ -11,28 +11,10 @@ cases:
       disability: mild
       employed: true
       earned_income: 10000
-    - age: 35
-      employed: true
-      earned_income: 10000
-    - age: 65
-      disability: mild
-      business_income: 170000
-      other_income: 3000000
-    - age: 15
-      sex: F
-      disability: mild
-    - age: 34
-      employed: true
-      earned_income: 610000
-      other_income: 3000000
-    - age: 64
-      employed: true
-      earned_income: 10000
-      business_income: 710000
+      business_income: 150000
     housing: own
     assets_housing: 113000000
-    assets_financial: 21000000
-    car_value: 4000000
+    debts: 61000000
   expect:
     eligible: true
     benefit_monthly: 41667
@@ -43,16 +25,24 @@ cases:
     region_sigungu: 영천시
     members:
     - age: 46
+      sex: F
+      employed: true
+      earned_income: 200000
+      business_income: 10000
+      other_income: 2430000
+    - age: 65
       disability: mild
       employed: true
-      earned_income: 210000
+      earned_income: 1920000
+      business_income: 1930000
       other_income: 10000
     housing: monthly_rent
-    rent_monthly: 20000
-    assets_housing: 117000000
-    assets_general: 2000000
-    assets_financial: 8000000
-    debts: 67000000
+    rent_monthly: 1500000
+    assets_housing: 57000000
+    assets_general: 1000000
+    assets_financial: 5000000
+    car_value: 1000000
+    debts: 3000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -63,38 +53,15 @@ cases:
     region_sigungu: 영천시
     members:
     - age: 35
-      disability: mild
-      employed: true
-      earned_income: 210000
-      business_income: 4300000
-    - age: 35
       sex: F
       disability: mild
       employed: true
-      earned_income: 200000
-      business_income: 8980000
-    - age: 34
-      disability: mild
-      employed: true
-      earned_income: 10920000
-    - age: 19
-      sex: F
-      disability: mild
-      employed: true
-      earned_income: 17530000
-    - age: 19
-      disability: mild
-      employed: true
-      earned_income: 210000
-    - age: 19
-      disability: mild
-      employed: true
-      earned_income: 10000
-      business_income: 160000
+      earned_income: 30000
+      business_income: 80000
     housing: monthly_rent
-    rent_monthly: 20000
-    assets_housing: 85000000
-    assets_financial: 268000000
+    rent_monthly: 1500000
+    assets_housing: 113000000
+    assets_financial: 156000000
     car_value: 40000000
   expect:
     eligible: false

@@ -37,6 +37,13 @@ uv run python -m welfaretwin.demo_bundle                           # 대시보�
 python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리허설 자동 점검(대시보드 실행 중)
 ```
 
+## 운영
+
+- 원문 수집은 공공데이터포털 일일 한도 때문에 매일 이어받는다: `scripts/register_collect_task.cmd` 로 매일 01:30 예약
+  (해제 `schtasks /Delete /TN WelfareTwin_Collect /F`, 로그 `.cache/collect_daily.log`, PC 가 켜져 있어야 실행).
+- 발표 자료: 대본 `docs/12_발표_대본.md`, 질의응답 `docs/11_질의응답_대비표.md`, 수치 `reports/eval_*.md`,
+  백업 영상 `python app/rehearsal.py --rounds 1 --video artifacts/rehearsal` → `artifacts/rehearsal/demo_backup.webm`.
+
 ## 원칙
 
 - 판정은 코드가 한다. LLM 은 규칙 추출(이중 생성·Z3 교차검증·사람 승인)과 행동 추정(실제 통계로 보정)에만 쓴다.

@@ -97,3 +97,32 @@ def test_llm_cache_hit_skips_api(tmp_path, monkeypatch):
 
     r = llm.call_json("s", "u", {"type": "object"}, prompt_version="v", client=NoCall())
     assert r.cached and r.data == {"x": 1}
+
+
+def test_sigungu_region_condition_engine_and_z3_agree():
+    """시군구 사업: 시도·시군구가 모두 같아야 자격(평가기), Z3 도 같은 판정(프로필에 해당 시군구 자동 추가)."""
+    from welfaretwin.model import Household
+    from welfaretwin.rules.engine import evaluate
+    from welfaretwin.verify.encoder import Encoder, SymHousehold, concrete
+    d = to_program(raw([YOUTH]), SVC, "A", "t")
+    d["region"] = {"sido": "대구광역시", "sigungu": "서구"}
+    p = Program.model_validate(d)
+    rs = RuleSet({**BASE.programs, p.id: p}, BASE.libraries, BASE.params)
+    shh = SymHousehold(rs=rs)
+    assert ("대구광역시", "서구") in {(s, g) for _, s, g in shh.profiles}
+    enc = Encoder(rs, shh)
+    for sgg, expect in (("서구", True), ("중구", False), (None, False)):
+        hh = Household(region_sido="대구광역시", region_sigungu=sgg, members=[{"age": 25}])
+        got = {x.program_id: x.eligible for x in evaluate(hh, rs)}[p.id]
+        assert got == expect, sgg
+        assert concrete(enc.eligible(p.id), shh, hh) == expect, sgg
+
+
+def test_encoder_rejects_missing_sigungu_profile():
+    from welfaretwin.verify.encoder import EncodeError, Encoder, SymHousehold
+    d = to_program(raw([YOUTH]), SVC, "A", "t")
+    d["region"] = {"sido": "대구광역시", "sigungu": "서구"}
+    p = Program.model_validate(d)
+    rs = RuleSet({**BASE.programs, p.id: p}, BASE.libraries, BASE.params)
+    with pytest.raises(EncodeError):
+        Encoder(rs, SymHousehold())          # rs 없이 만든 기호 가구 → 서구 프로필 없음

@@ -82,7 +82,7 @@ def blindspot(
     """
     programs = programs or INCOME_SUPPORT
     t0 = time.perf_counter()
-    shh = SymHousehold()
+    shh = SymHousehold(rs=rs)
     enc = Encoder(rs, shh)
     s = _base_solver(shh, realism, readable, timeout_ms, optimize=plain)
     if plain:   # 가장 '평범한' 반례부터 — 탈락 원인이 꾸밈 없이 드러나게
@@ -156,7 +156,7 @@ def cliff(
     all_programs = list(rs.programs)
     cash = [pid for pid, prog in rs.programs.items()
             if (prog.benefit.monthly or prog.benefit.annual).src.strip() != "0"]
-    h1, h2 = SymHousehold("a"), SymHousehold("b")
+    h1, h2 = SymHousehold("a", rs), SymHousehold("b", rs)
     e1, e2 = Encoder(rs, h1), Encoder(rs, h2)
     s = _base_solver(h1, realism, readable, timeout_ms)
     s.add(h2.domain())
@@ -261,7 +261,7 @@ def cliff(
 def overlap(rs: RuleSet, timeout_ms: int = 10_000, realism: bool = True) -> QueryResult:
     """(1) 선언된 배제(exclusions) 쌍을 둘 다 1차 자격으로 만족하는 가구 (2) 사문화 규칙."""
     t0 = time.perf_counter()
-    shh = SymHousehold()
+    shh = SymHousehold(rs=rs)
     enc = Encoder(rs, shh)
     s = _base_solver(shh, realism, True, timeout_ms)
     findings, dead, unknown = [], [], []

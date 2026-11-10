@@ -6,16 +6,33 @@ cases:
     region_sido: 경상북도
     region_sigungu: 고령군
     members:
-    - age: 19
-      sex: F
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 190000
+      other_income: 2290000
+    - age: 30
+      is_student: true
+      employed: true
+      earned_income: 300000
+      business_income: 300000
+    - age: 30
+      is_student: true
+      employed: true
+      earned_income: 300000
+      business_income: 290000
+    - age: 30
       disability: mild
       is_student: true
+      employed: true
+      earned_income: 610000
+      other_income: 10000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 1000000
-    assets_general: 14000000
-    assets_financial: 5000000
-    debts: 20000000
+    assets_housing: 113000000
+    assets_financial: 6000000
+    debts: 42000000
   expect:
     eligible: true
     benefit_monthly: 0
@@ -26,14 +43,15 @@ cases:
     region_sigungu: 고령군
     members:
     - age: 30
-      sex: F
-      disability: mild
       is_student: true
-    housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 70000000
+      employed: true
+      earned_income: 540000
+      business_income: 13370000
+    housing: jeonse
+    assets_housing: 117000000
+    assets_financial: 8000000
     car_value: 2000000
-    debts: 38000000
+    debts: 66000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -43,18 +61,16 @@ cases:
     region_sido: 경상북도
     region_sigungu: 고령군
     members:
-    - age: 34
+    - age: 30
       employed: true
-      earned_income: 180000
-      business_income: 10000
+      earned_income: 550000
+      business_income: 60000
       other_income: 10000
-    housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 53000000
+    housing: jeonse
+    assets_housing: 131000000
     assets_general: 1000000
-    assets_financial: 7000000
-    car_value: 1000000
-    debts: 4000000
+    assets_financial: 5000000
+    debts: 60000000
   expect:
     eligible: false
     benefit_monthly: 0

@@ -1,0 +1,40 @@
+# 백테스트용 인구 변화율(2024→2025) — 합성 인구는 '2024년 소득 + 2025년 3월 자산'(가계금융복지조사 2025)이므로
+# 기준 연도 2024 는 자산을 되돌리고, 비교 연도 2025 는 소득을 올린다.
+# 가계동향 연간값은 KOSIS API 에 없어 분기 4개 단순평균의 비(2024 vs 2025)로 계산.
+params:
+  income_growth_earned:
+    note: "근로소득 2024→2025 (가계동향조사 전국 1인 이상, 분기 평균 3,251,705 → 3,335,267원)"
+    unit: ratio
+    value: 1.0257
+    source: {doc: "KOSIS 가계동향조사 가구당 월평균 가계수지(전국,1인이상) DT_1L9U101 근로소득(B4)", page: null, url: "https://kosis.kr"}
+    verified: true
+  income_growth_business:
+    note: "사업소득 2024→2025 (분기 평균 973,413 → 988,926원)"
+    unit: ratio
+    value: 1.0159
+    source: {doc: "KOSIS 가계동향조사 DT_1L9U101 사업소득(B5)", page: null, url: "https://kosis.kr"}
+    verified: true
+  income_growth_other:
+    note: "기타소득(재산·이전 등)은 경상소득 증가율로 근사 (분기 평균 5,042,932 → 5,215,955원)"
+    unit: ratio
+    value: 1.0343
+    source: {doc: "KOSIS 가계동향조사 DT_1L9U101 경상소득(B2)", page: null, url: "https://kosis.kr"}
+    verified: true
+  asset_growth_real:
+    note: "실물자산 평균 2024.3 → 2025.3 (40,644 → 42,988만원)"
+    unit: ratio
+    value: 1.0577
+    source: {doc: "KOSIS 가계금융복지조사 소득5분위별 자산·부채·소득 DT_1HDAAA10 실물자산(C0502)", page: null, url: "https://www.korea.kr/briefing/policyBriefingView.do?newsId=156733201"}
+    verified: true
+  asset_growth_financial:
+    note: "금융자산 평균 2024.3 → 2025.3 (13,378 → 13,690만원)"
+    unit: ratio
+    value: 1.0233
+    source: {doc: "KOSIS 가계금융복지조사 DT_1HDAAA10 금융자산(C0501)", page: null, url: "https://www.korea.kr/briefing/policyBriefingView.do?newsId=156733201"}
+    verified: true
+  debt_growth:
+    note: "부채 평균 2024.3 → 2025.3 (9,128 → 9,534만원, 4.4% 증가)"
+    unit: ratio
+    value: 1.0444
+    source: {doc: "KOSIS 가계금융복지조사 DT_1HDAAA10 부채(C06); 통계청 2025년 가계금융복지조사 결과(2025.12.4.)", page: null, url: "https://www.korea.kr/briefing/policyBriefingView.do?newsId=156733201"}
+    verified: true

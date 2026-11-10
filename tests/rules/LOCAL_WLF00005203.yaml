@@ -6,30 +6,40 @@ cases:
     region_sido: 경상북도
     region_sigungu: 청송군
     members:
-    - age: 19
-      disability: mild
-      business_income: 610000
-    - age: 17
+    - age: 65
+    - age: 65
       sex: F
-    - age: 19
-    - age: 19
       disability: mild
-      business_income: 100000
-    - age: 19
-      disability: mild
-      employed: true
-      earned_income: 90000
-      business_income: 100000
-    - age: 64
-      sex: F
       employed: true
       earned_income: 210000
+    - age: 17
+      sex: F
+      employed: true
+      earned_income: 16970000
+      other_income: 10000
+    - age: 35
+      disability: mild
+      employed: true
+      earned_income: 580000
+      business_income: 2740000
+      other_income: 10000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 330000
+      other_income: 10000
+    - age: 64
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 610000
+      other_income: 10000
     housing: monthly_rent
-    rent_monthly: 100000
-    assets_housing: 113000000
-    assets_financial: 6000000
-    car_value: 40000000
-    debts: 61000000
+    rent_monthly: 10000
+    assets_housing: 1651000000
+    assets_financial: 20000000
+    car_value: 2000000
     single_parent: true
   expect:
     eligible: true
@@ -40,16 +50,41 @@ cases:
     region_sido: 경상북도
     region_sigungu: 청송군
     members:
-    - age: 34
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 1170000
+      other_income: 2460000
+    - age: 17
+      employed: true
+      earned_income: 4630000
+    - age: 19
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 200000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 210000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 200000
+      business_income: 12510000
+    - age: 35
       disability: mild
       employed: true
       earned_income: 10000
-      business_income: 600000
-    housing: monthly_rent
-    rent_monthly: 20000
-    assets_housing: 113000000
-    assets_financial: 7000000
-    debts: 61000000
+      business_income: 10000
+    housing: jeonse
+    assets_housing: 71000000
+    assets_general: 1000000
+    assets_financial: 21000000
+    car_value: 1000000
+    single_parent: true
   expect:
     eligible: false
     benefit_monthly: 0
@@ -59,21 +94,40 @@ cases:
     region_sido: 경상북도
     region_sigungu: 청송군
     members:
-    - age: 35
-      sex: F
+    - age: 34
       employed: true
-      earned_income: 10000
+      earned_income: 610000
+      business_income: 12170000
     - age: 15
       sex: F
       disability: mild
       employed: true
       earned_income: 610000
-    housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 113000000
-    assets_financial: 5000000
-    car_value: 40000000
-    debts: 61000000
+    - age: 65
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 10550000
+    - age: 35
+      sex: F
+      employed: true
+      earned_income: 16580000
+    - age: 34
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 6540000
+      business_income: 60000
+    - age: 34
+      disability: mild
+      employed: true
+      earned_income: 610000
+      business_income: 4510000
+    housing: jeonse
+    assets_housing: 71000000
+    assets_general: 1000000
+    car_value: 2000000
+    debts: 20000000
   expect:
     eligible: false
     benefit_monthly: 0

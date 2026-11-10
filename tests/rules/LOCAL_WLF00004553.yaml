@@ -4,35 +4,36 @@ cases:
   source: 'testgen: Z3 양성 예'
   household:
     region_sido: 대구광역시
+    region_sigungu: 달서구
     members:
-    - age: 19
-      business_income: 610000
-    - age: 19
-      employed: true
-      earned_income: 10000
-      other_income: 10000
     - age: 65
       disability: mild
       employed: true
+      earned_income: 40000
+      business_income: 4160000
+      other_income: 10000
+    - age: 35
+      sex: F
+      employed: true
       earned_income: 10000
-      business_income: 190000
       other_income: 20000
     - age: 65
-      sex: F
-      employed: true
-      earned_income: 100000
-      business_income: 470000
-    - age: 65
-      disability: mild
-      business_income: 3130000
-    - age: 65
-      sex: F
       disability: mild
       other_income: 10000
+    - age: 64
+      employed: true
+      earned_income: 60000
+      other_income: 20000
+    - age: 19
+      employed: true
+      earned_income: 590000
+      business_income: 10000
+      other_income: 30000
     housing: monthly_rent
-    rent_monthly: 10000
-    assets_financial: 83000000
-    car_value: 1000000
+    rent_monthly: 50000
+    assets_housing: 76000000
+    assets_general: 1000000
+    assets_financial: 6000000
   expect:
     eligible: true
     benefit_monthly: 0
@@ -40,36 +41,47 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 대구광역시
+    region_sigungu: 달서구
     members:
+    - age: 36
+      disability: mild
+      employed: true
+      earned_income: 680000
     - age: 35
       disability: mild
-      business_income: 1530000
-    - age: 64
-      disability: mild
-      employed: true
-      earned_income: 210000
-      other_income: 410000
-    - age: 34
       employed: true
       earned_income: 10000
-      business_income: 530000
-    - age: 34
+      business_income: 1210000
+      other_income: 10000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 590000
+      business_income: 20000
+      other_income: 10000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 190000
+      business_income: 20000
+      other_income: 10000
+    - age: 35
+      disability: mild
+      employed: true
+      earned_income: 1170000
+      other_income: 10000
+    - age: 35
       disability: mild
       employed: true
       earned_income: 10000
-      business_income: 600000
-    - age: 34
-      sex: F
-      disability: mild
-      business_income: 210000
-    - age: 64
-      sex: F
-      disability: mild
+      business_income: 1820000
+      other_income: 90000
     housing: monthly_rent
-    rent_monthly: 10000
-    assets_general: 77000000
-    assets_financial: 7000000
-    debts: 1000000
+    rent_monthly: 50000
+    assets_housing: 147000000
+    assets_financial: 6000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -77,39 +89,36 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 대구광역시
+    region_sigungu: 달서구
     members:
-    - age: 65
-      disability: mild
-      employed: true
-      earned_income: 15170000
-      business_income: 19530000
-    - age: 65
-      disability: mild
-      employed: true
-      earned_income: 15160000
-      other_income: 10000
     - age: 34
       employed: true
-      earned_income: 20000000
-      business_income: 1370000
-      other_income: 10000
-    - age: 35
-      disability: mild
-      employed: true
-      earned_income: 210000
-      other_income: 10000
+      earned_income: 600000
+      business_income: 4240000
     - age: 65
       disability: mild
       employed: true
-      earned_income: 4180000
-      other_income: 10000
+      earned_income: 3370000
+    - age: 34
+      sex: F
+      employed: true
+      earned_income: 10000
+    - age: 35
+      sex: F
+      employed: true
+      earned_income: 9200000
+    - age: 35
+      employed: true
+      earned_income: 9010000
+    - age: 34
+      employed: true
+      earned_income: 13450000
+      business_income: 920000
     housing: monthly_rent
-    rent_monthly: 10000
-    assets_housing: 18000000
-    assets_general: 118000000
-    assets_financial: 80000000
-    car_value: 40000000
-    debts: 60000000
+    rent_monthly: 50000
+    assets_housing: 76000000
+    assets_financial: 300000000
+    car_value: 1000000
   expect:
     eligible: false
     benefit_monthly: 0

@@ -361,13 +361,24 @@ def page_backtest():
                                  hovertemplate="%{x}년 %{y:,.0f}가구<extra></extra>"))
     by, ty = str(bt["base_year"]), str(bt["target_year"])
     pred = [bt["actual"][by]["households"], bt["actual"][by]["households"] + bt["households"]["predicted_increase"]]
-    fig.add_trace(go.Scatter(x=[int(by), int(ty)], y=pred, name="시뮬레이션 예측(기준값 변화만)", mode="lines+markers",
+    fig.add_trace(go.Scatter(x=[int(by), int(ty)], y=pred, name="시뮬레이션 예측(기준값 + 소득·자산 증가)", mode="lines+markers",
                              line=dict(width=2, dash="dash", color=COLORS["NBLS_HOUSING"]), marker=dict(size=9),
                              hovertemplate="%{x}년 예측 %{y:,.0f}가구<extra></extra>"))
     fig.update_layout(height=380, template="plotly_white", yaxis_title="수급 가구", margin=dict(t=20),
                       legend=dict(orientation="h", y=-0.2))
     fig.update_yaxes(tickformat=",", gridcolor="#ecebe7")
-    st.plotly_chart(fig, use_container_width=True)
+    fixed = load_json("backtest_B2_2024_2025_fixedpop.json")
+    if not fixed:
+        st.plotly_chart(fig, use_container_width=True, key="bt1")
+    if fixed:
+        fy = str(fixed["target_year"])
+        fig.add_trace(go.Scatter(x=[int(by), int(fy)],
+                                 y=[fixed["actual"][by]["households"],
+                                    fixed["actual"][by]["households"] + fixed["households"]["predicted_increase"]],
+                                 name="비교: 인구 소득·자산 고정", mode="lines+markers",
+                                 line=dict(width=2, dash="dot", color="#8b8a83"), marker=dict(size=7),
+                                 hovertemplate="%{x}년 (고정) %{y:,.0f}가구<extra></extra>"))
+        st.plotly_chart(fig, use_container_width=True, key="bt2")
     h, p = bt["households"], bt["persons"]
     c1, c2, c3 = st.columns(3)
     c1.metric("예측 증가(가구)", f"{h['predicted_increase']:+,.0f}")
@@ -375,6 +386,8 @@ def page_backtest():
     ok = h["error_rate"] <= 0.10
     c3.metric("오차율(가구)", f"{h['error_rate']:.0%}")
     c3.markdown("✅ 목표 ±10% 달성" if ok else "⚠️ **목표 ±10% 미달**")
+    st.caption(f"인원 기준: 예측 {p['predicted_increase']:+,.0f} / 실제 {p['actual_increase']:+,.0f} → 오차율 {p['error_rate']:.0%}"
+               + (f" · 비교(인구 고정) 가구 오차율 {fixed['households']['error_rate']:.0%}" if fixed else ""))
     if not ok:
         st.error("⚠ 목표 미달 — 원인: 합성 인구 소득을 고정해 소득 증가에 따른 탈락이 빠짐(과대 추정). "
                  "2단계: 연도별 소득 분포(가계금융복지조사) 갱신, 가명정보 결합으로 정밀화.")
