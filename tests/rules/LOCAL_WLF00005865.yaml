@@ -1,0 +1,101 @@
+program: LOCAL_WLF00005865
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 10000
+    - age: 35
+      employed: true
+      earned_income: 10000
+    - age: 65
+      disability: mild
+      business_income: 170000
+      other_income: 3000000
+    - age: 15
+      sex: F
+      disability: mild
+    - age: 34
+      employed: true
+      earned_income: 610000
+      other_income: 3000000
+    - age: 64
+      employed: true
+      earned_income: 10000
+      business_income: 710000
+    housing: own
+    assets_housing: 113000000
+    assets_financial: 21000000
+    car_value: 4000000
+  expect:
+    eligible: true
+    benefit_monthly: 41667
+- name: 자동 — '청년 세대주 연령 19~45세'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 46
+      disability: mild
+      employed: true
+      earned_income: 210000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 20000
+    assets_housing: 117000000
+    assets_general: 2000000
+    assets_financial: 8000000
+    debts: 67000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '소득 기준 중위소득 150% 이하'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 35
+      disability: mild
+      employed: true
+      earned_income: 210000
+      business_income: 4300000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 200000
+      business_income: 8980000
+    - age: 34
+      disability: mild
+      employed: true
+      earned_income: 10920000
+    - age: 19
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 17530000
+    - age: 19
+      disability: mild
+      employed: true
+      earned_income: 210000
+    - age: 19
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 160000
+    housing: monthly_rent
+    rent_monthly: 20000
+    assets_housing: 85000000
+    assets_financial: 268000000
+    car_value: 40000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

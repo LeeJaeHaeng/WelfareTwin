@@ -1,0 +1,52 @@
+id: LOCAL_WLF00004298
+name: 저소득가정 자녀 학습비 지원사업
+level: local
+region:
+  sido: 경상북도
+  sigungu: 울릉군
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00004298 (저소득가정 자녀 학습비 지원사업)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 표현하지 못한 조건 1개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: elig('NBLS_LIVELIHOOD') or elig('NBLS_MEDICAL') or elig('NBLS_HOUSING') or elig('NBLS_EDUCATION') or nbls_income_recognized
+      <= round(median_income(hh.size) * 50 / 100)
+    label: 기초생활수급자 또는 차상위계층
+    quote: 기초수급, 차상위 계층  가구 중 중·고교 재학생 자녀
+    uncertain: true
+    ref: 0
+  - expr: count(p.is_student) >= 1
+    label: 중·고교 재학생 자녀 있음
+    quote: 기초수급, 차상위 계층  가구 중 중·고교 재학생 자녀
+    uncertain: true
+    ref: 0
+  - expr: nbls_income_recognized >= round(median_income(hh.size) * 30 / 100) and nbls_income_recognized <= round(median_income(hh.size)
+      * 50 / 100)
+    label: 소득인정액 기준 중위소득 30% 이상 50% 이하
+    quote: 중위소득 30 %   ~ 중위소득 50 % 이하
+    uncertain: true
+    ref: 0
+benefit:
+  monthly: '200000'
+  quote: 매월 학습비 최대 200,000원 지원
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: 중·고교 재학생 자녀
+  reason: 중학교·고등학교 재학 여부(학교급)는 표현식 언어로 직접 표현할 수 없어 학생 여부(p.is_student)로만 근사함
+status: approved
+provenance:
+  serv_id: WLF00004298
+  variant: B
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: 4c60e46ba0bc4fe7
+  notes: '''기초수급, 차상위 계층''과 ''중위소득 30%~50% 이하''가 함께 제시되어 선정기준이 중복·상충될 수 있으나 원문 그대로 두 조건을 각각 모델링함. 지원금액은 ''최대''이므로 상한액 200,000원을
+    사용(uncertain).'
+  human_edits:
+  - '2026-11-10 검수: A 초안이 ''재학생 자녀'' 조건을 누락 — 교차검증 반례 확인 후 B 초안 채택'
+tests: tests/rules/LOCAL_WLF00004298.yaml

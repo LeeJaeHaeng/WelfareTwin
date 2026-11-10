@@ -44,4 +44,6 @@ provenance:
   source_hash: 83ff8073c44052bf
   notes: 선정기준은 기초생활보장수급자(생계·주거·의료·교육급여) 가구 또는 차상위계층으로, 두 유형을 or로 묶었다. 차상위는 소득인정액 기준 중위소득 50% 이하로 환산했으므로 uncertain=true. 지원내용은
     고등학생 50만원, 대학생 100만원으로 학교급 구분이 필요하나 표현식 언어에 학교급 변수가 없어 급여 expr은 0, uncertain=true로 두었다.
+  human_edits:
+  - '2026-11-10 검수: 교차검증 불일치 — B 초안이 조건(근로자/학생)을 누락, A 초안 채택'
 tests: tests/rules/LOCAL_WLF00002989.yaml

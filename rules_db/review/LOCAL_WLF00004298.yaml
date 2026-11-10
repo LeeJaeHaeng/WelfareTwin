@@ -19,6 +19,11 @@ eligibility:
     quote: 기초수급, 차상위 계층  가구 중 중·고교 재학생 자녀
     uncertain: true
     ref: 0
+  - expr: count(p.is_student) >= 1
+    label: 중·고교 재학생 자녀 있음
+    quote: 기초수급, 차상위 계층  가구 중 중·고교 재학생 자녀
+    uncertain: true
+    ref: 0
   - expr: nbls_income_recognized >= round(median_income(hh.size) * 30 / 100) and nbls_income_recognized <= round(median_income(hh.size)
       * 50 / 100)
     label: 소득인정액 기준 중위소득 30% 이상 50% 이하
@@ -32,13 +37,16 @@ benefit:
   ref: 0
 not_modeled:
 - quote: 중·고교 재학생 자녀
-  reason: 중학교·고등학교 재학 여부(학교급)는 표현식 언어로 나타낼 수 없음(연령 기준이 원문에 없음)
+  reason: 중학교·고등학교 재학 여부(학교급)는 표현식 언어로 직접 표현할 수 없어 학생 여부(p.is_student)로만 근사함
 status: review
 provenance:
   serv_id: WLF00004298
-  variant: A
+  variant: B
   model: claude-opus-5
   prompt_version: extract-v1
   source_hash: 4c60e46ba0bc4fe7
-  notes: 소득 기준은 '소득인정액' 명시가 없어 불확실로 표시했고, 30%~50% 구간을 하한·상한으로 해석했습니다. 급여는 '최대' 금액이므로 상한값을 사용했습니다.
+  notes: '''기초수급, 차상위 계층''과 ''중위소득 30%~50% 이하''가 함께 제시되어 선정기준이 중복·상충될 수 있으나 원문 그대로 두 조건을 각각 모델링함. 지원금액은 ''최대''이므로 상한액 200,000원을
+    사용(uncertain).'
+  human_edits:
+  - '2026-11-10 검수: A 초안이 ''재학생 자녀'' 조건을 누락 — 교차검증 반례 확인 후 B 초안 채택'
 tests: tests/rules/LOCAL_WLF00004298.yaml

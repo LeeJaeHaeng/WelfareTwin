@@ -8,15 +8,20 @@ cases:
     members:
     - age: 19
       sex: F
-      disability: mild
+      is_student: true
+      employed: true
+      earned_income: 10000
+      business_income: 130000
+      other_income: 10000
     housing: own
-    assets_housing: 1000000
+    assets_housing: 54000000
+    assets_general: 1000000
+    assets_financial: 7000000
     car_value: 1000000
-    debts: 1000000
   expect:
     eligible: true
     benefit_monthly: 200000
-- name: 자동 — '소득인정액 기준 중위소득 30% 이상 50% 이하'만 불충족
+- name: 자동 — '중·고교 재학생 자녀 있음'만 불충족
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 경상북도
@@ -24,13 +29,35 @@ cases:
     members:
     - age: 34
       employed: true
-      earned_income: 780000
-      business_income: 570000
+      earned_income: 110000
+    - age: 35
+      sex: F
+    housing: own
+    assets_housing: 113000000
+    assets_financial: 147000000
+    car_value: 2000000
+    debts: 202000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '소득인정액 기준 중위소득 30% 이상 50% 이하'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 울릉군
+    members:
+    - age: 30
+      sex: F
+      disability: mild
+      is_student: true
+      employed: true
+      earned_income: 610000
       other_income: 10000
     housing: monthly_rent
-    rent_monthly: 770000
-    assets_housing: 31000000
-    assets_financial: 6000000
+    rent_monthly: 30000
+    assets_housing: 113000000
+    assets_financial: 18000000
+    debts: 61000000
   expect:
     eligible: false
     benefit_monthly: 0

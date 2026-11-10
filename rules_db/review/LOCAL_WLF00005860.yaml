@@ -71,4 +71,6 @@ provenance:
   source_hash: 41c7d617e1e2d328
   notes: 월 20만원을 최대 12회 지급하는 현금지원으로 period=monthly, expr=200000으로 모델링했다. 소득기준은 원문이 '소득인정액'을 명시하지 않아 uncertain 처리했고, 재산기준도
     부채 차감 여부가 불명확해 uncertain으로 두었다. 월세 거주 요건은 사업 성격상 전제되나 원문에 명시 문구가 없어 조건으로 넣지 않았고, 주택 소유자 제외 조건만 반영했다.
+  human_edits:
+  - '2026-11-10 검수: 교차검증 불일치 — B 초안이 조건(근로자/학생)을 누락, A 초안 채택'
 tests: tests/rules/LOCAL_WLF00005860.yaml

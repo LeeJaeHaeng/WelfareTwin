@@ -1,0 +1,59 @@
+program: LOCAL_WLF00004083
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 대구광역시
+    members:
+    - age: 65
+      employed: true
+      earned_income: 20000
+      business_income: 190000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 146000000
+    assets_general: 1000000
+    assets_financial: 5000000
+    debts: 12000000
+  expect:
+    eligible: true
+    benefit_monthly: 16667
+- name: 자동 — '만 65세 이상 노인'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 대구광역시
+    members:
+    - age: 35
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 147000000
+    assets_general: 3000000
+    debts: 74000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '저소득 노인(기초생활수급자·차상위·의료급여수급자 또는 중위소득 75% 이하)'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 대구광역시
+    members:
+    - age: 35
+      disability: mild
+      employed: true
+      earned_income: 1180000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 1170000
+      business_income: 10100000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 147000000
+    assets_general: 882000000
+    assets_financial: 7000000
+    car_value: 40000000
+    debts: 953000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

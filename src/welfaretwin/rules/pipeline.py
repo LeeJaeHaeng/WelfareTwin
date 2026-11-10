@@ -115,6 +115,22 @@ def approve(pid: str) -> None:
     print(f"승인: {pid} → rules_db/approved/, tests/rules/")
 
 
+def retest(pid: str, note: str | None = None) -> int:
+    """사람이 review/<ID>.yaml 을 고친 뒤: 검증하고 테스트를 다시 생성한다(수정 이력은 provenance 에 기록)."""
+    path = RULES_DB / "review" / f"{pid}.yaml"
+    prog_dict = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if note:
+        prog_dict.setdefault("provenance", {}).setdefault("human_edits", []).append(note)
+        _dump(prog_dict, path)
+    base = load_ruleset()
+    prog = Program.model_validate(prog_dict)
+    rs = RuleSet({**base.programs, pid: prog}, base.libraries, base.params)
+    cases = generate(prog, rs)
+    _dump({"program": pid, "cases": cases}, RULES_DB / "review" / f"{pid}.tests.yaml")
+    print(f"재검증: {pid} 테스트 {len(cases)}건")
+    return len(cases)
+
+
 def write_table(reports: list[dict]) -> Path:
     lines = [f"# M4 지자체 사업 규칙 추출 결과 ({date.today().isoformat()})", "",
              "| 서비스 | 지역 | 조건 | 미모델링 | 인용(A) | A·B 자격 동치 | 테스트 | 판정 | 비용($) |",
@@ -146,7 +162,13 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--workers", type=int, default=3)
     a = sub.add_parser("approve")
     a.add_argument("program_ids", nargs="+")
+    t = sub.add_parser("retest")
+    t.add_argument("program_id")
+    t.add_argument("--note", help="사람 수정 내용(provenance.human_edits 에 기록)")
     args = ap.parse_args(argv)
+    if args.cmd == "retest":
+        retest(args.program_id, args.note)
+        return 0
     if args.cmd == "approve":
         for pid in args.program_ids:
             approve(pid)

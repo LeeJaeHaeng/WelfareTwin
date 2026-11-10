@@ -4,18 +4,20 @@ cases:
   source: 'testgen: Z3 양성 예'
   household:
     region_sido: 경상북도
-    region_sigungu: 의성군
+    region_sigungu: 포항시
     members:
-    - age: 24
+    - age: 19
       sex: F
       disability: mild
-      business_income: 210000
-    - age: 17
+    - age: 15
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 80000
     housing: own
-    assets_housing: 72000000
-    assets_general: 1000000
-    assets_financial: 6000000
-    car_value: 1000000
+    assets_housing: 1000000
+    assets_general: 21000000
+    debts: 1000000
   expect:
     eligible: true
     benefit_monthly: 200000
@@ -23,56 +25,42 @@ cases:
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 경상북도
-    region_sigungu: 의성군
+    region_sigungu: 포항시
     members:
-    - age: 24
+    - age: 19
       sex: F
-      employed: true
-      earned_income: 610000
-      other_income: 10000
-    - age: 17
-      employed: true
-      earned_income: 3960000
-      other_income: 40000
-    - age: 65
+      business_income: 610000
+    - age: 15
+      sex: F
       disability: mild
       employed: true
-      earned_income: 3300000
-      business_income: 10000
-      other_income: 50000
+      earned_income: 18090000
+      other_income: 2070000
     housing: own
     assets_housing: 113000000
-    assets_general: 1000000
-    debts: 62000000
   expect:
     eligible: false
     benefit_monthly: 0
-- name: 자동 — '부모 모두 24세 이하(청소년부모)'만 불충족
+- name: 자동 — '청소년부모(가구주 24세 이하로 근사)'만 불충족
   source: 'testgen: Z3 음성 예(조건 하나만 위반)'
   household:
     region_sido: 경상북도
-    region_sigungu: 의성군
+    region_sigungu: 포항시
     members:
-    - age: 65
+    - age: 35
       sex: F
       disability: mild
       employed: true
       earned_income: 210000
-      business_income: 40000
-    - age: 25
-      disability: mild
-      employed: true
-      earned_income: 600000
-      business_income: 10000
     - age: 17
+      sex: F
       disability: mild
       employed: true
-      earned_income: 690000
+      earned_income: 2600000
     housing: own
-    assets_housing: 54000000
-    assets_financial: 2000000
-    car_value: 3000000
-    debts: 2000000
+    assets_housing: 114000000
+    assets_financial: 7000000
+    debts: 62000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -82,39 +70,17 @@ cases:
     region_sido: 경상북도
     region_sigungu: 포항시
     members:
-    - age: 24
-      disability: mild
+    - age: 19
       employed: true
       earned_income: 10000
-      business_income: 190000
-    - age: 64
-      disability: mild
-      employed: true
-      earned_income: 20000
-      business_income: 190000
-    - age: 35
-      disability: mild
-      employed: true
-      earned_income: 10000
-      business_income: 200000
-    - age: 24
-      disability: mild
-      business_income: 610000
-    - age: 34
-      employed: true
-      earned_income: 580000
-      business_income: 20000
-    - age: 65
-      disability: mild
-      employed: true
-      earned_income: 10000
-      business_income: 2470000
+      business_income: 600000
+      other_income: 10000
     housing: monthly_rent
     rent_monthly: 10000
     assets_housing: 113000000
-    assets_financial: 53000000
-    car_value: 1000000
-    debts: 61000000
+    assets_general: 1000000
+    assets_financial: 7000000
+    debts: 62000000
   expect:
     eligible: false
     benefit_monthly: 0

@@ -1,0 +1,79 @@
+program: LOCAL_WLF00005203
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 청송군
+    members:
+    - age: 19
+      disability: mild
+      business_income: 610000
+    - age: 17
+      sex: F
+    - age: 19
+    - age: 19
+      disability: mild
+      business_income: 100000
+    - age: 19
+      disability: mild
+      employed: true
+      earned_income: 90000
+      business_income: 100000
+    - age: 64
+      sex: F
+      employed: true
+      earned_income: 210000
+    housing: monthly_rent
+    rent_monthly: 100000
+    assets_housing: 113000000
+    assets_financial: 6000000
+    car_value: 40000000
+    debts: 61000000
+    single_parent: true
+  expect:
+    eligible: true
+    benefit_monthly: 13000
+- name: 자동 — '만 11~18세 여성청소년 포함 가구'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 청송군
+    members:
+    - age: 34
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 600000
+    housing: monthly_rent
+    rent_monthly: 20000
+    assets_housing: 113000000
+    assets_financial: 7000000
+    debts: 61000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '기초생활수급자 또는 법정차상위계층 또는 한부모가족 지원대상자'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 청송군
+    members:
+    - age: 35
+      sex: F
+      employed: true
+      earned_income: 10000
+    - age: 15
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 610000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 113000000
+    assets_financial: 5000000
+    car_value: 40000000
+    debts: 61000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

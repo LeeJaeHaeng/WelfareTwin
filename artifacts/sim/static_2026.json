@@ -85,6 +85,148 @@
     "충청북도": 46114.6147
    }
   },
+  "LOCAL_WLF00002803": {
+   "name": "서구 저소득층 건강보험료 지원",
+   "eligible_households": 529530.7463600002,
+   "eligible_persons": 1349021.1919800001,
+   "eligible_elderly": 397935.3824600001,
+   "eligible_share": 0.023539999999999995,
+   "avg_benefit_monthly": 0.0,
+   "monthly_budget": 0.0,
+   "by_sido": {
+    "대구광역시": 529530.7463600002
+   }
+  },
+  "LOCAL_WLF00002871": {
+   "name": "저소득노인지원",
+   "eligible_households": 12372.213699999997,
+   "eligible_persons": 12372.213699999997,
+   "eligible_elderly": 12372.213699999997,
+   "eligible_share": 0.0005499999999999995,
+   "avg_benefit_monthly": 0.0,
+   "monthly_budget": 0.0,
+   "by_sido": {
+    "경상북도": 12372.213699999997
+   }
+  },
+  "LOCAL_WLF00002989": {
+   "name": "저소득주민 자녀장학금",
+   "eligible_households": 13721.90974,
+   "eligible_persons": 40940.77988,
+   "eligible_elderly": 0.0,
+   "eligible_share": 0.0006099999999999995,
+   "avg_benefit_monthly": 0.0,
+   "monthly_budget": 0.0,
+   "by_sido": {
+    "경상북도": 13721.90974
+   }
+  },
+  "LOCAL_WLF00004032": {
+   "name": "한부모가족지원(도비)",
+   "eligible_households": 4723.936140000001,
+   "eligible_persons": 12372.213700000002,
+   "eligible_elderly": 0.0,
+   "eligible_share": 0.0002099999999999999,
+   "avg_benefit_monthly": 52380.61904761904,
+   "monthly_budget": 247442699.35462,
+   "by_sido": {
+    "경상북도": 4723.936140000001
+   }
+  },
+  "LOCAL_WLF00004083": {
+   "name": "저소득노인 성인용보행기 지원 사업",
+   "eligible_households": 103926.59508000003,
+   "eligible_persons": 165787.66358000005,
+   "eligible_elderly": 130470.61720000004,
+   "eligible_share": 0.004619999999999998,
+   "avg_benefit_monthly": 16666.99999999999,
+   "monthly_budget": 1732144560.1983595,
+   "by_sido": {
+    "대구광역시": 103926.59508000004
+   }
+  },
+  "LOCAL_WLF00004298": {
+   "name": "저소득가정 자녀 학습비 지원사업",
+   "eligible_households": 7873.226900000001,
+   "eligible_persons": 22719.883340000004,
+   "eligible_elderly": 0.0,
+   "eligible_share": 0.0003499999999999998,
+   "avg_benefit_monthly": 200000.0,
+   "monthly_budget": 1574645380.0,
+   "by_sido": {
+    "경상북도": 7873.226900000001
+   }
+  },
+  "LOCAL_WLF00004553": {
+   "name": "저소득 어르신 무료틀니 지원사업",
+   "eligible_households": 65460.25794000002,
+   "eligible_persons": 102351.94970000003,
+   "eligible_elderly": 81206.71174000001,
+   "eligible_share": 0.002909999999999999,
+   "avg_benefit_monthly": 0.0,
+   "monthly_budget": 0.0,
+   "by_sido": {
+    "대구광역시": 65460.25794000002
+   }
+  },
+  "LOCAL_WLF00005203": {
+   "name": "저소득층 여성청소년 생리용품 지원",
+   "eligible_households": 17546.04852,
+   "eligible_persons": 62535.91652,
+   "eligible_elderly": 674.84802,
+   "eligible_share": 0.0007799999999999994,
+   "avg_benefit_monthly": 12999.999999999996,
+   "monthly_budget": 228098630.75999993,
+   "by_sido": {
+    "경상북도": 17546.04852
+   }
+  },
+  "LOCAL_WLF00005691": {
+   "name": "청년월세 지원사업",
+   "eligible_households": 19570.59258,
+   "eligible_persons": 26544.02212000001,
+   "eligible_elderly": 224.94934,
+   "eligible_share": 0.0008699999999999995,
+   "avg_benefit_monthly": 100000.0,
+   "monthly_budget": 1957059258.0,
+   "by_sido": {
+    "경상북도": 19570.59258
+   }
+  },
+  "LOCAL_WLF00005860": {
+   "name": "영천시 청년근로자 월세 지원",
+   "eligible_households": 35766.945060000005,
+   "eligible_persons": 59836.524439999994,
+   "eligible_elderly": 1574.6453800000004,
+   "eligible_share": 0.0015899999999999992,
+   "avg_benefit_monthly": 199999.99999999997,
+   "monthly_budget": 7153389012.0,
+   "by_sido": {
+    "경상북도": 35766.945060000005
+   }
+  },
+  "LOCAL_WLF00005865": {
+   "name": "영천시 청년 이사비용 지원사업",
+   "eligible_households": 91104.48270000002,
+   "eligible_persons": 169161.90368000005,
+   "eligible_elderly": 0.0,
+   "eligible_share": 0.004049999999999998,
+   "avg_benefit_monthly": 41667.0,
+   "monthly_budget": 3796050480.660901,
+   "by_sido": {
+    "경상북도": 91104.48270000004
+   }
+  },
+  "LOCAL_WLF00006585": {
+   "name": "청소년부모 아동양육비 추가 지원사업",
+   "eligible_households": 0.0,
+   "eligible_persons": 0.0,
+   "eligible_elderly": 0.0,
+   "eligible_share": 0.0,
+   "avg_benefit_monthly": 0.0,
+   "monthly_budget": 0.0,
+   "by_sido": {}
+  },
   "NBLS_EDUCATION": {
    "name": "교육급여",
    "eligible_households": 143967.57760000005,
@@ -208,7 +350,7 @@
   "ratio_persons": 1.6720943538667612,
   "source": "e-나라지표 2760 국민기초생활보장 수급 현황"
  },
- "elapsed_sec": 74.2,
+ "elapsed_sec": 93.4,
  "population": {
   "households": 100000,
   "weighted_households": 22494934.000000015,

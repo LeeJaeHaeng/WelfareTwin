@@ -18,8 +18,8 @@ eligibility:
     quote: 기준 중위소득 65% 이하 청소년부모* 가구의 자녀
     uncertain: true
     ref: 0
-  - expr: count(p.age <= 24) >= 2
-    label: 부모 모두 24세 이하(청소년부모)
+  - expr: hh.head_age <= 24
+    label: 청소년부모(가구주 24세 이하로 근사)
     quote: '*청소년부모 : 자녀를 실양육하는 부모 모두 24세 이하 가구'
     uncertain: true
     ref: 0
@@ -47,4 +47,6 @@ provenance:
   source_hash: cc87fd749bd4af1b
   notes: 부모 모두 24세 이하 조건은 가구원 중 24세 이하가 2명 이상인 것으로 근사했으며, 자녀도 24세 이하일 수 있어 부모만을 식별하지 못하므로 uncertain 처리. 소득 기준은 원문에 '소득인정액'
     명시가 없어 uncertain. 급여는 자녀 1인당 월 20만원으로 자녀 수(hh.n_child)에 상수를 곱해 산정.
+  human_edits:
+  - '2026-11-10 검수: ''부모 모두 24세 이하''를 count(p.age<=24)>=2(자녀도 포함되는 오류)에서 hh.head_age<=24 로 수정'
 tests: tests/rules/LOCAL_WLF00006585.yaml

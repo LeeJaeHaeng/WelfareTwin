@@ -6,38 +6,16 @@ cases:
     region_sido: 경상북도
     region_sigungu: 고령군
     members:
-    - age: 65
-      disability: mild
-      business_income: 3120000
-      other_income: 750000
-    - age: 30
-      disability: mild
-      is_student: true
-      employed: true
-      earned_income: 10000
-      business_income: 30000
-    - age: 35
-      employed: true
-      earned_income: 10000
-      other_income: 10000
-    - age: 35
+    - age: 19
       sex: F
       disability: mild
-      employed: true
-      earned_income: 220000
-      other_income: 20000
-    - age: 34
-      employed: true
-      earned_income: 460000
-    - age: 65
-      disability: mild
-      employed: true
-      earned_income: 210000
+      is_student: true
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 113000000
-    assets_financial: 6000000
-    debts: 15000000
+    assets_housing: 1000000
+    assets_general: 14000000
+    assets_financial: 5000000
+    debts: 20000000
   expect:
     eligible: true
     benefit_monthly: 0
@@ -48,45 +26,14 @@ cases:
     region_sigungu: 고령군
     members:
     - age: 30
-      is_student: true
-      employed: true
-      earned_income: 170000
-      business_income: 13570000
-    - age: 65
-      employed: true
-      earned_income: 1160000
-      business_income: 20000
-      other_income: 3000000
-    - age: 30
       sex: F
-      is_student: true
-      employed: true
-      earned_income: 7990000
-      other_income: 20000
-    - age: 65
       disability: mild
-      employed: true
-      earned_income: 10000
-      business_income: 930000
-      other_income: 10000
-    - age: 30
       is_student: true
-      employed: true
-      earned_income: 12280000
-      other_income: 10000
-    - age: 30
-      sex: F
-      is_student: true
-      employed: true
-      earned_income: 10000
-      business_income: 180000
-      other_income: 20000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 113000000
-    assets_financial: 21000000
-    car_value: 9000000
-    debts: 61000000
+    assets_housing: 70000000
+    car_value: 2000000
+    debts: 38000000
   expect:
     eligible: false
     benefit_monthly: 0
@@ -98,34 +45,16 @@ cases:
     members:
     - age: 34
       employed: true
-      earned_income: 20000
-      business_income: 590000
-    - age: 64
-      employed: true
-      earned_income: 10000
-    - age: 65
-      sex: F
-      disability: mild
-      employed: true
-      earned_income: 4880000
-      business_income: 1260000
-      other_income: 80000
-    - age: 35
+      earned_income: 180000
       business_income: 10000
-    - age: 30
-      employed: true
-      earned_income: 610000
-    - age: 65
-      sex: F
-      disability: mild
-      employed: true
-      earned_income: 10000
       other_income: 10000
     housing: monthly_rent
     rent_monthly: 10000
-    assets_housing: 116000000
-    assets_financial: 6000000
-    debts: 65000000
+    assets_housing: 53000000
+    assets_general: 1000000
+    assets_financial: 7000000
+    car_value: 1000000
+    debts: 4000000
   expect:
     eligible: false
     benefit_monthly: 0

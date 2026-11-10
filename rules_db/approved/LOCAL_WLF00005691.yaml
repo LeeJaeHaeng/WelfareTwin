@@ -1,0 +1,70 @@
+id: LOCAL_WLF00005691
+name: 청년월세 지원사업
+level: local
+region:
+  sido: 경상북도
+  sigungu: 구미시
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00005691 (청년월세 지원사업)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 표현하지 못한 조건 7개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: count(p.age >= 19 and p.age <= 39) >= 1
+    label: 19~39세 청년 가구원
+    quote: 관내 거주 19세~39세 이하 부모님과 별도 거주 중인 무주택 미혼 청년
+    uncertain: false
+    ref: 0
+  - expr: hh.housing == 'monthly_rent'
+    label: 무주택(월세·반전세 거주)
+    quote: '- (주택) 월세 (반전세 포함)'
+    uncertain: true
+    ref: 0
+  - expr: nbls_income_recognized <= round(median_income(hh.size) * 120 / 100)
+    label: 소득 기준중위소득 120% 이하
+    quote: '- (소득) 청년가구 기준 중위소득 120% 이하'
+    uncertain: true
+    ref: 0
+  - expr: hh.assets_housing + hh.assets_general + hh.assets_financial + hh.car_value - hh.debts <= 122000000
+    label: 재산 1억 2천 2백만원 이하
+    quote: '- (재산) 청년가구 1억 2천 2백만원 이하'
+    uncertain: true
+    ref: 0
+  - expr: not (elig('NBLS_LIVELIHOOD') or elig('NBLS_MEDICAL') or elig('NBLS_HOUSING') or elig('NBLS_EDUCATION'))
+    label: 기초생활수급자 제외
+    quote: '※ 제외대상 : 기초생활수급자(생계, 의료, 주거, 교육)'
+    uncertain: false
+    ref: 0
+benefit:
+  monthly: '100000'
+  quote: ■ 월 최대 10만원 최대 24개월 월세 지원 (임차보증금, 관리비 등은 제외)
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: 부모님과 별도 거주 중인
+  reason: 부모와의 별도 거주 여부는 표현식 언어로 나타낼 수 없음
+- quote: 무주택 미혼 청년
+  reason: 혼인 상태(미혼) 변수 없음
+- quote: 2촌 이내 주택 임차자
+  reason: 임대인과의 친족 관계는 표현 불가
+- quote: 1실방 다수거주 방식 전대차
+  reason: 임대차 계약 형태 세부사항은 표현 불가
+- quote: 국토부 청년월세한시특별지원사업 대상자(지급완료자는 가능)
+  reason: 타 사업 수혜 여부는 표현 불가
+- quote: 공공임대 거주자(국민임대, 영구임대, LH매입, 행복주택, 공무원임대주택 등)
+  reason: 공공임대 거주 여부 변수 없음
+- quote: 최대 24개월
+  reason: 지원 기간 상한은 월별 급여식으로 표현 불가
+status: approved
+provenance:
+  serv_id: WLF00005691
+  variant: A
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: a42e1327e2b0a9d7
+  notes: 소득 기준은 원문에 '3,077,086원'이라는 금액이 병기되어 있으나 가구원 수별 기준중위소득 120% 식으로 옮겼고, 소득인정액 기준인지 명시가 없어 uncertain 처리. 재산 기준은 부채 차감
+    여부가 원문에 없어 uncertain. 거주지 요건(관내 거주)은 region으로 분리.
+tests: tests/rules/LOCAL_WLF00005691.yaml

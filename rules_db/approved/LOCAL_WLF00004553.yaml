@@ -1,0 +1,45 @@
+id: LOCAL_WLF00004553
+name: 저소득 어르신 무료틀니 지원사업
+level: local
+region:
+  sido: 대구광역시
+  sigungu: 달서구
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00004553 (저소득 어르신 무료틀니 지원사업)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 표현하지 못한 조건 2개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: count(p.age >= 65) >= 1
+    label: 만 65세 이상 가구원
+    quote: 달서구 주민중 만65세 이상
+    uncertain: false
+    ref: 0
+  - expr: elig('NBLS_MEDICAL') or nbls_income_recognized <= round(median_income(hh.size) * 50 / 100)
+    label: 의료급여 수급자 또는 차상위 건강보험전환자
+    quote: 기초생활 의료급여 수급자 및 차상위 건강보험전환자
+    uncertain: true
+    ref: 0
+benefit:
+  monthly: '0'
+  quote: 완전틀니, 부분틀니 본인부담금 5~15% 지원
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: 단, 부분의치 양악지원 경우 지대치 보철 최대6개까지 지원
+  reason: 시술 범위·개수 제한은 가구 특성으로 표현할 수 없는 급여 내용 제한
+- quote: 노인의치(틀니) 시술비용 지원 및 사후관리
+  reason: 현물·서비스 성격의 지원으로 금액 산정 불가
+status: approved
+provenance:
+  serv_id: WLF00004553
+  variant: A
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: ed94b363edc20abe
+  notes: '''차상위 건강보험전환자''는 차상위계층 중 건강보험 전환자를 의미하나 원문에 소득인정액 기준이 명시되지 않아 차상위(기준 중위소득 50% 이하) 규칙으로 근사하였고 uncertain으로 표시함. 지원주기가
+    ''월''로 기재되어 benefit period를 monthly로 두었으나 실제로는 시술 시 1회성 지원일 가능성이 있음. 지원 금액은 본인부담금의 5~15% 비율 지원이라 금액 산정 불가(expr 0).'
+tests: tests/rules/LOCAL_WLF00004553.yaml
