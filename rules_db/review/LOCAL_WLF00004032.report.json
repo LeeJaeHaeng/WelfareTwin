@@ -1,0 +1,72 @@
+{
+ "serv_id": "WLF00004032",
+ "name": "한부모가족지원(도비)",
+ "region": "경상북도 경주시",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 3,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 628,
+    "output_tokens": 1494,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 17.9
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 3,
+  "n_not_modeled": 4,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 710,
+    "output_tokens": 1675,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 19.6
+   }
+  ]
+ },
+ "llm_cost_usd": 0.0887,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": true,
+   "proof": "Z3: 자격 판정이 다른 가구가 존재하지 않음(unsat)"
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [
+    "한부모가족지원법에 따른 저소득한부모가족으로써, 주소지가 경상북도인  35~39세 이하 청년한부모 가구"
+   ],
+   "B_only": [
+    "주소지가 경상북도인  35~39세 이하 청년한부모 가구",
+    "한부모가족지원법에 따른 저소득한부모가족"
+   ],
+   "both": [
+    "○ 자녀교복비 : 중,고등학교 신입생 자녀 입학시 300천원 지원",
+    "○ 자립정착금 : 도내 한부모가족복지시설에서 2년 이상 거주 후 퇴소하는 저소득 한부모 세대당 5,000천원 지원"
+   ]
+  },
+  "agree": true
+ },
+ "tests": {
+  "generated": 3
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "불확실(uncertain) 조건 포함"
+ ]
+}

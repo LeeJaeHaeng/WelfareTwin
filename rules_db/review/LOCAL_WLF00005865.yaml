@@ -1,0 +1,54 @@
+id: LOCAL_WLF00005865
+name: 영천시 청년 이사비용 지원사업
+level: local
+region:
+  sido: 경상북도
+  sigungu: 영천시
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00005865 (영천시 청년 이사비용 지원사업)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 1회성 지원은 연 1회 지급으로 보고 월 환산(÷12)
+- 표현하지 못한 조건 6개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: hh.head_age >= 19 and hh.head_age <= 45
+    label: 청년 세대주 연령 19~45세
+    quote: -(연령) 19세 이상 45세 이하인 사람
+    uncertain: true
+    ref: 0
+  - expr: nbls_income_recognized <= round(median_income(hh.size) * 150 / 100)
+    label: 소득 기준 중위소득 150% 이하
+    quote: -(소득) 청년 세대주가 속한 건강보험료가 기준 중위소득 150%이하
+    uncertain: true
+    ref: 0
+benefit:
+  annual: '500000'
+  quote: '- 최대 50만원까지 지원(생애 1회)'
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: -(전입기준) 기준일 이후 주택 임차(전,월세) 또는 매수의 사유로 영천시에 전입하여 1개월 이상 거주 및 주민등록 된 청년 세대주
+  reason: 전입 사유·전입 기준일·거주 기간(1개월 이상)·세대주 여부는 표현식 언어로 나타낼 수 없음
+- quote: -(재산) 매수의 사유로 전입하는 경우 전입 대상 주택 외에는 무주택자여야 함
+  reason: 전입 사유에 따른 조건부 무주택 요건(거주 외 주택 소유 여부)은 표현 불가
+- quote: -(제외대상) 임대인(집주인) 및 주택 매도인이 신청인(청년 세대주)의 가족관계등록부상 "부모"인 경우 지원 제외
+  reason: 임대인·매도인과의 가족관계는 가구 변수로 표현 불가
+- quote: 같은 이사 건에 대하여 중앙부처, 타 지자체 등에서 이사비 지원을 받은 자
+  reason: 다른 사업 수혜 여부는 모델링 대상 아님
+- quote: 기타 사업 취지에 부합하지 않는다고 판단되는 경우
+  reason: 기관의 재량 판단
+- quote: '- 이사비용(30만원 한도) 및 중개보수(20만원 한도) 포함하여 지원'
+  reason: 실제 지출액에 따른 항목별 한도 지원으로 금액 산정 불가
+status: review
+provenance:
+  serv_id: WLF00005865
+  variant: A
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: e38382979ac7ab09
+  notes: 연령 조건은 '청년 세대주'를 전제로 하므로 가구주 나이(head_age)로 모델링했으며, 세대주 여부 자체는 표현 불가하여 not_modeled로 분류. 소득 기준은 건강보험료 기준이므로 소득인정액 근사로
+    보아 uncertain=true. 급여는 '최대 50만원'이어서 상한액을 사용.
+tests: tests/rules/LOCAL_WLF00005865.yaml

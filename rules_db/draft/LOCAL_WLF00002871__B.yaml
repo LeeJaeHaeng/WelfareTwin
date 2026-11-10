@@ -1,0 +1,53 @@
+id: LOCAL_WLF00002871
+name: 저소득노인지원
+level: local
+region:
+  sido: 경상북도
+  sigungu: 청도군
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00002871 (저소득노인지원)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 표현하지 못한 조건 4개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: count(p.age >= 80) >= 1
+    label: 만 80세 이상 노인 포함
+    quote: 80세 이상 기초수급 독거노인
+    uncertain: false
+    ref: 0
+  - expr: elig('NBLS_LIVELIHOOD') or elig('NBLS_MEDICAL') or elig('NBLS_HOUSING') or elig('NBLS_EDUCATION')
+    label: 국민기초생활수급자
+    quote: 80세이상 국민기초생활수급 독거 어르신
+    uncertain: false
+    ref: 0
+  - expr: hh.size == 1
+    label: 독거(1인 가구)
+    quote: 80세이상 국민기초생활수급 독거 어르신
+    uncertain: false
+    ref: 0
+benefit:
+  annual: '0'
+  quote: 생신케이크(롤케이크)을 생신월에 맞쳐 가정에 전달
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: '거동불편 재가노인 식사배달 : 175명'
+  reason: 거동불편 여부 및 정원(175명) 제한은 표현 불가(기관 판단·정원 제한)
+- quote: '무의탁노인 건강음료배달: 노인돌봄기본서비스 대상자 1,000명'
+  reason: 다른 사업(노인돌봄기본서비스) 수혜 여부 및 정원 제한은 표현 불가
+- quote: '무료급식 : 기초수급자, 차상위계층 및 식사를 거를 우려가 있는 노인'
+  reason: 하위 사업별 별도 기준이며 '식사를 거를 우려'는 기관 판단 사항
+- quote: 생계가 어려우신 분으로 사업마다 조건이 다름
+  reason: 사업별 기준 상이 및 기관의 생계곤란 판단으로 수치화 불가
+status: draft
+provenance:
+  serv_id: WLF00002871
+  variant: B
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: 34b6f6e6eb636529
+  notes: 선정기준 본문의 '80세이상 국민기초생활수급 독거 어르신'을 핵심 조건으로 모델링했고, 지원내용에 명시된 생신케이크 전달은 현물 지원이라 금액 산정 불가(expr 0). 식사배달·건강음료배달·무료급식 등
+    하위 사업별 조건은 not_modeled로 분류.

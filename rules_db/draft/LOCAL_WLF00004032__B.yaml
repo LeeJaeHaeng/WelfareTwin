@@ -1,0 +1,53 @@
+id: LOCAL_WLF00004032
+name: 한부모가족지원(도비)
+level: local
+region:
+  sido: 경상북도
+  sigungu: 경주시
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00004032 (한부모가족지원(도비))
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 표현하지 못한 조건 4개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: hh.single_parent
+    label: 한부모(조손·청소년한부모 포함) 가족
+    quote: (한부모,조손가족) 기준중위소득 65%이하 / (청소년한부모) 65%이하
+    uncertain: true
+    ref: 0
+  - expr: nbls_income_recognized <= round(median_income(hh.size) * 65 / 100)
+    label: 기준중위소득 65% 이하
+    quote: 기준중위소득 65%이하
+    uncertain: true
+    ref: 0
+  - expr: hh.size >= 1
+    label: 청년한부모 자녀양육비 대상(가구주 35~39세) 또는 일반 저소득 한부모(월동연료비 대상)
+    quote: '○ 월동연료비 : 도내 저소득 한부모 세대'
+    uncertain: true
+    ref: 0
+benefit:
+  annual: 400000 + if(hh.head_age >= 35 and hh.head_age <= 39, sum(if(p.age < 18, 1200000, 0)), 0)
+  quote: '○ 월동연료비 : 도내 저소득 한부모 세대당 연 4회(1,2,11,12월), 월 100천원 지원'
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: '○ 자립정착금 : 도내 한부모가족복지시설에서 2년 이상 거주 후 퇴소하는 저소득 한부모 세대당 5,000천원 지원'
+  reason: 시설 거주 기간 및 퇴소 여부는 표현식으로 표현할 수 없음(1회성 지원이라 연간 급여식에 미포함)
+- quote: '○ 자녀교복비 : 중,고등학교 신입생 자녀 입학시 300천원 지원'
+  reason: 신입생(입학) 여부는 가구원 속성으로 표현할 수 없음
+- quote: 주소지가 경상북도인  35~39세 이하 청년한부모 가구
+  reason: 주소지 조건은 region으로 처리
+- quote: 한부모가족지원법에 따른 저소득한부모가족
+  reason: 법령상 한부모가족 지정(증명서 발급) 여부는 기관 판단 사항
+status: draft
+provenance:
+  serv_id: WLF00004032
+  variant: B
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: cb026ac323bf5036
+  notes: 선정기준은 기준중위소득 65% 이하이며 소득인정액 명시가 없어 uncertain 처리. 급여는 모든 저소득 한부모 세대에 공통 지급되는 월동연료비(월 10만원×연 4회=40만원)를 기본으로, 가구주가 35~39세인
+    경우 18세 미만 자녀 1인당 월 10만원(연 120만원)을 추가 합산. 자립정착금(1회성 500만원)과 자녀교복비(30만원)는 추가 요건이 모델링 불가하여 제외.

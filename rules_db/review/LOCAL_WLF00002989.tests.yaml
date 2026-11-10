@@ -1,0 +1,131 @@
+program: LOCAL_WLF00002989
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 고령군
+    members:
+    - age: 65
+      disability: mild
+      business_income: 3120000
+      other_income: 750000
+    - age: 30
+      disability: mild
+      is_student: true
+      employed: true
+      earned_income: 10000
+      business_income: 30000
+    - age: 35
+      employed: true
+      earned_income: 10000
+      other_income: 10000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 220000
+      other_income: 20000
+    - age: 34
+      employed: true
+      earned_income: 460000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 210000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 113000000
+    assets_financial: 6000000
+    debts: 15000000
+  expect:
+    eligible: true
+    benefit_monthly: 0
+- name: 자동 — '기초생활보장수급자 또는 차상위계층'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 고령군
+    members:
+    - age: 30
+      is_student: true
+      employed: true
+      earned_income: 170000
+      business_income: 13570000
+    - age: 65
+      employed: true
+      earned_income: 1160000
+      business_income: 20000
+      other_income: 3000000
+    - age: 30
+      sex: F
+      is_student: true
+      employed: true
+      earned_income: 7990000
+      other_income: 20000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 930000
+      other_income: 10000
+    - age: 30
+      is_student: true
+      employed: true
+      earned_income: 12280000
+      other_income: 10000
+    - age: 30
+      sex: F
+      is_student: true
+      employed: true
+      earned_income: 10000
+      business_income: 180000
+      other_income: 20000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 113000000
+    assets_financial: 21000000
+    car_value: 9000000
+    debts: 61000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '학령기 자녀(학생) 있음'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 고령군
+    members:
+    - age: 34
+      employed: true
+      earned_income: 20000
+      business_income: 590000
+    - age: 64
+      employed: true
+      earned_income: 10000
+    - age: 65
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 4880000
+      business_income: 1260000
+      other_income: 80000
+    - age: 35
+      business_income: 10000
+    - age: 30
+      employed: true
+      earned_income: 610000
+    - age: 65
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 10000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 116000000
+    assets_financial: 6000000
+    debts: 65000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

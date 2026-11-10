@@ -1,0 +1,75 @@
+{
+ "serv_id": "WLF00002803",
+ "name": "서구 저소득층 건강보험료 지원",
+ "region": "대구광역시 서구",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 6,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 423,
+    "output_tokens": 1422,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 16.7
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 5,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 505,
+    "output_tokens": 1433,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 16.6
+   }
+  ]
+ },
+ "llm_cost_usd": 0.0788,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": true,
+   "proof": "Z3: 자격 판정이 다른 가구가 존재하지 않음(unsat)"
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [
+    "국민건강보험 월 부톼금액이 보건복지부가 정한 최저보험료 이하인 아래 세대",
+    "국민건강보험료 부과금액이 최저보험료  미만인 세대",
+    "조손가구"
+   ],
+   "B_only": [
+    "국민건강보험 월 부톼금액이 보건복지부가 정한 최저보험료 이하인",
+    "한부모가족지원법에 따른 한부모세대 및 조손가구"
+   ],
+   "both": [
+    "그 밖에 대구광역시 서구청장이 필요하다고 인정하는 세대",
+    "대구광역시 서구 지역가입자",
+    "만성질환자 및 중증질환자"
+   ]
+  },
+  "agree": true
+ },
+ "tests": {
+  "generated": 3
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "불확실(uncertain) 조건 포함"
+ ]
+}

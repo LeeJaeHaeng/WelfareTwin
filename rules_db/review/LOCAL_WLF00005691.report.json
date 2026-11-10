@@ -1,0 +1,75 @@
+{
+ "serv_id": "WLF00005691",
+ "name": "청년월세 지원사업",
+ "region": "경상북도 구미시",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 5,
+  "n_not_modeled": 7,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 547,
+    "output_tokens": 1492,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 17.2
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 6,
+  "n_not_modeled": 7,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 629,
+    "output_tokens": 2146,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 23.8
+   }
+  ]
+ },
+ "llm_cost_usd": 0.0997,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": true,
+   "proof": "Z3: 자격 판정이 다른 가구가 존재하지 않음(unsat)"
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [
+    "최대 24개월"
+   ],
+   "B_only": [
+    "최대 24개월 월세 지원"
+   ],
+   "both": [
+    "1실방 다수거주 방식 전대차",
+    "2촌 이내 주택 임차자",
+    "공공임대 거주자(국민임대, 영구임대, LH매입, 행복주택, 공무원임대주택 등)",
+    "국토부 청년월세한시특별지원사업 대상자(지급완료자는 가능)",
+    "무주택 미혼 청년",
+    "부모님과 별도 거주 중인"
+   ]
+  },
+  "agree": true
+ },
+ "tests": {
+  "generated": 6
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "불확실(uncertain) 조건 포함"
+ ]
+}

@@ -1,0 +1,127 @@
+program: LOCAL_WLF00005691
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 구미시
+    members:
+    - age: 39
+      sex: F
+      disability: mild
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 113000000
+    assets_financial: 6000000
+    car_value: 3000000
+    debts: 61000000
+  expect:
+    eligible: true
+    benefit_monthly: 100000
+- name: 자동 — '19~39세 청년 가구원'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 구미시
+    members:
+    - age: 64
+      sex: F
+      disability: mild
+      business_income: 210000
+      other_income: 20000
+    - age: 65
+      sex: F
+      employed: true
+      earned_income: 1170000
+      business_income: 1180000
+      other_income: 1310000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 112000000
+    assets_general: 1000000
+    assets_financial: 21000000
+    car_value: 1000000
+    debts: 58000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '무주택(월세·반전세 거주)'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 구미시
+    members:
+    - age: 34
+      sex: F
+      disability: mild
+      business_income: 610000
+      other_income: 2070000
+    - age: 34
+      sex: F
+      employed: true
+      earned_income: 1800000
+      other_income: 10000
+    housing: jeonse
+    assets_housing: 110000000
+    assets_financial: 6000000
+    car_value: 1000000
+    debts: 58000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '소득 기준중위소득 120% 이하'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 구미시
+    members:
+    - age: 19
+      employed: true
+      earned_income: 15440000
+      business_income: 590000
+      other_income: 3000000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 114000000
+    assets_financial: 7000000
+    car_value: 1000000
+    debts: 62000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '재산 1억 2천 2백만원 이하'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 구미시
+    members:
+    - age: 34
+      employed: true
+      earned_income: 20000
+      business_income: 560000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 53000000
+    assets_general: 65000000
+    assets_financial: 6000000
+    debts: 1000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '기초생활수급자 제외'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 구미시
+    members:
+    - age: 39
+      employed: true
+      earned_income: 10000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 52000000
+    assets_financial: 7000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

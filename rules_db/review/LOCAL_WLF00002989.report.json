@@ -1,0 +1,117 @@
+{
+ "serv_id": "WLF00002989",
+ "name": "저소득주민 자녀장학금",
+ "region": "경상북도 고령군",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 2,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 226,
+    "output_tokens": 978,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 12.3
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 1,
+  "n_not_modeled": 2,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 308,
+    "output_tokens": 1138,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 14.8
+   }
+  ]
+ },
+ "llm_cost_usd": 0.0584,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": false,
+   "household": {
+    "hh_id": "diff",
+    "region_sido": "경상북도",
+    "region_sigungu": "의성군",
+    "members": [
+     {
+      "age": 65,
+      "sex": "M",
+      "disability": "mild",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 60000,
+      "business_income": 2470000,
+      "other_income": 10000
+     },
+     {
+      "age": 34,
+      "sex": "M",
+      "disability": "mild",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 30000,
+      "business_income": 580000,
+      "other_income": 30000
+     }
+    ],
+    "housing": "monthly_rent",
+    "rent_monthly": 10000,
+    "assets_housing": 0,
+    "assets_general": 73000000,
+    "assets_financial": 6000000,
+    "car_value": 0,
+    "debts": 79000000,
+    "single_parent": false,
+    "obligor_over_limit": false,
+    "obligor_medical_capable": false
+   },
+   "household_text": "2인 가구(30대 1명, 60대 1명, 장애인 포함), 경상북도 의성군, 월세 10,000원, 월 소득 3,180,000원(근로 90,000원, 사업 3,050,000원, 기타 40,000원), 일반재산 73,000,000원, 금융재산 6,000,000원, 부채 79,000,000원",
+   "A_eligible": false,
+   "B_eligible": true,
+   "A_failed": [
+    {
+     "label": "학령기 자녀(학생) 있음",
+     "detail": "count(p.is_student) 0 (기준 1)",
+     "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00002989 (저소득주민 자녀장학금) (지원대상·선정기준·지원내용)"
+    }
+   ],
+   "B_failed": []
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [],
+   "B_only": [],
+   "both": [
+    "고등학생(50만원) 및 대학생(100만원)에게 장학금 지급",
+    "생계.주거.의료.교육급여 수급자 및 기타 저소득층 자녀"
+   ]
+  },
+  "agree": false
+ },
+ "tests": {
+  "generated": 3
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "A·B 판정 불일치",
+  "불확실(uncertain) 조건 포함"
+ ]
+}

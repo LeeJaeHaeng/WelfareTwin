@@ -32,6 +32,8 @@ class ExprCond(BaseModel):
     expr: Expr
     ref: int | None = None      # source_refs 인덱스
     label: str | None = None    # 사람이 읽는 조건 이름
+    quote: str | None = None    # 근거 원문 인용(LLM 추출 규칙) — 원문 부분 문자열이어야 함
+    uncertain: bool = False
 
     @field_validator("expr", mode="before")
     @classmethod
@@ -66,6 +68,8 @@ class Benefit(BaseModel):
     monthly: Expr | None = None
     annual: Expr | None = None   # 연 단위 제도(근로장려금 등) → 월로 환산(÷12)
     ref: int | None = None
+    quote: str | None = None
+    uncertain: bool = False
 
     @field_validator("monthly", "annual", mode="before")
     @classmethod
@@ -85,6 +89,24 @@ class Exclusion(BaseModel):
     program: str
     effect: Literal["drop_self"] = "drop_self"   # 둘 다 자격이면 이 제도를 탈락 처리
     note: str | None = None
+
+
+class Region(BaseModel):
+    """지자체 사업 지역. 판정은 시도 일치만 본다(시군구는 기록용 — 합성 인구·Z3 에 시군구가 없어 시도 단위로 근사)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    sido: str
+    sigungu: str | None = None
+
+
+class NotModeled(BaseModel):
+    """DSL 로 표현하지 못한 원문 조건(거주기간, 질병, 주택 소유 등). 규칙은 이 조건만큼 대상을 과대 추정한다."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    quote: str
+    reason: str
 
 
 class Derived(BaseModel):
@@ -130,7 +152,7 @@ class Program(BaseModel):
     id: str
     name: str
     level: Literal["central", "local"]
-    region: str | None = None
+    region: Region | None = None
     unit: Literal["household", "person"] = "household"
     source_refs: list[SourceRef] = Field(min_length=1)
     assumptions: list[str] = []          # 단순화 가정(화면에 표시)
@@ -138,8 +160,10 @@ class Program(BaseModel):
     eligibility: Cond
     benefit: Benefit
     exclusions: list[Exclusion] = []
+    not_modeled: list[NotModeled] = []
     status: Literal["draft", "review", "approved"]
     tests: str | None = None
+    provenance: dict | None = None     # LLM 추출 이력: serv_id, 모델, 프롬프트 버전, 원문 해시
 
     @field_validator("derived", mode="before")
     @classmethod

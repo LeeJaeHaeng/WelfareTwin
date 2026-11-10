@@ -275,6 +275,10 @@ class _Ctx:
             def run():
                 results: list[tuple[ExprCond, bool]] = []
                 ok = self.cond(prog.eligibility, prog, results)
+                if prog.region is not None:
+                    in_region = self.hh.region_sido == prog.region.sido
+                    results.insert(0, (region_cond(prog), in_region))
+                    ok = ok and in_region
                 self.cond_values[pid] = results
                 return ok
             self.elig_cache[pid] = self._guarded(f"elig:{pid}", run)
@@ -382,6 +386,13 @@ class _Ctx:
         if name == "benefit":
             return Fraction(self.benefit(args[0].value))
         raise RuleError(f"알 수 없는 함수 {name}")
+
+
+def region_cond(prog: Program) -> ExprCond:
+    """지자체 사업의 지역(시도) 조건 — trace 표시용 가상 조건."""
+    from welfaretwin.rules.expr import parse
+    label = f"{prog.region.sido}{' ' + prog.region.sigungu if prog.region.sigungu else ''} 거주(시도 단위 판정)"
+    return ExprCond(expr=parse(f"hh.region_sido == '{prog.region.sido}'"), label=label)
 
 
 def evaluate(hh: Household, rs: RuleSet, program_ids: list[str] | None = None) -> list[Decision]:

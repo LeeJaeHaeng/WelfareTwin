@@ -1,0 +1,172 @@
+{
+ "serv_id": "WLF00005860",
+ "name": "영천시 청년근로자 월세 지원",
+ "region": "경상북도 영천시",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 5,
+  "n_not_modeled": 9,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": true,
+    "input_tokens": 591,
+    "output_tokens": 1906,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2800,
+    "seconds": 24.1
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 5,
+  "n_not_modeled": 10,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": true,
+    "input_tokens": 673,
+    "output_tokens": 2639,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2851,
+    "seconds": 31.2
+   }
+  ]
+ },
+ "llm_cost_usd": 0,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": false,
+   "household": {
+    "hh_id": "diff",
+    "region_sido": "경상북도",
+    "region_sigungu": "의성군",
+    "members": [
+     {
+      "age": 64,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 10000,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 45,
+      "sex": "F",
+      "disability": "mild",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 360000,
+      "other_income": 0
+     },
+     {
+      "age": 35,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 590000,
+      "other_income": 0
+     },
+     {
+      "age": 65,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": true,
+      "pregnant": false,
+      "earned_income": 290000,
+      "business_income": 0,
+      "other_income": 2480000
+     },
+     {
+      "age": 45,
+      "sex": "F",
+      "disability": "none",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 0,
+      "other_income": 0
+     },
+     {
+      "age": 46,
+      "sex": "M",
+      "disability": "none",
+      "is_student": false,
+      "employed": false,
+      "pregnant": false,
+      "earned_income": 0,
+      "business_income": 600000,
+      "other_income": 0
+     }
+    ],
+    "housing": "monthly_rent",
+    "rent_monthly": 10000,
+    "assets_housing": 66000000,
+    "assets_general": 1000000,
+    "assets_financial": 30000000,
+    "car_value": 5000000,
+    "debts": 1000000,
+    "single_parent": false,
+    "obligor_over_limit": false,
+    "obligor_medical_capable": false
+   },
+   "household_text": "6인 가구(30대 1명, 40대 3명, 60대 2명, 장애인 포함), 경상북도 의성군, 월세 10,000원, 월 소득 4,330,000원(근로 300,000원, 사업 1,550,000원, 기타 2,480,000원), 주거용재산 66,000,000원, 일반재산 1,000,000원, 금융재산 30,000,000원, 자동차 5,000,000원, 부채 1,000,000원",
+   "A_eligible": false,
+   "B_eligible": true,
+   "A_failed": [
+    {
+     "label": "만 19~45세 청년근로자 포함",
+     "detail": "count(p.age >= 19 and p.age <= 45 and p.employed) 0 (기준 1)",
+     "source": "한국사회보장정보원 지자체복지서비스 상세 WLF00005860 (영천시 청년근로자 월세 지원) (지원대상·선정기준·지원내용)"
+    }
+   ],
+   "B_failed": []
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [
+    "월세지원금 200,000원 최대 12회 매월 25일 지급"
+   ],
+   "B_only": [
+    "청년근로자",
+    "최대 12회"
+   ],
+   "both": [
+    "2촌이내 주택 임차자, 1실방 다수    거주 방식 전대차",
+    "공공임대(국민임대, 영구임대, LH임대, 행복주택, 공무원 임대주택 등)    거주자",
+    "국가 및 지방자치단체 공무원(공무직 포함)",
+    "국토부 청년월세한시특별지원사업 대상자",
+    "기타 사업 취지에 부합하지 않다고 판단되는 경우",
+    "영천시에 부모와 별도 거주하는",
+    "임대인이 ‘가족관계증명서’에 등재된 신청인의 ‘부모,형제,자매’인 경우",
+    "정부 등 유사 주거 지원사업을 지원 받고있는 자(지급 완료자는 가능)"
+   ]
+  },
+  "agree": false
+ },
+ "tests": {
+  "generated": 6
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "A·B 판정 불일치",
+  "불확실(uncertain) 조건 포함"
+ ]
+}

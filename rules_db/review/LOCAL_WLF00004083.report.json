@@ -1,0 +1,72 @@
+{
+ "serv_id": "WLF00004083",
+ "name": "저소득노인 성인용보행기 지원 사업",
+ "region": "대구광역시",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 7,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 572,
+    "output_tokens": 2227,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 26.8
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 7,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 654,
+    "output_tokens": 2687,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 31.3
+   }
+  ]
+ },
+ "llm_cost_usd": 0.1318,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": true,
+   "proof": "Z3: 자격 판정이 다른 가구가 존재하지 않음(unsat)"
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [],
+   "B_only": [],
+   "both": [
+    "5년주기로 1회 지원(기간 내 수리 및 교체 비용은 본인 부담)",
+    "④ 중위소득 75% 초과 100% 이하의 통합돌봄 판정자",
+    "기초생활수급자 100% 의료수급자 94%, 차상위계층 91%, 저소득노인(중위소득75%이하) 85%,중위소득100%이하통합돌봄판정자(50%)",
+    "대상자중 예산소진시 까지 선착순 지원",
+    "주민등록상 1년 이상 대구시에 거주중인",
+    "주민등록상 65세 생일이 속한 달의 1개월 전부터 신청 가능(1961년생)",
+    "증빙서류(의사소견서, 진단서, 장기요양등급외 판정서 등)로 보행이 불편하다고 인정된 자"
+   ]
+  },
+  "agree": true
+ },
+ "tests": {
+  "generated": 3
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "불확실(uncertain) 조건 포함"
+ ]
+}

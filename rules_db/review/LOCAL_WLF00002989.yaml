@@ -1,0 +1,47 @@
+id: LOCAL_WLF00002989
+name: 저소득주민 자녀장학금
+level: local
+region:
+  sido: 경상북도
+  sigungu: 고령군
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00002989 (저소득주민 자녀장학금)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 1회성 지원은 연 1회 지급으로 보고 월 환산(÷12)
+- 표현하지 못한 조건 2개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: elig('NBLS_LIVELIHOOD') or elig('NBLS_MEDICAL') or elig('NBLS_HOUSING') or elig('NBLS_EDUCATION') or nbls_income_recognized
+      <= round(median_income(hh.size) * 50 / 100)
+    label: 기초생활보장수급자 또는 차상위계층
+    quote: 기초생활보장수급자 가구, 차상위계층
+    uncertain: true
+    ref: 0
+  - expr: count(p.is_student) >= 1
+    label: 학령기 자녀(학생) 있음
+    quote: 고등학생(50만원) 및 대학생(100만원)에게 장학금 지급
+    uncertain: true
+    ref: 0
+benefit:
+  annual: '0'
+  quote: 고등학생(50만원) 및 대학생(100만원)에게 장학금 지급
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: 고등학생(50만원) 및 대학생(100만원)에게 장학금 지급
+  reason: 고등학생·대학생 재학 구분을 가구원 속성으로 표현할 수 없어 지급액(50만원/100만원)을 확정할 수 없음
+- quote: 생계.주거.의료.교육급여 수급자 및 기타 저소득층 자녀
+  reason: '''기타 저소득층''의 구체적 소득·재산 기준이 원문에 제시되지 않음'
+status: review
+provenance:
+  serv_id: WLF00002989
+  variant: A
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: 83ff8073c44052bf
+  notes: 선정기준은 기초생활보장수급자(생계·주거·의료·교육급여) 가구 또는 차상위계층으로, 두 유형을 or로 묶었다. 차상위는 소득인정액 기준 중위소득 50% 이하로 환산했으므로 uncertain=true. 지원내용은
+    고등학생 50만원, 대학생 100만원으로 학교급 구분이 필요하나 표현식 언어에 학교급 변수가 없어 급여 expr은 0, uncertain=true로 두었다.
+tests: tests/rules/LOCAL_WLF00002989.yaml

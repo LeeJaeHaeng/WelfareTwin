@@ -1,0 +1,115 @@
+program: LOCAL_WLF00004553
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 대구광역시
+    members:
+    - age: 19
+      business_income: 610000
+    - age: 19
+      employed: true
+      earned_income: 10000
+      other_income: 10000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 190000
+      other_income: 20000
+    - age: 65
+      sex: F
+      employed: true
+      earned_income: 100000
+      business_income: 470000
+    - age: 65
+      disability: mild
+      business_income: 3130000
+    - age: 65
+      sex: F
+      disability: mild
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_financial: 83000000
+    car_value: 1000000
+  expect:
+    eligible: true
+    benefit_monthly: 0
+- name: 자동 — '만 65세 이상 가구원'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 대구광역시
+    members:
+    - age: 35
+      disability: mild
+      business_income: 1530000
+    - age: 64
+      disability: mild
+      employed: true
+      earned_income: 210000
+      other_income: 410000
+    - age: 34
+      employed: true
+      earned_income: 10000
+      business_income: 530000
+    - age: 34
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 600000
+    - age: 34
+      sex: F
+      disability: mild
+      business_income: 210000
+    - age: 64
+      sex: F
+      disability: mild
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_general: 77000000
+    assets_financial: 7000000
+    debts: 1000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '의료급여 수급자 또는 차상위 건강보험전환자'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 대구광역시
+    members:
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 15170000
+      business_income: 19530000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 15160000
+      other_income: 10000
+    - age: 34
+      employed: true
+      earned_income: 20000000
+      business_income: 1370000
+      other_income: 10000
+    - age: 35
+      disability: mild
+      employed: true
+      earned_income: 210000
+      other_income: 10000
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 4180000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 18000000
+    assets_general: 118000000
+    assets_financial: 80000000
+    car_value: 40000000
+    debts: 60000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

@@ -1,0 +1,70 @@
+{
+ "serv_id": "WLF00004553",
+ "name": "저소득 어르신 무료틀니 지원사업",
+ "region": "대구광역시 달서구",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 2,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 323,
+    "output_tokens": 891,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 12.2
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 2,
+  "n_not_modeled": 2,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 405,
+    "output_tokens": 1001,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 13.2
+   }
+  ]
+ },
+ "llm_cost_usd": 0.0538,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": true,
+   "proof": "Z3: 자격 판정이 다른 가구가 존재하지 않음(unsat)"
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [
+    "노인의치(틀니) 시술비용 지원 및 사후관리"
+   ],
+   "B_only": [
+    "차상위 건강보험전환자"
+   ],
+   "both": [
+    "단, 부분의치 양악지원 경우 지대치 보철 최대6개까지 지원"
+   ]
+  },
+  "agree": true
+ },
+ "tests": {
+  "generated": 3
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "불확실(uncertain) 조건 포함"
+ ]
+}

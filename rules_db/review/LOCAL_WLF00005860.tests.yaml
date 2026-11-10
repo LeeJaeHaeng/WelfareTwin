@@ -1,0 +1,152 @@
+program: LOCAL_WLF00005860
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 35
+      disability: mild
+      employed: true
+      earned_income: 150000
+    housing: jeonse
+    assets_housing: 53000000
+    assets_financial: 6000000
+    car_value: 2000000
+    debts: 1000000
+  expect:
+    eligible: true
+    benefit_monthly: 200000
+- name: 자동 — '만 19~45세 청년근로자 포함'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 2470000
+      other_income: 10000
+    housing: jeonse
+    assets_housing: 113000000
+    assets_financial: 6000000
+    debts: 61000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '기준 중위소득 120% 이하'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 1170000
+      business_income: 2190000
+    - age: 35
+      employed: true
+      earned_income: 10000
+    housing: jeonse
+    assets_housing: 37000000
+    assets_financial: 22000000
+    car_value: 39000000
+    debts: 1000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '가구재산 1억 2천 2백만원 이하'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 46
+      disability: mild
+      employed: true
+      earned_income: 740000
+      other_income: 1600000
+    - age: 19
+      disability: mild
+      employed: true
+      earned_income: 610000
+      other_income: 10000
+    housing: jeonse
+    assets_housing: 1000000
+    assets_general: 127000000
+    assets_financial: 6000000
+    debts: 4000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '주택 소유자 제외'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 65
+      disability: mild
+      employed: true
+      earned_income: 4690000
+    - age: 35
+      disability: mild
+      employed: true
+      earned_income: 210000
+      business_income: 880000
+    - age: 46
+      disability: mild
+      employed: true
+      earned_income: 210000
+      other_income: 10000
+    - age: 46
+      disability: mild
+      employed: true
+      earned_income: 1420000
+      business_income: 190000
+      other_income: 10000
+    - age: 34
+      employed: true
+      earned_income: 600000
+      business_income: 10000
+      other_income: 200000
+    - age: 35
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 220000
+      other_income: 200000
+    housing: own
+    assets_housing: 1000000
+    assets_general: 37000000
+    assets_financial: 24000000
+    car_value: 5000000
+    debts: 3000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '주거급여 수혜자 제외'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 영천시
+    members:
+    - age: 45
+      disability: mild
+      employed: true
+      earned_income: 20000
+      business_income: 590000
+      other_income: 750000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 110000000
+    assets_general: 1000000
+    assets_financial: 6000000
+    debts: 56000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

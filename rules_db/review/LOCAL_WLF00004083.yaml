@@ -1,0 +1,57 @@
+id: LOCAL_WLF00004083
+name: 저소득노인 성인용보행기 지원 사업
+level: local
+region:
+  sido: 대구광역시
+  sigungu: null
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00004083 (저소득노인 성인용보행기 지원 사업)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 1회성 지원은 연 1회 지급으로 보고 월 환산(÷12)
+- 표현하지 못한 조건 7개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: count(p.age >= 65) >= 1
+    label: 만 65세 이상 노인
+    quote: 만65세 이상
+    uncertain: false
+    ref: 0
+  - expr: (elig('NBLS_LIVELIHOOD') or elig('NBLS_MEDICAL') or elig('NBLS_HOUSING') or elig('NBLS_EDUCATION')) or nbls_income_recognized
+      <= round(median_income(hh.size) * 75 / 100)
+    label: 저소득 노인(기초생활수급자·차상위·의료급여수급자 또는 중위소득 75% 이하)
+    quote: ① 「국민기초생활보장법」에 따른 기초생활수급자 및 차상위계층      ② 「의료급여법」에 따른 의료급여수급자       ③ 중위소득 75% 이하의 자
+    uncertain: true
+    ref: 0
+benefit:
+  annual: '200000'
+  quote: 소득수준에 따라 1인 최대 20만원 이내 차등 지원
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: 주민등록상 1년 이상 대구시에 거주중인
+  reason: 거주 기간 요건은 표현식으로 나타낼 수 없음
+- quote: 증빙서류(의사소견서, 진단서, 장기요양등급외 판정서 등)로 보행이 불편하다고 인정된 자
+  reason: 의학적 판단·증빙서류에 의한 기관 인정 사항
+- quote: 주민등록상 65세 생일이 속한 달의 1개월 전부터 신청 가능(1961년생)
+  reason: 신청 시기(생일 1개월 전) 규정은 나이 조건 식으로 표현 불가
+- quote: ④ 중위소득 75% 초과 100% 이하의 통합돌봄 판정자
+  reason: 통합돌봄 판정 여부는 기관 판단 사항으로 표현 불가
+- quote: 대상자중 예산소진시 까지 선착순 지원
+  reason: 선착순·예산 소진 조건
+- quote: 5년주기로 1회 지원(기간 내 수리 및 교체 비용은 본인 부담)
+  reason: 과거 수혜 이력에 따른 지원 주기 제한
+- quote: 기초생활수급자 100% 의료수급자 94%, 차상위계층 91%, 저소득노인(중위소득75%이하) 85%,중위소득100%이하통합돌봄판정자(50%)
+  reason: 소득수준별 지원 비율(본인부담률) 차등으로 정확한 금액 산정 불가
+status: review
+provenance:
+  serv_id: WLF00004083
+  variant: A
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: a1e33e3a8bf5bfe9
+  notes: 대구광역시 전역 사업이므로 sigungu는 비움. 차상위계층(중위 50% 이하)은 중위 75% 이하 조건에 포함되어 별도 식으로 분리하지 않음. 급여는 현물(성인용 보행기) 지급으로 최대 20만원 이내
+    차등 지원이어서 상한액 200,000원을 기재하고 uncertain 처리.
+tests: tests/rules/LOCAL_WLF00004083.yaml

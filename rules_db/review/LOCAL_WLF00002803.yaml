@@ -1,0 +1,53 @@
+id: LOCAL_WLF00002803
+name: 서구 저소득층 건강보험료 지원
+level: local
+region:
+  sido: 대구광역시
+  sigungu: 서구
+unit: household
+source_refs:
+- doc: 한국사회보장정보원 지자체복지서비스 상세 WLF00002803 (서구 저소득층 건강보험료 지원)
+  clause: 지원대상·선정기준·지원내용
+assumptions:
+- 시군구 단위 사업도 시도 단위로 판정(합성 인구·형식검증에 시군구 없음)
+- 표현하지 못한 조건 6개(not_modeled) → 대상 과대 추정
+eligibility:
+  all:
+  - expr: not elig('NBLS_MEDICAL')
+    label: 의료급여 수급권자가 아닌 자
+    quote: '[의료급여법] 제3조에 따른 수급권자가 아닌 자'
+    uncertain: false
+    ref: 0
+  - expr: count(p.age >= 65) >= 1 or hh.n_disabled >= 1 or hh.single_parent or count(p.age <= 18) >= 1
+    label: 대상 세대 유형(65세 이상 노인·등록장애인·한부모세대·18세 이하 아동 중 하나)
+    quote: 만 65세 이상 노인이 있는 세대- 장애인복지법에 따라 등록한 장애인이 있는 세대- 한부모가족지원법에 따른 한부모세대 및 조손가구- 만 18세 이하의 아동
+    uncertain: true
+    ref: 0
+benefit:
+  monthly: '0'
+  quote: '1)지원금액 : 최저보험료이하 부과금액'
+  uncertain: true
+  ref: 0
+not_modeled:
+- quote: 국민건강보험 월 부톼금액이 보건복지부가 정한 최저보험료 이하인 아래 세대
+  reason: 건강보험료 부과금액 및 보건복지부 고시 최저보험료는 표현식 언어의 변수로 산출할 수 없음
+- quote: 국민건강보험료 부과금액이 최저보험료  미만인 세대
+  reason: 건강보험료 부과액 기준은 모델 변수로 표현 불가
+- quote: 대구광역시 서구 지역가입자
+  reason: 건강보험 지역가입자 여부는 표현 불가
+- quote: 조손가구
+  reason: 조손가구 여부를 나타내는 변수가 없음
+- quote: 만성질환자 및 중증질환자
+  reason: 특정 질병·진단 여부는 표현 불가
+- quote: 그 밖에 대구광역시 서구청장이 필요하다고 인정하는 세대
+  reason: 기관 재량 판단 사항
+status: review
+provenance:
+  serv_id: WLF00002803
+  variant: A
+  model: claude-opus-5
+  prompt_version: extract-v1
+  source_hash: 57b226e66dd9d9b9
+  notes: 대상 유형은 ①~④를 or로 묶었으며, 조손가구·만성/중증질환자·구청장 인정 세대는 표현 불가로 제외하여 조건이 실제보다 좁을 수 있음(uncertain). 핵심 선정기준인 건강보험료 최저보험료 이하 여부와
+    지원금액(부과된 보험료 상당액)은 변수로 계산할 수 없어 not_modeled 및 benefit expr 0으로 처리.
+tests: tests/rules/LOCAL_WLF00002803.yaml

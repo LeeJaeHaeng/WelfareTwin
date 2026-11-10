@@ -1,0 +1,109 @@
+program: LOCAL_WLF00002871
+cases:
+- name: 자동 — 모든 조건 충족
+  source: 'testgen: Z3 양성 예'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 청도군
+    members:
+    - age: 80
+      disability: mild
+      employed: true
+      earned_income: 10000
+      business_income: 80000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 55000000
+    assets_general: 1000000
+    assets_financial: 6000000
+    debts: 1000000
+  expect:
+    eligible: true
+    benefit_monthly: 0
+- name: 자동 — '만 80세 이상 노인 포함'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 청도군
+    members:
+    - age: 34
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 190000
+      business_income: 20000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 52000000
+    assets_financial: 5000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '독거(1인 가구)'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 청도군
+    members:
+    - age: 34
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 590000
+      business_income: 20000
+    - age: 80
+      sex: F
+      disability: mild
+      employed: true
+      earned_income: 460000
+    - age: 30
+      disability: mild
+      business_income: 210000
+      other_income: 10000
+    - age: 30
+      disability: mild
+      employed: true
+      earned_income: 160000
+      business_income: 40000
+      other_income: 20000
+    - age: 30
+      sex: F
+      business_income: 260000
+      other_income: 30000
+    - age: 30
+      disability: mild
+      employed: true
+      earned_income: 440000
+      business_income: 450000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 115000000
+    assets_financial: 41000000
+    debts: 63000000
+  expect:
+    eligible: false
+    benefit_monthly: 0
+- name: 자동 — '국민기초생활수급자'만 불충족
+  source: 'testgen: Z3 음성 예(조건 하나만 위반)'
+  household:
+    region_sido: 경상북도
+    region_sigungu: 청도군
+    members:
+    - age: 80
+      disability: mild
+      employed: true
+      earned_income: 1170000
+      business_income: 1470000
+      other_income: 10000
+    housing: monthly_rent
+    rent_monthly: 10000
+    assets_housing: 113000000
+    assets_general: 1000000
+    assets_financial: 300000000
+    car_value: 39000000
+    debts: 62000000
+  expect:
+    eligible: false
+    benefit_monthly: 0

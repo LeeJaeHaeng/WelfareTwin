@@ -1,0 +1,67 @@
+{
+ "serv_id": "WLF00006585",
+ "name": "청소년부모 아동양육비 추가 지원사업",
+ "region": "경상북도",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 3,
+  "n_not_modeled": 2,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 264,
+    "output_tokens": 1393,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 17.2
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 3,
+  "n_not_modeled": 2,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 346,
+    "output_tokens": 1242,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 16.1
+   }
+  ]
+ },
+ "llm_cost_usd": 0.0718,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": true,
+   "proof": "Z3: 자격 판정이 다른 가구가 존재하지 않음(unsat)"
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [],
+   "B_only": [],
+   "both": [
+    "아동양육비 월20만원/1인 추가지원",
+    "자녀를 실양육하는 부모 모두 24세 이하 가구"
+   ]
+  },
+  "agree": true
+ },
+ "tests": {
+  "generated": 4
+ },
+ "verdict": "needs_review",
+ "review_reasons": [
+  "불확실(uncertain) 조건 포함"
+ ]
+}

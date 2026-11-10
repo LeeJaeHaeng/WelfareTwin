@@ -1,0 +1,70 @@
+{
+ "serv_id": "WLF00002871",
+ "name": "저소득노인지원",
+ "region": "경상북도 청도군",
+ "A": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 3,
+  "n_not_modeled": 4,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 365,
+    "output_tokens": 1337,
+    "cache_read_input_tokens": 2800,
+    "cache_creation_input_tokens": 0,
+    "seconds": 17.9
+   }
+  ]
+ },
+ "B": {
+  "ok": true,
+  "errors": [],
+  "quote_issues": [],
+  "n_conditions": 3,
+  "n_not_modeled": 4,
+  "llm": [
+   {
+    "model": "claude-opus-5",
+    "cached": false,
+    "input_tokens": 447,
+    "output_tokens": 1620,
+    "cache_read_input_tokens": 2851,
+    "cache_creation_input_tokens": 0,
+    "seconds": 19.5
+   }
+  ]
+ },
+ "llm_cost_usd": 0.0808,
+ "crosscheck": {
+  "eligibility": {
+   "equivalent": true,
+   "proof": "Z3: 자격 판정이 다른 가구가 존재하지 않음(unsat)"
+  },
+  "benefit": {
+   "equivalent": true
+  },
+  "not_modeled": {
+   "A_only": [
+    "80세이상 국민기초생활수급 독거 어르신 등 생계가 어려우신 분으로 사업마다 조건이 다름"
+   ],
+   "B_only": [
+    "생계가 어려우신 분으로 사업마다 조건이 다름"
+   ],
+   "both": [
+    "거동불편 재가노인 식사배달 : 175명",
+    "무료급식 : 기초수급자, 차상위계층 및 식사를 거를 우려가 있는 노인",
+    "무의탁노인 건강음료배달: 노인돌봄기본서비스 대상자 1,000명"
+   ]
+  },
+  "agree": true
+ },
+ "tests": {
+  "generated": 4
+ },
+ "verdict": "auto_pass",
+ "review_reasons": []
+}

@@ -315,7 +315,13 @@ class Encoder:
         """1차(중복 제한 전) 자격."""
         if pid not in self._elig0:
             prog = self.rs.programs[pid]
-            self._elig0[pid] = self._guard(f"elig:{pid}", lambda: self.cond(prog.eligibility, prog))
+
+            def run():
+                c = self.cond(prog.eligibility, prog)
+                if prog.region is not None:
+                    c = z3.And(self.h.feature("region_sido").eq(prog.region.sido), c)
+                return c
+            self._elig0[pid] = self._guard(f"elig:{pid}", run)
         return self._elig0[pid]
 
     def eligible(self, pid: str) -> z3.BoolRef:
