@@ -16,7 +16,8 @@
 [![Z3](https://img.shields.io/badge/Z3-5.3.3-AE5630?style=flat-square)](src/welfaretwin/verify)
 [![Claude](https://img.shields.io/badge/LLM-Claude_Opus_5_·_Haiku_4.5-D97757?style=flat-square&logo=anthropic&logoColor=white)](src/welfaretwin/agents/llm.py)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.67-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](app/dashboard.py)
-[![pytest](https://img.shields.io/badge/pytest-185_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
+[![pytest](https://img.shields.io/badge/pytest-187_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
+[![실시간 API](https://img.shields.io/badge/실시간_API-welfaretwin--api.vercel.app-141413?style=flat-square&logo=fastapi&logoColor=white)](https://welfaretwin-api.vercel.app/docs)
 [![개인정보](https://img.shields.io/badge/개인정보-0건_(합성_인구만)-2ea44f?style=flat-square)](#데이터-출처개인정보ai-활용)
 
 **[웹 데모 열기](https://welfaretwin.vercel.app)** · [평가 리포트](reports/eval_20261110.md) · [발표 대본](docs/12_발표_대본.md) · [질의응답 대비표](docs/11_질의응답_대비표.md) · [구현계획서](docs/01_구현계획서.md)
@@ -83,7 +84,7 @@
 - **02 사각지대:** 빈곤선(20~60%)과 제도 조합을 바꿔 Z3 재탐색. 그런 가구가 없으면 '없음'을 증명했다고 표시
 - **04 시뮬레이터:** 생계급여 선정기준(25~40%)과 신청 방식을 바꿔 재계산(합성 인구 1만 가구 표본)
 
-서버가 잠들어 있거나 꺼져 있으면 사전 계산본이 그대로 나오고 실시간 버튼만 비활성화됩니다. 사업안 자연어 입력(LLM)은 공개 서버에서 하지 않고 로컬 Streamlit 대시보드에서 합니다.
+서버에 연결되지 않으면 사전 계산본이 그대로 나오고 실시간 버튼만 비활성화됩니다. 사업안 자연어 입력(LLM)은 공개 서버에서 하지 않고 로컬 Streamlit 대시보드에서 합니다.
 
 <table>
   <tr>
@@ -113,27 +114,30 @@
 
 ## 실시간 계산 서버
 
-웹이 부르는 FastAPI 서버([`src/welfaretwin/api/main.py`](src/welfaretwin/api/main.py))입니다. 대시보드·정적 웹과 **같은 엔진·같은 승인 규칙**으로 계산하고, 서버의 소득 스윕 결과는 정적 웹 데이터와 값이 같습니다(`tests/test_api.py`).
+웹이 부르는 FastAPI 서버([`src/welfaretwin/api/main.py`](src/welfaretwin/api/main.py))입니다. 주소 **https://welfaretwin-api.vercel.app** (자동 문서 [`/docs`](https://welfaretwin-api.vercel.app/docs)) — Vercel Python 함수(서울 리전, 1 vCPU)로, 정적 웹과 별도 프로젝트라 서버에 문제가 생겨도 웹은 그대로입니다. 대시보드·정적 웹과 **같은 엔진·같은 승인 규칙**으로 계산하고, 서버의 소득 스윕 결과는 정적 웹 데이터와 값이 같습니다(`tests/test_api.py`).
 
-| 경로 | 하는 일 | 응답(2코어) |
+| 경로 | 하는 일 | 응답(Vercel 실측) |
 |---|---|---|
-| `POST /evaluate` | 가구 → 제도별 자격·급여·탈락 사유, 소득인정액, 가처분소득 | 5ms |
-| `POST /sweep` | 가구 → 근로소득 구간별 제도 급여·가처분소득(급여 절벽) | 0.7초 |
-| `POST /verify/blindspot` | 빈곤선·제도 조합 → Z3 사각지대 반례 또는 '없음' 증명 | 2~4초 |
-| `POST /verify/cliff` | 소득 증가폭 → Z3 급여 절벽 반례 | 9초 |
-| `POST /scenario` | 생계급여 선정기준·신청 방식 → 수급·재정 변화 | 9.5초 |
+| `POST /evaluate` | 가구 → 제도별 자격·급여·탈락 사유, 소득인정액, 가처분소득 | 0.1초 |
+| `POST /sweep` | 가구 → 근로소득 구간별 제도 급여·가처분소득(급여 절벽) | 1.7~2초 |
+| `POST /verify/blindspot` | 빈곤선·제도 조합 → Z3 사각지대 반례 또는 '없음' 증명 | 4~13초 |
+| `POST /verify/cliff` | 소득 증가폭 → Z3 급여 절벽 반례(시간 예산 20초를 제도별로 나눠 탐색) | 18~20초 |
+| `POST /scenario` | 생계급여 선정기준·신청 방식 → 수급·재정 변화 | 20초(같은 값 다시: 0.4초) |
 | `GET /health` · `/programs` · `/regions` | 상태, 승인 규칙 목록, 시도·시군구 | — |
 
 - **공개 서버라 LLM 은 부르지 않습니다.** 무거운 계산(Z3·시나리오)은 한 번에 하나, IP 당 분당 6회까지 받고, 브라우저 호출(CORS)은 웹 데모 주소만 허용합니다.
+- 시나리오 기준선(현행 규칙·같은 표본)은 사용자 입력과 무관한 고정값이라 배포할 때 미리 계산해 넣고, 서버 표본과 가구가 같을 때만 씁니다 — 요청마다 변경안만 계산합니다(60초 → 20초, 결과 동일 `tests/test_api.py`).
+- Z3 급여 절벽 재탐색은 시간 예산 안에서 찾으므로 실행마다 찾는 절벽이 조금 다를 수 있습니다(화면에 표시). '가장 큰 절벽' 수치는 시간을 넉넉히 준 사전 계산본입니다.
 - 실시간 시나리오는 응답 시간 때문에 합성 인구 **1만 가구 표본**으로 계산합니다. 10만 가구 전체 계산과 약 10% 차이가 날 수 있어(생계 35% 시 자격 증가 +19.6만 vs +21.6만) 화면에 표본 계산이라고 적었습니다. 위 [한눈에 보기](#한눈에-보기) 수치는 전체 계산본입니다.
 
 ```bash
 uv run uvicorn welfaretwin.api.main:app --port 7860                    # 로컬 서버(자동 문서 /docs)
 # 웹을 로컬 서버에 붙이기: http://localhost:8790/?api=http://localhost:7860  (web/ 를 8790 포트로 띄운 경우)
-uv run --with huggingface_hub python scripts/build_space.py --deploy   # Hugging Face Space(Docker) 배포, .env 의 HF_TOKEN 사용
+uv run python scripts/deploy_api.py --deploy                          # Vercel 배포(별도 프로젝트 welfaretwin-api, Vercel CLI 로그인 필요)
+uv run python scripts/deploy_api.py --target space                    # Docker 이미지 묶음(dist/space) — Hugging Face Space 는 무료 CPU 에 PRO 필요
 ```
 
-`build_space.py` 는 허용 목록에 있는 파일(코드·승인 규칙·params·합성 인구·수급 통계)만 `dist/space/` 에 모아 올리고, `.env`·원문 수집본·캐시는 넣지 않습니다.
+`deploy_api.py` 는 허용 목록에 있는 파일(코드·승인 규칙·params·합성 인구·수급 통계)과 API 가 쓰는 패키지만(LLM·대시보드 제외, 로컬과 같은 버전 고정) `dist/welfaretwin-api/` 에 모아 올리고, `.env`·원문 수집본·캐시는 넣지 않습니다.
 
 ### 발표 데모 영상
 
@@ -172,7 +176,7 @@ flowchart LR
   ENC --> RT
   SCN --> BT["V 백테스트"]
   ENARA --> BT
-  Q --> OUT["Streamlit 대시보드(로컬·실시간)<br/>정적 웹(Vercel·사전 계산본)"]
+  Q --> OUT["Streamlit 대시보드(로컬·실시간)<br/>웹(Vercel·사전 계산본 + 실시간 API)"]
   RT --> OUT
   BT --> OUT
 ```
@@ -275,7 +279,7 @@ flowchart LR
 ```bash
 uv sync
 uv run streamlit run app/dashboard.py --server.headless true   # 사전 계산본(artifacts/demo)으로 오프라인 동작
-uv run pytest -q                                               # 2026-11-11 기준 185 passed, 1 skipped
+uv run pytest -q                                               # 2026-11-11 기준 187 passed, 1 skipped
 ```
 
 - 화면: 01 복지 법전 → 코드 / 02 사각지대 / 03 급여 절벽 / 04 정책 시뮬레이터 + 레드팀 / 05 백테스트. 사이드바 '모드'에서 실시간 실행(Z3·평가기·LLM 캐시)으로 바꿀 수 있습니다.
@@ -333,9 +337,9 @@ python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리�
 ├─ data/             # 수집 원문·통계 캐시(KOSIS 캐시만 커밋), processed/
 ├─ reports/          # 평가 리포트, 추출 리포트
 ├─ docs/             # 설계서 00~12, images/
-├─ deploy/space/     # Hugging Face Space(Dockerfile, Space 설명)
-├─ tests/            # pytest 186개(속성 기반 포함)
-└─ scripts/          # 원문 일일 수집 예약 작업, Space 배포(build_space.py)
+├─ deploy/space/     # Docker 이미지(Dockerfile, Hugging Face Space 설명)
+├─ tests/            # pytest 188개(속성 기반 포함)
+└─ scripts/          # 원문 일일 수집 예약 작업, 실시간 API 배포(deploy_api.py)
 ```
 
 ## 한계
@@ -347,7 +351,7 @@ python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리�
 - **지자체 사업 범위:** LLM 추출·승인한 지자체 사업은 대구·경북 12건입니다. 원문 수집은 일일 한도 때문에 진행 중입니다.
 - **표현하지 못한 조건:** 혼인 상태, 임대인과의 관계, 타 사업 수혜 여부처럼 변수가 없는 조건은 `not_modeled` 로 남기고, 대상이 과대 추정될 수 있음을 규칙의 `assumptions` 에 적었습니다.
 - **합성 인구:** IPF 는 500회 반복에서 완전히 수렴하지 않았습니다(시도×연령×점유형태 2020 비율 기준 최대 상대오차 16.8%). 주변분포 오차는 0.05%p 이내입니다.
-- **공개 웹의 범위:** 실시간 서버는 LLM 을 부르지 않으므로 사업안 자연어 입력·레드팀 새로 실행은 로컬 대시보드에서만 됩니다. 무료 서버는 한동안 안 쓰면 잠들어 첫 접속에 1~2분 걸릴 수 있고, 그동안은 사전 계산본을 보여 줍니다.
+- **공개 웹의 범위:** 실시간 서버는 LLM 을 부르지 않으므로 사업안 자연어 입력·레드팀 새로 실행은 로컬 대시보드에서만 됩니다. 서버는 Vercel 무료 요금제(1 vCPU)라 첫 요청은 준비에 몇 초 더 걸리고, 무거운 계산은 한 번에 하나만 받습니다. 연결이 안 되면 사전 계산본을 보여 줍니다.
 
 ## FAQ
 

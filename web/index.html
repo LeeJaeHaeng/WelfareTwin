@@ -853,8 +853,8 @@ function viewCliff() {
     try {
       const r = await api("/verify/cliff", { delta, n: 4 });
       $("cliffZ3Msg").innerHTML = r.items.length
-        ? `<div class="callout">${icon("info")}<div>근로소득 +${num(delta)}원에 가처분소득이 줄어드는 가구 <b>${r.items.length}개</b>를 찾았습니다. <span class="muted">서버 계산 ${r.elapsed_sec}초</span></div></div>`
-        : `<div class="callout">${icon("check")}<div>이 조건에서는 절벽을 찾지 못했습니다. <span class="muted">서버 ${r.elapsed_sec}초 · 상태 ${esc(r.status)}</span></div></div>`;
+        ? `<div class="callout">${icon("info")}<div>근로소득 +${num(delta)}원에 가처분소득이 줄어드는 가구 <b>${r.items.length}개</b>를 찾았습니다. <span class="muted">서버 계산 ${r.elapsed_sec}초 · 시간 예산 ${num(r.options.budget_sec)}초를 제도별로 나눠 찾으므로 실행마다 찾는 절벽이 다를 수 있어요</span></div></div>`
+        : `<div class="callout">${icon("check")}<div>시간 예산 ${num(r.options.budget_sec)}초 안에 이 조건의 절벽을 찾지 못했습니다. <span class="muted">서버 ${r.elapsed_sec}초</span></div></div>`;
       $("cliffZ3").innerHTML = cliffCards(r.items);
     } catch (e) { $("cliffZ3Msg").innerHTML = errBox(e); }
   });
