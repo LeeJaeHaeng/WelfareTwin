@@ -16,7 +16,7 @@
 [![Z3](https://img.shields.io/badge/Z3-5.3.3-AE5630?style=flat-square)](src/welfaretwin/verify)
 [![Claude](https://img.shields.io/badge/LLM-Claude_Opus_5_·_Haiku_4.5-D97757?style=flat-square&logo=anthropic&logoColor=white)](src/welfaretwin/agents/llm.py)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.67-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](app/dashboard.py)
-[![pytest](https://img.shields.io/badge/pytest-187_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
+[![pytest](https://img.shields.io/badge/pytest-188_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
 [![실시간 API](https://img.shields.io/badge/실시간_API-welfaretwin--api.vercel.app-141413?style=flat-square&logo=fastapi&logoColor=white)](https://welfaretwin-api.vercel.app/docs)
 [![개인정보](https://img.shields.io/badge/개인정보-0건_(합성_인구만)-2ea44f?style=flat-square)](#데이터-출처개인정보ai-활용)
 
@@ -121,13 +121,13 @@
 | `POST /evaluate` | 가구 → 제도별 자격·급여·탈락 사유, 소득인정액, 가처분소득 | 0.1초 |
 | `POST /sweep` | 가구 → 근로소득 구간별 제도 급여·가처분소득(급여 절벽) | 1.7~2초 |
 | `POST /verify/blindspot` | 빈곤선·제도 조합 → Z3 사각지대 반례 또는 '없음' 증명 | 4~13초 |
-| `POST /verify/cliff` | 소득 증가폭 → Z3 급여 절벽 반례(시간 예산 20초를 제도별로 나눠 탐색) | 18~20초 |
+| `POST /verify/cliff` | 소득 증가폭 → Z3 급여 절벽 반례(Z3 계산량 예산을 제도별로 나눠 탐색 — 같은 조건이면 항상 같은 결과) | 21초 |
 | `POST /scenario` | 생계급여 선정기준·신청 방식 → 수급·재정 변화 | 20초(같은 값 다시: 0.4초) |
 | `GET /health` · `/programs` · `/regions` | 상태, 승인 규칙 목록, 시도·시군구 | — |
 
 - **공개 서버라 LLM 은 부르지 않습니다.** 무거운 계산(Z3·시나리오)은 한 번에 하나, IP 당 분당 6회까지 받고, 브라우저 호출(CORS)은 웹 데모 주소만 허용합니다.
 - 시나리오 기준선(현행 규칙·같은 표본)은 사용자 입력과 무관한 고정값이라 배포할 때 미리 계산해 넣고, 서버 표본과 가구가 같을 때만 씁니다 — 요청마다 변경안만 계산합니다(60초 → 20초, 결과 동일 `tests/test_api.py`).
-- Z3 급여 절벽 재탐색은 시간 예산 안에서 찾으므로 실행마다 찾는 절벽이 조금 다를 수 있습니다(화면에 표시). '가장 큰 절벽' 수치는 시간을 넉넉히 준 사전 계산본입니다.
+- Z3 급여 절벽 재탐색은 벽시계 대신 **Z3 계산량(rlimit)** 을 예산으로 쓰고 탐색마다 새 Z3 컨텍스트에서 풀어, 서버 CPU 속도와 무관하게 같은 조건이면 항상 같은 절벽을 찾습니다(Vercel 3회·개발 PC 모두 590,000 · 549,520 · 190,000 · 95,625원). 벽시계 예산일 때는 같은 요청에 0~4개로 달라졌습니다.
 - 실시간 시나리오는 응답 시간 때문에 합성 인구 **1만 가구 표본**으로 계산합니다. 10만 가구 전체 계산과 약 10% 차이가 날 수 있어(생계 35% 시 자격 증가 +19.6만 vs +21.6만) 화면에 표본 계산이라고 적었습니다. 위 [한눈에 보기](#한눈에-보기) 수치는 전체 계산본입니다.
 
 ```bash
@@ -279,7 +279,7 @@ flowchart LR
 ```bash
 uv sync
 uv run streamlit run app/dashboard.py --server.headless true   # 사전 계산본(artifacts/demo)으로 오프라인 동작
-uv run pytest -q                                               # 2026-11-11 기준 187 passed, 1 skipped
+uv run pytest -q                                               # 2026-11-11 기준 188 passed, 1 skipped
 ```
 
 - 화면: 01 복지 법전 → 코드 / 02 사각지대 / 03 급여 절벽 / 04 정책 시뮬레이터 + 레드팀 / 05 백테스트. 사이드바 '모드'에서 실시간 실행(Z3·평가기·LLM 캐시)으로 바꿀 수 있습니다.
@@ -338,7 +338,7 @@ python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리�
 ├─ reports/          # 평가 리포트, 추출 리포트
 ├─ docs/             # 설계서 00~12, images/
 ├─ deploy/space/     # Docker 이미지(Dockerfile, Hugging Face Space 설명)
-├─ tests/            # pytest 188개(속성 기반 포함)
+├─ tests/            # pytest 189개(속성 기반 포함)
 └─ scripts/          # 원문 일일 수집 예약 작업, 실시간 API 배포(deploy_api.py)
 ```
 
