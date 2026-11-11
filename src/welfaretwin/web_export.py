@@ -127,6 +127,59 @@ def agents(n: int = 24) -> dict | None:
             "model": b["model"].iloc[0], "source": SOURCE, "cards": cards}
 
 
+def agents_world() -> dict | None:
+    """'가상 대한민국' 지도 시뮬레이션용 — 가상 국민 714명 전원(시도·인물·응답) + 유형별 자격 가구·보정된 신청 확률.
+
+    점 하나 = 가상 국민 한 명. 그 유형(클러스터)의 기초생활보장 자격 가구(현행 규칙, 합성 인구 전체)를 3명이 나눠 대표한다.
+    신청 확률은 시나리오 엔진과 같은 식(유형 평균 LLM 응답 → 공통 절편 b 보정)이라, 기대값 Σ(자격 가구 × 확률)가
+    scenario_demo.json 의 기대 수급 가구와 같다(아래 expected 로 확인).
+    """
+    import numpy as np
+
+    from welfaretwin.agents.behavior import household_facts
+    from welfaretwin.population.personas import assign, build
+    from welfaretwin.sim.scenario import NBLS, load_behavior
+    sim = ROOT / "artifacts" / "sim"
+    sc = load("scenario_demo.json")
+    if sc is None or not (sim / "residents.parquet").exists():
+        return None
+    b_all = pd.read_parquet(sim / "behavior.parquet")
+    if "resident_uuid" not in b_all:
+        return None
+    res = pd.read_parquet(sim / "residents.parquet")
+    hh = pd.read_parquet(ROOT / "data" / "processed" / "households.parquet")
+    persons = pd.read_parquet(ROOT / "data" / "processed" / "persons.parquet")
+    personas = {x.persona_id: x for x in build(hh, persons)[0]}
+    pid = assign(hh, persons)
+    st = pd.read_parquet(sim / "static_2026.parquet")
+    el = st[st["program_id"].isin(NBLS)].groupby("hh_id").agg(e=("eligible", "any"), w=("weight", "first")).join(pid)
+    elig = el.assign(ew=el["w"] * el["e"]).groupby("persona_id")["ew"].sum()
+    b = float(sc["calibration"]["intercept_b"])
+    beh = load_behavior()
+
+    def cal(x):
+        x = np.clip(np.asarray(x, dtype=float), 1e-4, 1 - 1e-4)
+        return 1 / (1 + np.exp(-(np.log(x / (1 - x)) + b)))
+
+    pc = {k: pd.Series(cal(beh[k].to_numpy()), index=beh.index) for k in ("S0", "S1")}
+    expected = {k: float(sum(elig.get(c, 0.0) * pc[k].get(c, 0.0) for c in elig.index)) for k in pc}
+    ans = {(r.resident_uuid, r.scenario): r for r in b_all.itertuples()}
+    agents = []
+    for r in res.itertuples():
+        a = {}
+        for k in ("S0", "S1"):
+            x = ans[(r.uuid, k)]
+            a[k] = {"p": round(float(x.apply_probability), 2), "r": [y for y in x.reasons.split("|") if y], "t": x.rationale}
+        agents.append({"c": r.persona_id, "prov": r.province, "sex": r.sex, "age": int(r.age), "occ": r.occupation,
+                       "fam": r.family_type, "dist": r.district, "persona": r.persona, "a": a})
+    clusters = {c: {"hh": household_facts(personas[c]), "es": round(float(elig.get(c, 0.0)) / personas[c].weight, 4),
+                    "pc": {k: round(float(pc[k].get(c, 0.0)), 4) for k in pc}} for c in res["persona_id"].unique()}
+    return {"b": b, "expected": expected, "eligible_households": float(elig.sum()),
+            "scenario_expected": {s_["behavior"]: s_["metrics"]["expected_recipient_households"]
+                                  for s_ in sc["scenarios"] if not s_["params"]},
+            "clusters": clusters, "agents": agents}
+
+
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -158,6 +211,17 @@ def main() -> int:
             print(f"경고: {name} 없음")
     (OUT / "bundle.json").write_text(json.dumps(bundle, ensure_ascii=False, default=str), encoding="utf-8")
     (OUT / "sweeps.json").write_text(json.dumps(sweeps(), ensure_ascii=False), encoding="utf-8")
+    world, grid = agents_world(), load("policy_grid.json")
+    if world and grid:
+        world.update({k: grid[k] for k in ("ratios", "behaviors", "base", "age_groups", "national", "province", "age",
+                                           "liv_share")})
+        world["grid_b"] = grid["intercept_b"]
+        (OUT / "world.json").write_text(json.dumps(world, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print("가상 대한민국 기대 수급:", {k: round(v) for k, v in world["expected"].items()},
+              "시나리오:", {k: round(v) for k, v in world["scenario_expected"].items()},
+              f"b(격자 {grid['intercept_b']:.4f} / 시나리오 {world['b']:.4f})")
+    elif world:
+        print("경고: artifacts/demo/policy_grid.json 없음 — uv run python -m welfaretwin.sim.policy_grid")
     for f in OUT.glob("*.json"):
         print(f"{f.name}: {f.stat().st_size / 1024:,.0f} KB")
     return 0

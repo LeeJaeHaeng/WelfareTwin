@@ -16,7 +16,7 @@
 [![Z3](https://img.shields.io/badge/Z3-5.3.3-AE5630?style=flat-square)](src/welfaretwin/verify)
 [![Claude](https://img.shields.io/badge/LLM-Claude_Opus_5_·_Haiku_4.5-D97757?style=flat-square&logo=anthropic&logoColor=white)](src/welfaretwin/agents/llm.py)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.67-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](app/dashboard.py)
-[![pytest](https://img.shields.io/badge/pytest-191_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
+[![pytest](https://img.shields.io/badge/pytest-194_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
 [![실시간 API](https://img.shields.io/badge/실시간_API-welfaretwin--api.vercel.app-141413?style=flat-square&logo=fastapi&logoColor=white)](https://welfaretwin-api.vercel.app/docs)
 [![개인정보](https://img.shields.io/badge/개인정보-0건_(합성_인구만)-2ea44f?style=flat-square)](#데이터-출처개인정보ai-활용)
 
@@ -82,9 +82,13 @@
 
 - **03 급여 절벽:** '직접 만들기'로 가구(지역·주거·재산·가구원)를 입력해 소득 스윕, 슬라이더 위치 소득에서 제도별 자격·급여·탈락 사유 표, Z3 절벽 재탐색
 - **02 사각지대:** 빈곤선(20~60%)과 제도 조합을 바꿔 Z3 재탐색. 그런 가구가 없으면 '없음'을 증명했다고 표시
-- **04 시뮬레이터:** 생계급여 선정기준(25~40%)과 신청 방식을 바꿔 재계산(합성 인구 1만 가구 표본)
+- **04 가상 대한민국 시뮬레이션:** 생계급여 선정기준 슬라이더(25~40%)와 신청 방식(현행 신청 ↔ 자동 안내)을 움직이면 그 자리에서 — 시도 지도(타일 색 = 새로 혜택받는 가구 비율, 점 = 가상 국민 714명의 상태), 수급 가구·미신청 사각지대·생계급여 수급·월 재정의 현행 대비 변화, 재정 1억 원당 새 수급 가구, 연령대별 혜택, 한 줄 요약이 바뀝니다. '12개월 재생'은 사람들이 차례로 신청하는 과정을, 점을 누르면 그 사람의 1인칭 이유를 보여 줍니다. 숫자는 16개 선정기준 × 2개 신청 방식을 합성 인구 10만 가구 전체로 미리 계산한 값(`sim/policy_grid.py`, 시나리오 엔진과 같은 값 — 테스트)
+- **04 서버 재계산:** 같은 손잡이를 실시간 서버에서 다시 계산(합성 인구 1만 가구 표본)
 
-서버에 연결되지 않으면 사전 계산본이 그대로 나오고 실시간 버튼만 비활성화됩니다. 사업안 자연어 입력(LLM)은 공개 서버에서 하지 않고 로컬 Streamlit 대시보드에서 합니다.
+서버에 연결되지 않으면 사전 계산본이 그대로 나오고 실시간 버튼만 비활성화됩니다(가상 대한민국 시뮬레이션은 서버 없이도 동작).
+
+<p align="center"><img src="docs/images/world.png" alt="가상 대한민국 시뮬레이션 — 생계급여 35% + 자동 안내로 바꾼 상태" width="100%"></p>
+<p align="center"><sub>가상 대한민국 시뮬레이션(2026-11-11 캡처) — 생계급여 기준 35% + 자동 안내: 수급 +312,897가구(미신청 사각지대 −48%), 생계급여 수급 +363,117가구, 월 재정 +2,397억원(연 2.88조원), 혜택이 가장 큰 연령대 60대.</sub></p> 사업안 자연어 입력(LLM)은 공개 서버에서 하지 않고 로컬 Streamlit 대시보드에서 합니다.
 
 <table>
   <tr>
@@ -282,7 +286,7 @@ flowchart LR
 ```bash
 uv sync
 uv run streamlit run app/dashboard.py --server.headless true   # 사전 계산본(artifacts/demo)으로 오프라인 동작
-uv run pytest -q                                               # 2026-11-11 기준 191 passed, 1 skipped
+uv run pytest -q                                               # 2026-11-11 기준 194 passed, 1 skipped
 ```
 
 - 화면: 01 복지 법전 → 코드 / 02 사각지대 / 03 급여 절벽 / 04 정책 시뮬레이터 + 레드팀 / 05 백테스트. 사이드바 '모드'에서 실시간 실행(Z3·평가기·LLM 캐시)으로 바꿀 수 있습니다.
@@ -341,7 +345,7 @@ python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리�
 ├─ reports/          # 평가 리포트, 추출 리포트
 ├─ docs/             # 설계서 00~12, images/
 ├─ deploy/space/     # Docker 이미지(Dockerfile, Hugging Face Space 설명)
-├─ tests/            # pytest 192개(속성 기반 포함)
+├─ tests/            # pytest 195개(속성 기반 포함)
 └─ scripts/          # 원문 일일 수집 예약 작업, 실시간 API 배포(deploy_api.py)
 ```
 

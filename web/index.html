@@ -220,6 +220,50 @@ ul.bullets { margin: 10px 0 0; padding-left: 18px; font-size: 14px; }
 ul.bullets li { margin: 6px 0; }
 .textblock { white-space: pre-wrap; background: var(--surface-2); border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; }
 
+/* ---------- 가상 대한민국(인터랙티브 시뮬레이션) */
+.world { padding: 28px; }
+.world-ctl { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) auto; gap: 20px 28px; align-items: end; margin-top: 20px; }
+.world-ctl .acts { display: flex; gap: 10px; flex-wrap: wrap; }
+.world-say { margin: 22px 0 0; padding: 16px 18px; border-radius: 12px; background: var(--accent-wash); font-size: 16px; line-height: 1.7; }
+.world-say b { font-weight: 700; }
+.world-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; margin-top: 22px; align-items: start; }
+.world-map svg { width: 100%; height: auto; display: block; touch-action: manipulation; cursor: pointer; }
+#wMap .t-bg { fill: var(--surface-2); }
+#wMap .t-heat { fill: var(--accent); transition: fill-opacity .6s ease; }
+#wMap .t-name { font: 600 17px var(--sans, inherit); fill: var(--text); }
+#wMap .t-delta { font: 600 15px var(--sans, inherit); fill: var(--text-2); font-variant-numeric: tabular-nums; }
+#wMap circle.dot { transition: fill .5s ease, stroke .5s ease, r .3s ease; }
+#wMap .d0 { fill: var(--border-strong); }
+#wMap .d1 { fill: var(--surface); stroke: var(--text-2); stroke-width: 1.3; }
+#wMap .d2 { fill: var(--clay); opacity: .55; }
+#wMap .d3 { fill: var(--accent); }
+#wMap circle.sel { stroke: var(--text); stroke-width: 2.6; }
+#wMap .ripple { fill: none; stroke: var(--accent); stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: wrip 1.3s ease-out forwards; }
+@keyframes wrip { from { transform: scale(.25); opacity: .7; } to { transform: scale(2.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { #wMap .ripple { display: none; } #wMap circle.dot, #wMap .t-heat { transition: none; } }
+.world-legend { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12.5px; color: var(--text-2); }
+.world-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.world-legend svg { width: 12px; height: 12px; }
+.wk { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
+.wk .stat .v { font-size: 30px; font-variant-numeric: tabular-nums; }
+.w-sub { margin: 22px 0 10px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.wbars { display: grid; gap: 8px; }
+.wbar { display: grid; grid-template-columns: 74px minmax(0, 1fr) 96px; gap: 10px; align-items: center; font-size: 13px; }
+.wbar .track { display: block; height: 12px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.wbar .fill { display: block; height: 100%; border-radius: 4px; background: var(--accent); transition: width .5s ease; }
+.wbar .val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+.wperson { margin-top: 22px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.wperson .bio { margin: 6px 0 0; font-size: 14px; line-height: 1.65; }
+.wperson .hh { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+.wperson .q { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; }
+.wplay { margin: 10px 0 0; font-size: 13px; color: var(--text-2); min-height: 1.4em; }
+@media (max-width: 900px) {
+  .world { padding: 20px 16px; }
+  .world-ctl { grid-template-columns: 1fr; }
+  .world-body { grid-template-columns: 1fr; }
+  .wk .stat .v { font-size: 24px; }
+}
+
 /* ---------- 가상 국민(생성형 에이전트) 카드 */
 .agent { display: flex; flex-direction: column; gap: 12px; }
 .agent .bio { margin: 0; font-size: 14px; line-height: 1.65; }
@@ -877,6 +921,153 @@ function viewCliff() {
   window.__drawCliff = draw;
 }
 
+// ---------------------------------------------------------------- 가상 대한민국: 정책 손잡이 → 지도·기대효과 즉시 갱신
+const W_TILES = [["서울", 1, 0], ["인천", 0, 1], ["경기", 1, 1], ["강원", 2, 1], ["충청남", 0, 2], ["세종", 1, 2], ["충청북", 2, 2],
+  ["경상북", 3, 2], ["전북", 0, 3], ["대전", 1, 3], ["대구", 2, 3], ["울산", 3, 3], ["광주", 0, 4], ["전라남", 1, 4],
+  ["경상남", 2, 4], ["부산", 3, 4], ["제주", 0, 5]];
+const W_LABEL = { 충청남: "충남", 충청북: "충북", 경상북: "경북", 경상남: "경남", 전라남: "전남" };
+const W_STATE = ["자격 없음", "자격 있지만 아직 신청 안 함", "수급 중(주거·의료 등)", "생계급여 수급 중"];
+let WORLD = null;
+const wRng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+// 새로 혜택받는 가구 = (수급 가구 변화) + (생계급여 수급 가구 변화) — 생계 기준만 바꾸면 전체 수급은 그대로라 둘을 합쳐 본다
+const wGain = (v, b) => (v.recipients - b.recipients) + (v.livelihood_recipients - b.livelihood_recipients);
+
+async function initWorld() {
+  if (!$("world")) return;
+  try { WORLD = WORLD || await (await fetch("data/world.json")).json(); }
+  catch (e) { $("wSay").textContent = "가상 대한민국 데이터를 불러오지 못했습니다."; return; }
+  const W = WORLD, SVGNS = "http://www.w3.org/2000/svg";
+  if (!W.ready) {   // 사람마다 고정 난수(자격·신청·생계·재생 시점) — 같은 설정이면 언제 봐도 같은 그림
+    W.agents.forEach((a, i) => { const r = wRng(7919 * (i + 1)); a.u = r(); a.v = r(); a.z = r(); a.m = 1 + Math.floor(r() * 12); a.cl = W.clusters[a.c]; });
+    let mx = 0;     // 타일 색 눈금: 모든 설정 중 시도별 '새로 혜택받는 가구' 최대 비율
+    for (const k of Object.keys(W.province)) for (const s of W.behaviors) for (const [p, v] of Object.entries(W.province[k][s])) {
+      const b0 = W.province["0.32"].S0[p]; if (b0 && b0.recipients) mx = Math.max(mx, wGain(v, b0) / b0.recipients); }
+    W.heatMax = Math.max(mx, 0.05); W.ready = true;
+  }
+  // ---- 지도 배치: 시도 타일(4열) 안에 그 시도 가상 국민 점
+  const TW = 240, GAP = 12, P = 11, HEAD = 46, PAD = 14, COLS = Math.floor((TW - 2 * PAD) / P) + 1;
+  const by = {}; W.agents.forEach(a => (by[a.prov] ||= []).push(a));
+  Object.values(by).forEach(list => list.sort((x, y) => wRng(31 * W.agents.indexOf(x) + 7)() - wRng(31 * W.agents.indexOf(y) + 7)()));
+  const rowH = []; W_TILES.forEach(([p, , r]) => { rowH[r] = Math.max(rowH[r] || 0, HEAD + Math.ceil((by[p] || []).length / COLS) * P + 14); });
+  const rowY = []; rowH.reduce((y, h, i) => (rowY[i] = y, y + h + GAP), 0);
+  const svg = $("wMap"), Wd = 4 * TW + 3 * GAP, Ht = rowY[rowY.length - 1] + rowH[rowH.length - 1];
+  svg.setAttribute("viewBox", `0 0 ${Wd} ${Ht}`);
+  svg.innerHTML = W_TILES.map(([p, c, r]) => { const x = c * (TW + GAP), y = rowY[r], h = rowH[r];
+    return `<g data-p="${p}"><rect class="t-bg" x="${x}" y="${y}" width="${TW}" height="${h}" rx="12"/>
+      <rect class="t-heat" x="${x}" y="${y}" width="${TW}" height="${h}" rx="12" fill-opacity="0"/>
+      <text class="t-name" x="${x + PAD}" y="${y + 28}">${W_LABEL[p] || p}</text>
+      <text class="t-delta" x="${x + TW - PAD}" y="${y + 28}" text-anchor="end"></text>
+      ${(by[p] || []).map((a, j) => { a.x = x + PAD + 4 + (j % COLS) * P; a.y = y + HEAD + 4 + Math.floor(j / COLS) * P;
+        return `<circle class="dot d0" data-i="${W.agents.indexOf(a)}" cx="${a.x}" cy="${a.y}" r="2.4"/>`; }).join("")}</g>`; }).join("");
+  const dots = [...svg.querySelectorAll("circle.dot")];
+  W.agents.forEach((a, i) => { a.el = dots.find(d => +d.dataset.i === i); });
+  // ---- 상태 계산
+  let R = 0.32, S = "S0", sel = null, playing = false;
+  const key = () => R.toFixed(2);
+  const stateOf = a => { if (!(a.u < a.cl.es)) return 0; if (!(a.v < a.cl.pc[S])) return 1; return a.z < (W.liv_share[key()][a.c] || 0) ? 3 : 2; };
+  const tw = (el, to, fmt) => { const from = +el.dataset.v || 0; el.dataset.v = to;
+    if (reduceMotion()) { el.innerHTML = fmt(to); return; }
+    const t0 = performance.now(), step = t => { const k = Math.min(1, (t - t0) / 450), e = 1 - Math.pow(1 - k, 3);
+      el.innerHTML = fmt(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); };
+  $("wKpi").innerHTML = [["rec", "기초생활보장 수급 가구"], ["nt", "미신청 사각지대"], ["liv", "생계급여 수급 가구"], ["bud", "월 재정(생계·주거·교육)"]]
+    .map(([k, l]) => `<div class="stat sm"><p class="l">${l}</p><p class="v" id="wk-${k}">0</p><p class="d same" id="wd-${k}"></p></div>`).join("");
+  const dline = (d, inv, unit = "가구") => d === 0 ? `<span>현행과 같음</span>`
+    : `<span class="${(d > 0) !== !!inv ? "up" : "down"}" style="display:inline-flex;gap:4px;align-items:center">${icon(d > 0 ? "up" : "down", 13)} 현행 대비 ${signed(d)}${unit}</span>`;
+  const person = a => {
+    const st = stateOf(a), ans = a.a[S], job = a.occ === "무직" ? "일하지 않음" : a.occ;
+    $("wPerson").innerHTML = `<p class="card-label">${icon("person", 14)} ${esc(a.sex)} ${a.age}세 · ${esc(String(a.dist).replace("-", " "))} · ${esc(job)}</p>
+      <span class="pill ${st >= 2 ? "good" : ""}">${W_STATE[st]}</span>
+      <p class="bio">${esc(a.persona)}</p><p class="hh">${esc(a.fam)} · ${esc(a.cl.hh)}</p>
+      <p class="q">“${esc(ans.t)}”</p>
+      <p class="xs muted" style="margin:6px 0 0">${S === "S1" ? "자동 안내" : "현행 신청"} 기준 · 본인 답 신청 의향 ${pct(ans.p, 0)} → 실제 통계로 보정한 신청 확률 ${pct(a.cl.pc[S], 0)}${ans.r.length ? " · 망설이는 이유: " + ans.r.map(esc).join(", ") : ""}</p>
+      <button type="button" class="btn ghost sm" id="wNext" style="margin-top:12px">${icon("arrowR")} 다른 사람</button>`;
+    $("wNext").onclick = () => { const pool = W.agents.filter(x => stateOf(x) > 0); pick(pool[Math.floor(Math.random() * pool.length)]); };
+  };
+  const pick = a => { if (sel) sel.el.classList.remove("sel"); sel = a; a.el.classList.add("sel"); person(a); };
+  const paintDots = (prev) => {
+    const changed = [];
+    W.agents.forEach(a => { const s = stateOf(a), c = "d" + s; if (!a.el.classList.contains(c)) { if (prev) changed.push(a);
+      a.el.classList.remove("d0", "d1", "d2", "d3"); a.el.classList.add(c); a.el.setAttribute("r", s ? 4.6 : 2.4); } });
+    return changed;
+  };
+  const ripple = provs => { if (reduceMotion()) return;
+    provs.forEach(p => { const g = svg.querySelector(`g[data-p="${p}"]`), r = g.querySelector(".t-bg");
+      const c = document.createElementNS(SVGNS, "circle"); c.setAttribute("class", "ripple");
+      c.setAttribute("cx", +r.getAttribute("x") + TW / 2); c.setAttribute("cy", +r.getAttribute("y") + +r.getAttribute("height") / 2);
+      c.setAttribute("r", 46); g.appendChild(c); setTimeout(() => c.remove(), 1400); }); };
+  const update = (animate = true) => {
+    const n = W.national[key()][S], b0 = W.national["0.32"].S0, pv = W.province[key()][S], pb = W.province["0.32"].S0;
+    // 지도: 타일 색·증가율, 점 상태
+    const grow = [];
+    W_TILES.forEach(([p]) => { const g = svg.querySelector(`g[data-p="${p}"]`), v = pv[p], b = pb[p];
+      const d = v && b && b.recipients ? wGain(v, b) / b.recipients : 0;
+      g.querySelector(".t-heat").setAttribute("fill-opacity", Math.max(0, Math.min(1, d / W.heatMax)) * 0.42);
+      g.querySelector(".t-delta").textContent = Math.abs(d) < 0.0005 ? "" : `${d > 0 ? "+" : "−"}${(Math.abs(d) * 100).toFixed(1)}%`;
+      if (d > 0.005) grow.push(p); });
+    const changed = paintDots(animate);
+    if (animate) ripple(grow);
+    // 기대효과
+    const dRec = n.expected_recipient_households - b0.expected_recipient_households, dNt = n.non_take_up_households - b0.non_take_up_households;
+    const dLiv = n.livelihood_expected_recipients - b0.livelihood_expected_recipients, dBud = n.monthly_budget_won - b0.monthly_budget_won;
+    tw($("wk-rec"), n.expected_recipient_households, v => num(v)); $("wd-rec").innerHTML = dline(Math.round(dRec));
+    tw($("wk-nt"), n.non_take_up_households, v => num(v)); $("wd-nt").innerHTML = dline(Math.round(dNt), true);
+    tw($("wk-liv"), n.livelihood_expected_recipients, v => num(v)); $("wd-liv").innerHTML = dline(Math.round(dLiv));
+    tw($("wk-bud"), n.monthly_budget_won / 1e8, v => `${num(v)}<small>억원</small>`); $("wd-bud").innerHTML = dline(Math.round(dBud / 1e8), true, "억원");
+    // 연령대별 수급 변화
+    const ag = W.age[key()][S], a0 = W.age["0.32"].S0;
+    const rows = W.age_groups.map(g => ({ g, d: ag[g] && a0[g] ? wGain(ag[g], a0[g]) : 0 }));
+    const mxd = Math.max(1, ...rows.map(r => Math.abs(r.d)));
+    $("wAge").innerHTML = rows.map(r => `<div class="wbar"><span>${esc(r.g)}</span><span class="track"><span class="fill" style="width:${Math.abs(r.d) / mxd * 100}%;${r.d < 0 ? "background:var(--muted)" : ""}"></span></span>
+      <span class="val">${r.d ? signed(r.d) + "가구" : "—"}</span></div>`).join("");
+    // 한 줄 요약
+    const isBase = R === 0.32 && S === "S0";
+    const top = W_TILES.map(([p]) => [p, pv[p] && pb[p] && pb[p].recipients ? wGain(pv[p], pb[p]) / pb[p].recipients : 0])
+      .sort((x, y) => y[1] - x[1])[0];
+    const gainTot = dRec + dLiv, best = [...rows].sort((x, y) => gainTot >= 0 ? y.d - x.d : x.d - y.d)[0];
+    const per = dBud > 0 ? Math.round((dRec > 0 ? dRec : dLiv) / (dBud / 1e8)) : 0;
+    $("wSay").innerHTML = isBase
+      ? `지금 제도(생계급여 <b>32%</b> · 본인이 찾아서 신청)입니다. 기초생활보장 자격 가구 ${num(n.eligible_households)} 중 <b>${num(n.non_take_up_households)}가구(${pct(1 - n.take_up_rate, 0)})</b>가 받을 수 있는데도 신청하지 않습니다. 손잡이를 움직여 보세요.`
+      : `생계급여 기준 <b>${Math.round(R * 100)}%</b>${S === "S1" ? " + <b>자동 안내</b>" : ""}로 바꾸면 —
+        ${dRec ? `기초생활보장 수급 <b>${signed(Math.round(dRec))}가구</b>(미신청 사각지대 ${dNt < 0 ? "−" : "+"}${pct(Math.abs(dNt) / b0.non_take_up_households, 0)}), ` : ""}생계급여 수급 <b>${signed(Math.round(dLiv))}가구</b>,
+        월 재정 <b>${signed(Math.round(dBud / 1e8))}억원</b>(연 ${(dBud * 12 / 1e12).toFixed(2)}조원).
+        ${per > 0 ? `재정 1억 원당 ${dRec > 0 ? "새 수급" : "생계급여 수급"} <b>${num(per)}가구</b>. ` : ""}${gainTot > 0 ? `${top && top[1] > 0.0005 ? `새로 혜택받는 가구 비율이 가장 큰 곳은 <b>${W_LABEL[top[0]] || top[0]}</b>(${pct(top[1], 1)}), ` : ""}혜택이 가장 큰 연령대는 <b>${esc(best.g)}</b>입니다.`
+          : gainTot < 0 ? `혜택이 가장 크게 줄어드는 연령대는 <b>${esc(best.g)}</b>입니다.` : ""}
+        지도에서 상태가 바뀐 가상 국민 ${changed.length}명.`;
+    if (!sel) { const first = W.agents.find(a => stateOf(a) === 3) || W.agents.find(a => stateOf(a) > 0); if (first) pick(first); }
+    else person(sel);
+  };
+  // ---- 조작
+  $("wR").oninput = () => { R = +$("wR").value / 100; $("wRv").textContent = `${$("wR").value}%`; update(); };
+  $("wS").onclick = e => { const b = e.target.closest("button.choice"); if (!b || b.dataset.s === S) return; S = b.dataset.s;
+    $("wS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); update(); };
+  $("wReset").onclick = () => { R = 0.32; S = "S0"; $("wR").value = 32; $("wRv").textContent = "32%";
+    $("wS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.s === "S0")); update(); };
+  $("wPlay").onclick = () => {   // 12개월: 자격 있는 사람이 차례로 신청 → 수급
+    if (playing) return; playing = true; $("wPlay").disabled = true;
+    const elig = W.agents.filter(a => stateOf(a) > 0), fin = elig.filter(a => stateOf(a) >= 2).length;
+    elig.forEach(a => { a.el.classList.remove("d2", "d3"); a.el.classList.add("d1"); });
+    let m = 0;
+    const tick = () => { m++;
+      elig.forEach(a => { const s = stateOf(a); if (s >= 2 && a.m === m) { a.el.classList.remove("d1"); a.el.classList.add("d" + s); } });
+      const done = elig.filter(a => stateOf(a) >= 2 && a.m <= m).length;
+      $("wPlayMsg").textContent = `${m}개월째 — 자격 있는 가상 국민 ${elig.length}명 중 ${done}명 신청·수급 (${S === "S1" ? "자동 안내" : "현행 신청"})`;
+      if (m < 12) setTimeout(tick, reduceMotion() ? 60 : 480);
+      else { playing = false; $("wPlay").disabled = false;
+        $("wPlayMsg").textContent = `12개월 뒤 — ${elig.length}명 중 ${fin}명 수급, ${elig.length - fin}명은 끝내 신청하지 않음(점을 눌러 이유 보기)`; } };
+    setTimeout(tick, 250);
+  };
+  svg.onclick = e => {   // 가장 가까운 점 선택(모바일에서 작은 점도 누르기 쉽게)
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const q = pt.matrixTransform(svg.getScreenCTM().inverse());
+    let best = null, bd = 18 * 18;
+    W.agents.forEach(a => { const d = (a.x - q.x) ** 2 + (a.y - q.y) ** 2; if (d < bd) { bd = d; best = a; } });
+    if (best) pick(best);
+  };
+  update(false);
+}
+
 // ---------------------------------------------------------------- 04 시뮬레이터 + 레드팀
 function viewSim() {
   const sc = B.scenario, rt = B.redteam, im = rt.impact, ad = rt.admin;
@@ -916,6 +1107,42 @@ function viewSim() {
     </section>`;
   $("v-sim").innerHTML = chap("sim", "정책을 바꾸면, 누가 들어오고 누가 빠지는가",
     `${who} ${sc.calibration.target.year}년 실제 수급 가구 수(${num(sc.calibration.target.households)})로 보정한 뒤 시나리오를 비교합니다.`) + `
+    <div class="card world mb" id="world" aria-labelledby="h-world">
+      <p class="eyebrow">가상 대한민국 시뮬레이션</p>
+      <h2 class="display" id="h-world" style="margin:0">손잡이를 움직이면, 대한민국이 어떻게 달라질까</h2>
+      <p class="small muted" style="margin:8px 0 0">합성 인구 10만 가구 전체를 생계급여 선정기준마다 미리 평가해 두었고, 신청 여부는 가상 국민의 응답을 실제 수급 통계로 보정한 확률로 정합니다. 움직이는 즉시 다시 계산됩니다.</p>
+      <div class="world-ctl">
+        <div><div class="slider-row"><label class="field-label" for="wR" style="margin:0">생계급여 선정기준 (기준중위소득 대비) <span class="muted" style="font-weight:500">· 현행 32%</span></label><span class="now" id="wRv">32%</span></div>
+          <input type="range" id="wR" min="25" max="40" step="1" value="32" aria-describedby="wSay"></div>
+        <div><p class="field-label" id="wSl">신청 방식</p><div class="choices compact" role="group" aria-labelledby="wSl" id="wS" style="--n:2">
+          <button type="button" class="choice" data-s="S0" aria-pressed="true"><span class="t">현행 신청</span><span class="m">본인이 찾아서</span></button>
+          <button type="button" class="choice" data-s="S1" aria-pressed="false"><span class="t">자동 안내</span><span class="m">정부가 먼저 알림</span></button></div></div>
+        <div class="acts"><button type="button" class="btn primary sm" id="wPlay">${icon("arrowR")} 12개월 재생</button>
+          <button type="button" class="btn ghost sm" id="wReset">현행으로</button></div>
+      </div>
+      <p class="world-say" id="wSay" aria-live="polite">불러오는 중…</p>
+      <div class="world-body" id="wBody">
+        <div class="world-map">
+          <svg id="wMap" role="img" aria-label="시도별 가상 국민 지도 — 점 하나가 가상 국민 한 명, 타일 색은 현행 대비 새로 혜택받는 가구 비율"></svg>
+          <div class="world-legend" aria-hidden="true">
+            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" class="d0" style="fill:var(--border-strong);opacity:.55"/></svg>자격 없음</span>
+            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.2" style="fill:var(--surface);stroke:var(--text-2);stroke-width:1.3"/></svg>자격 있지만 미신청</span>
+            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" style="fill:var(--clay);opacity:.55"/></svg>수급(주거·의료 등)</span>
+            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" style="fill:var(--accent)"/></svg>생계급여 수급</span>
+            <span><svg viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" rx="2" style="fill:var(--accent);fill-opacity:.35"/></svg>타일 색·% = 현행 대비 새로 혜택받는 가구 비율(새로 수급 + 생계급여 새로 받음)</span>
+          </div>
+          <p class="wplay" id="wPlayMsg" aria-live="polite"></p>
+        </div>
+        <div>
+          <div class="wk" id="wKpi"></div>
+          <p class="w-sub">누가 혜택을 받나 — 가구주 연령대별 새로 혜택받는 가구 (현행 대비)</p>
+          <div class="wbars" id="wAge"></div>
+          <div class="wperson" id="wPerson"></div>
+        </div>
+      </div>
+      <p class="xs muted" style="margin:16px 0 0">점 하나 = 가상 국민 한 명(통계 기반 합성, 실제 개인 아님). 점의 상태는 그 사람 유형의 자격 비율·신청 확률로 정한 한 번의 추첨이고,
+        숫자는 10만 가구 전체 계산값입니다. 12개월 재생의 신청 시점은 보여 주기 위한 연출입니다(시점은 모델링하지 않음).</p>
+    </div>` + `
     <div class="card mb">
       <p class="field-label" id="scLabel">시나리오 · 선정기준 × 신청 방식</p>
       <div class="choices" role="group" aria-labelledby="scLabel" id="scChoices" style="--n:${sc.scenarios.length}">
@@ -1006,6 +1233,7 @@ function viewSim() {
     agDraw();
     $("agMore").onclick = () => { page++; agDraw(); };
   }
+  initWorld();
   // 실시간: 선정기준·신청 방식을 직접 바꿔 합성 인구 표본으로 계산(현행과 같은 표본으로 비교)
   let lb = "S0";
   $("lr").oninput = () => { $("lrVal").textContent = `${$("lr").value}%`; };
