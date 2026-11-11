@@ -144,6 +144,7 @@ def cliff(
     max_iter: int = 8,
     programs: list[str] | None = None,
     budget_sec: float = 8.0,
+    rlimit_per_sec: int | None = None,
 ) -> QueryResult:
     """가구주의 월 근로소득이 delta 늘 때 가처분소득(소득 + 현금급여)이 min_loss 이상 줄어드는 가구.
 
@@ -151,6 +152,10 @@ def cliff(
     가깝게 만든다. 손실이 큰 순으로 상위 n개를 돌려준다(원인 제도별로 서로 다른 절벽).
     전체 시간 예산 budget_sec 를 제도별로 나눠 쓰고, 예산 안에 '더 큰 손실 없음'을 증명하지 못하면
     proven_max=False 로 표시한다(찾은 손실 자체는 평가기로 재확인한 실제 값).
+
+    rlimit_per_sec 를 주면 '결정적 모드': 시간 대신 Z3 자원 사용량(rlimit)을 시계로 쓴다(rlimit_per_sec 단위 = 가상 1초).
+    예산·제한이 CPU 속도와 무관해져 같은 입력이면 어느 서버에서든 항상 같은 결과가 나온다(실시간 API 용).
+    기본(None)은 기존 벽시계 방식 그대로.
     """
     t0 = time.perf_counter()
     all_programs = list(rs.programs)
@@ -159,6 +164,23 @@ def cliff(
     h1, h2 = SymHousehold("a", rs), SymHousehold("b", rs)
     e1, e2 = Encoder(rs, h1), Encoder(rs, h2)
     s = _base_solver(h1, realism, readable, timeout_ms)
+    if rlimit_per_sec:
+        def _used() -> int:
+            st = s.statistics()
+            return int(st.get_key_value("rlimit count")) if "rlimit count" in st.keys() else 0
+
+        r0 = _used()
+        clock = lambda: (_used() - r0) / rlimit_per_sec  # noqa: E731  가상 초
+        s.set("timeout", int(budget_sec * 20_000))      # 안전장치(정상이면 닿지 않음)
+
+        def limit(ms: int) -> None:
+            s.set("rlimit", max(1, int(ms * rlimit_per_sec / 1000)))
+    else:
+        clock = time.perf_counter
+
+        def limit(ms: int) -> None:
+            s.set("timeout", ms)
+    limit(timeout_ms)
     s.add(h2.domain())
     # h2 = h1 과 같고 가구주 근로소득만 + delta
     same = [(h1.size, h2.size), (h1.region, h2.region), (h1.housing, h2.housing),
@@ -188,12 +210,12 @@ def cliff(
 
     def search(deadline: float) -> tuple[z3.ModelRef | None, Fraction | None, bool]:
         """현재 제약에서 손실을 키워 가며 반례 탐색 → (모델, 손실, 최대임을 증명했는지)."""
-        left_ms = lambda: max(100, int((deadline - time.perf_counter()) * 1000))  # noqa: E731
+        left_ms = lambda: max(100, int((deadline - clock()) * 1000))  # noqa: E731
         best, bound = None, None
         for _ in range(max_iter):
-            if time.perf_counter() > deadline and best is not None:
+            if clock() > deadline and best is not None:
                 break
-            s.set("timeout", min(timeout_ms, left_ms()) if best is not None else left_ms())
+            limit(min(timeout_ms, left_ms()) if best is not None else left_ms())
             s.push()
             if bound is not None:   # 손실을 25% 이상 키운 해를 먼저 시도
                 s.add(loss >= R(bound * Fraction(5, 4) + 1))
@@ -204,7 +226,7 @@ def cliff(
                     return None, None, r == z3.unsat
                 s.push()
                 s.add(loss > R(bound))
-                s.set("timeout", min(timeout_ms, left_ms()))
+                limit(min(timeout_ms, left_ms()))
                 r = s.check()
                 if r != z3.sat:
                     s.pop()
@@ -216,7 +238,7 @@ def cliff(
 
     candidates, proven, plain_found = [], {}, {}
     for pid in targets:
-        t_start = time.perf_counter()
+        t_start = clock()
         s.push()
         s.add(e1.eligible(pid), z3.Not(e2.eligible(pid)))
         # 1단계: 평범한 가구(장애·부양의무자·부채·자동차·사업·기타소득 없음)에서,
@@ -252,6 +274,7 @@ def cliff(
         }))
     return QueryResult("cliff", "sat" if findings else "unsat", findings, time.perf_counter() - t0,
                        {"delta": delta, "n": n, "min_loss": min_loss, "budget_sec": budget_sec,
+                        "deterministic": bool(rlimit_per_sec), "rlimit_per_sec": rlimit_per_sec,
                         "searched_programs": targets,
                         "found_programs": [c[1] for c in sorted(candidates, key=lambda c: -c[0])]})
 

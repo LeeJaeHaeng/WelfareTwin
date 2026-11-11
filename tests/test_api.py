@@ -106,3 +106,14 @@ def test_scenario_baseline_preload_matches(tmp_path, monkeypatch):
     pd.to_pickle({"key": key, "table": cache[key].iloc[1:]}, bad)
     fresh_state(bad)
     assert m._preload_baseline() is False and key not in m._scenario_cache
+
+
+def test_cliff_live_is_deterministic(monkeypatch):
+    """Z3 절벽 재탐색: 계산량 예산 + 새 컨텍스트 → 같은 프로세스에서 연달아 불러도 같은 결과(서버 속도와 무관)."""
+    import welfaretwin.api.main as m
+    monkeypatch.setattr(m, "CLIFF_BUDGET", 3.0)          # 3 가상초면 절벽 3개를 찾는다(빈 결과끼리 비교 방지)
+    a = client.post("/verify/cliff", json={"n": 3}).json()
+    b = client.post("/verify/cliff", json={"n": 3}).json()
+    assert a["options"]["deterministic"] is True
+    key = lambda r: [(i["facts"]["trigger_program"], i["facts"]["loss"]) for i in r["items"]]  # noqa: E731
+    assert key(a) == key(b) and len(key(a)) >= 1

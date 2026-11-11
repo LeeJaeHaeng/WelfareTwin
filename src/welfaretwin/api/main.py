@@ -13,7 +13,7 @@ import os
 import threading
 import time
 from collections import OrderedDict, defaultdict, deque
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 from functools import lru_cache
 from typing import Literal
 
@@ -34,8 +34,11 @@ ON_VERCEL = bool(os.environ.get("VERCEL"))   # Vercel 함수(1 vCPU): 프로세�
 SCENARIO_SAMPLE = int(os.environ.get("WT_SCENARIO_SAMPLE", "10000"))
 WORKERS = int(os.environ.get("WT_WORKERS", "1" if ON_VERCEL else str(min(4, os.cpu_count() or 2))))
 HEAVY_PER_MIN = int(os.environ.get("WT_HEAVY_PER_MIN", "6"))
-# Z3 절벽 탐색 예산(초) — 제도별로 나눠 쓰므로 느린 1 vCPU 에서는 늘려야 찾는 절벽 수가 들쭉날쭉하지 않다
-CLIFF_BUDGET = float(os.environ.get("WT_CLIFF_BUDGET", "20" if ON_VERCEL else "10"))
+# Z3 절벽 탐색은 벽시계 대신 Z3 계산량(rlimit)을 예산으로 쓴다(verify.queries.cliff 결정적 모드) —
+# 서버 CPU 속도·부하와 무관하게 같은 입력이면 항상 같은 결과. 1 가상초 = 1,040만 rlimit(개발 PC 1초 분량, 2026-11 측정).
+# 예산 7 가상초 ≈ 개발 PC 7초 · Vercel 1 vCPU 약 20초.
+CLIFF_BUDGET = float(os.environ.get("WT_CLIFF_BUDGET", "7"))
+CLIFF_RLIMIT_PER_SEC = int(os.environ.get("WT_CLIFF_RLIMIT", "10400000"))
 
 BASELINE_FILE = ROOT / "artifacts" / "api" / "scenario_base.pkl"   # scripts/deploy_api.py 가 배포 묶음에만 만든다
 _baseline_tried = False
@@ -256,6 +259,26 @@ def verify_blindspot(req: BlindspotRequest, request: Request) -> dict:
             "options": r.options, "items": items}
 
 
+@contextmanager
+def _fresh_z3_context():
+    """이 블록 안에서만 Z3 기본 컨텍스트를 새것으로 — 앞선 계산의 내부 상태가 탐색 경로를 바꾸지 않게, 끝나면 원래대로.
+
+    자원 한도만으로는 부족했다(같은 프로세스 두 번째 호출부터 결과가 달라짐, 새 컨텍스트면 매번 같음).
+    원래 컨텍스트로 되돌리므로 다른 곳에서 만든 Z3 객체와 섞이지 않는다. 무거운 계산은 한 번에 하나(_heavy)라 안전.
+    z3 모듈의 내부 변수라 버전이 바뀌어 없으면 그냥 넘어간다(결과는 맞고 재현성만 약해짐).
+    """
+    import z3
+    mod = z3.z3
+    if not hasattr(mod, "_main_ctx"):
+        yield
+        return
+    old, mod._main_ctx = mod._main_ctx, None
+    try:
+        yield
+    finally:
+        mod._main_ctx = old
+
+
 class CliffRequest(BaseModel):
     delta: int = Field(10_000, ge=10_000, le=500_000)
     n: int = Field(4, ge=1, le=5)
@@ -267,7 +290,8 @@ def verify_cliff(req: CliffRequest, request: Request) -> dict:
     from welfaretwin.verify.explain import explain
     with _Heavy(request):
         rs = ruleset()
-        r = q.cliff(rs, delta=req.delta, n=req.n, budget_sec=CLIFF_BUDGET)
+        with _fresh_z3_context():
+            r = q.cliff(rs, delta=req.delta, n=req.n, budget_sec=CLIFF_BUDGET, rlimit_per_sec=CLIFF_RLIMIT_PER_SEC)
         items = explain(r, rs)
     return {"query": "cliff", "status": r.status, "elapsed_sec": round(r.elapsed_sec, 2),
             "options": r.options, "items": items}
