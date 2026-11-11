@@ -16,7 +16,7 @@
 [![Z3](https://img.shields.io/badge/Z3-5.3.3-AE5630?style=flat-square)](src/welfaretwin/verify)
 [![Claude](https://img.shields.io/badge/LLM-Claude_Opus_5_·_Haiku_4.5-D97757?style=flat-square&logo=anthropic&logoColor=white)](src/welfaretwin/agents/llm.py)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.67-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](app/dashboard.py)
-[![pytest](https://img.shields.io/badge/pytest-180_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
+[![pytest](https://img.shields.io/badge/pytest-185_passed-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](tests)
 [![개인정보](https://img.shields.io/badge/개인정보-0건_(합성_인구만)-2ea44f?style=flat-square)](#데이터-출처개인정보ai-활용)
 
 **[웹 데모 열기](https://welfaretwin.vercel.app)** · [평가 리포트](reports/eval_20261110.md) · [발표 대본](docs/12_발표_대본.md) · [질의응답 대비표](docs/11_질의응답_대비표.md) · [구현계획서](docs/01_구현계획서.md)
@@ -51,7 +51,7 @@
 
 ## 목차
 
-[문제와 접근](#문제와-접근) · [웹 데모 둘러보기](#웹-데모-둘러보기) · [시스템 구조](#시스템-구조) · [Rules-as-Code](#rules-as-code) · [형식검증](#형식검증z3) · [가상 대한민국](#가상-대한민국합성-인구--ai-에이전트) · [백테스트](#백테스트) · [빠른 시작과 재현](#빠른-시작과-재현) · [저장소 구조](#저장소-구조) · [한계](#한계) · [FAQ](#faq) · [문서 지도](#문서-지도) · [출처·개인정보·AI 활용](#데이터-출처개인정보ai-활용)
+[문제와 접근](#문제와-접근) · [웹 데모 둘러보기](#웹-데모-둘러보기) · [실시간 계산 서버](#실시간-계산-서버) · [시스템 구조](#시스템-구조) · [Rules-as-Code](#rules-as-code) · [형식검증](#형식검증z3) · [가상 대한민국](#가상-대한민국합성-인구--ai-에이전트) · [백테스트](#백테스트) · [빠른 시작과 재현](#빠른-시작과-재현) · [저장소 구조](#저장소-구조) · [한계](#한계) · [FAQ](#faq) · [문서 지도](#문서-지도) · [출처·개인정보·AI 활용](#데이터-출처개인정보ai-활용)
 
 ## 문제와 접근
 
@@ -77,7 +77,13 @@
 
 주소: **https://welfaretwin.vercel.app** · 발표 순서대로 다섯 장면 + 개요 · 라이트/다크 · 모바일 지원
 
-정적 웹은 대시보드 5개 화면의 **사전 계산본**이라 열자마자 결과가 보입니다. 실시간 실행(Z3·평가기·LLM 캐시)과 사업안 직접 입력은 로컬 Streamlit 대시보드에서 합니다.
+웹은 대시보드 5개 화면의 **사전 계산본**을 먼저 보여 줘서 열자마자 결과가 보입니다. [실시간 계산 서버](#실시간-계산-서버)에 붙으면(헤더 '실시간 계산' 표시) 화면 안에서 직접 다시 계산합니다.
+
+- **03 급여 절벽:** '직접 만들기'로 가구(지역·주거·재산·가구원)를 입력해 소득 스윕, 슬라이더 위치 소득에서 제도별 자격·급여·탈락 사유 표, Z3 절벽 재탐색
+- **02 사각지대:** 빈곤선(20~60%)과 제도 조합을 바꿔 Z3 재탐색. 그런 가구가 없으면 '없음'을 증명했다고 표시
+- **04 시뮬레이터:** 생계급여 선정기준(25~40%)과 신청 방식을 바꿔 재계산(합성 인구 1만 가구 표본)
+
+서버가 잠들어 있거나 꺼져 있으면 사전 계산본이 그대로 나오고 실시간 버튼만 비활성화됩니다. 사업안 자연어 입력(LLM)은 공개 서버에서 하지 않고 로컬 Streamlit 대시보드에서 합니다.
 
 <table>
   <tr>
@@ -104,6 +110,30 @@
     </td>
   </tr>
 </table>
+
+## 실시간 계산 서버
+
+웹이 부르는 FastAPI 서버([`src/welfaretwin/api/main.py`](src/welfaretwin/api/main.py))입니다. 대시보드·정적 웹과 **같은 엔진·같은 승인 규칙**으로 계산하고, 서버의 소득 스윕 결과는 정적 웹 데이터와 값이 같습니다(`tests/test_api.py`).
+
+| 경로 | 하는 일 | 응답(2코어) |
+|---|---|---|
+| `POST /evaluate` | 가구 → 제도별 자격·급여·탈락 사유, 소득인정액, 가처분소득 | 5ms |
+| `POST /sweep` | 가구 → 근로소득 구간별 제도 급여·가처분소득(급여 절벽) | 0.7초 |
+| `POST /verify/blindspot` | 빈곤선·제도 조합 → Z3 사각지대 반례 또는 '없음' 증명 | 2~4초 |
+| `POST /verify/cliff` | 소득 증가폭 → Z3 급여 절벽 반례 | 9초 |
+| `POST /scenario` | 생계급여 선정기준·신청 방식 → 수급·재정 변화 | 9.5초 |
+| `GET /health` · `/programs` · `/regions` | 상태, 승인 규칙 목록, 시도·시군구 | — |
+
+- **공개 서버라 LLM 은 부르지 않습니다.** 무거운 계산(Z3·시나리오)은 한 번에 하나, IP 당 분당 6회까지 받고, 브라우저 호출(CORS)은 웹 데모 주소만 허용합니다.
+- 실시간 시나리오는 응답 시간 때문에 합성 인구 **1만 가구 표본**으로 계산합니다. 10만 가구 전체 계산과 약 10% 차이가 날 수 있어(생계 35% 시 자격 증가 +19.6만 vs +21.6만) 화면에 표본 계산이라고 적었습니다. 위 [한눈에 보기](#한눈에-보기) 수치는 전체 계산본입니다.
+
+```bash
+uv run uvicorn welfaretwin.api.main:app --port 7860                    # 로컬 서버(자동 문서 /docs)
+# 웹을 로컬 서버에 붙이기: http://localhost:8790/?api=http://localhost:7860  (web/ 를 8790 포트로 띄운 경우)
+uv run --with huggingface_hub python scripts/build_space.py --deploy   # Hugging Face Space(Docker) 배포, .env 의 HF_TOKEN 사용
+```
+
+`build_space.py` 는 허용 목록에 있는 파일(코드·승인 규칙·params·합성 인구·수급 통계)만 `dist/space/` 에 모아 올리고, `.env`·원문 수집본·캐시는 넣지 않습니다.
 
 ### 발표 데모 영상
 
@@ -245,7 +275,7 @@ flowchart LR
 ```bash
 uv sync
 uv run streamlit run app/dashboard.py --server.headless true   # 사전 계산본(artifacts/demo)으로 오프라인 동작
-uv run pytest -q                                               # 2026-11-10 기준 180 passed, 1 skipped
+uv run pytest -q                                               # 2026-11-11 기준 185 passed, 1 skipped
 ```
 
 - 화면: 01 복지 법전 → 코드 / 02 사각지대 / 03 급여 절벽 / 04 정책 시뮬레이터 + 레드팀 / 05 백테스트. 사이드바 '모드'에서 실시간 실행(Z3·평가기·LLM 캐시)으로 바꿀 수 있습니다.
@@ -291,6 +321,7 @@ python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리�
 │  ├─ sim/           # 전 가구 평가, 시나리오·보정
 │  ├─ redteam/       # 사업안 레드팀
 │  ├─ backtest/      # 백테스트
+│  ├─ api/           # 실시간 계산 서버(FastAPI)
 │  ├─ demo_bundle.py · web_export.py · report_eval.py
 ├─ rules_db/
 │  ├─ approved/      # 승인된 규칙(중앙 7종 + 지자체 12건 + 소득인정액 라이브러리)
@@ -302,8 +333,9 @@ python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리�
 ├─ data/             # 수집 원문·통계 캐시(KOSIS 캐시만 커밋), processed/
 ├─ reports/          # 평가 리포트, 추출 리포트
 ├─ docs/             # 설계서 00~12, images/
-├─ tests/            # pytest 181개(속성 기반 포함)
-└─ scripts/          # 원문 일일 수집 예약 작업
+├─ deploy/space/     # Hugging Face Space(Dockerfile, Space 설명)
+├─ tests/            # pytest 186개(속성 기반 포함)
+└─ scripts/          # 원문 일일 수집 예약 작업, Space 배포(build_space.py)
 ```
 
 ## 한계
@@ -315,7 +347,7 @@ python app/rehearsal.py --rounds 3 --shots artifacts/rehearsal     # 데모 리�
 - **지자체 사업 범위:** LLM 추출·승인한 지자체 사업은 대구·경북 12건입니다. 원문 수집은 일일 한도 때문에 진행 중입니다.
 - **표현하지 못한 조건:** 혼인 상태, 임대인과의 관계, 타 사업 수혜 여부처럼 변수가 없는 조건은 `not_modeled` 로 남기고, 대상이 과대 추정될 수 있음을 규칙의 `assumptions` 에 적었습니다.
 - **합성 인구:** IPF 는 500회 반복에서 완전히 수렴하지 않았습니다(시도×연령×점유형태 2020 비율 기준 최대 상대오차 16.8%). 주변분포 오차는 0.05%p 이내입니다.
-- **정적 웹:** 사전 계산본이라 실시간 Z3·LLM 실행과 사업안 직접 입력은 로컬 대시보드에서만 됩니다.
+- **공개 웹의 범위:** 실시간 서버는 LLM 을 부르지 않으므로 사업안 자연어 입력·레드팀 새로 실행은 로컬 대시보드에서만 됩니다. 무료 서버는 한동안 안 쓰면 잠들어 첫 접속에 1~2분 걸릴 수 있고, 그동안은 사전 계산본을 보여 줍니다.
 
 ## FAQ
 

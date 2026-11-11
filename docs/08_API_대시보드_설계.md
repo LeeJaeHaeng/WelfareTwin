@@ -1,19 +1,25 @@
 # 08. API · 대시보드 설계
 
-## 1. API (FastAPI, `src/welfaretwin/api/main.py`)
-| 메서드 | 경로 | 입력 | 출력 |
-|---|---|---|---|
-| GET | `/programs` | — | 승인된 규칙 목록(id, 이름, 출처, 상태) |
-| POST | `/evaluate` | Household | Decision[] (trace 포함) |
-| POST | `/verify/{query}` | query ∈ {blindspot, cliff, overlap}, 옵션 | 반례 목록 + 설명 |
-| POST | `/sweep/income` | Household, 소득 범위 | 소득별 가처분소득·제도별 급여 시계열 |
-| POST | `/scenario` | 변경안(YAML 또는 자연어) | 영향 지표 + Q4 결과 |
-| POST | `/redteam` | 변경안 | 리포트(JSON + Markdown) |
-| GET | `/backtest/{id}` | — | 예측 vs 실제 |
-| POST | `/extract` | serv_id | LLM 추출 결과·교차검증 상태 |
+## 1. API (FastAPI, `src/welfaretwin/api/main.py`) — 11/11 구현
+웹 데모(https://welfaretwin.vercel.app)가 부르는 실시간 계산 서버. 대시보드·정적 웹과 **같은 엔진·같은 승인 규칙**을 쓴다.
+배포: Hugging Face Space(Docker, 무료 2코어) — `scripts/build_space.py --deploy`. 로컬: `uv run uvicorn welfaretwin.api.main:app --port 7860`. 자동 문서 `/docs`.
 
-- 무거운 작업(`/scenario`, `/redteam`)은 결과를 캐시하고, 데모용 입력은 사전 계산본을 즉시 반환한다.
-- MVP에서는 Streamlit이 모듈을 직접 호출해도 된다. API는 시간이 남으면 분리한다.
+| 메서드 | 경로 | 입력 | 출력 | 2코어 기준 |
+|---|---|---|---|---|
+| GET | `/health` | — | 상태, 규칙 수, 합성 인구 수, 시나리오 표본 수, 현행 생계 선정비율(params), `llm: false`, 버전 | — |
+| GET | `/programs` | — | 승인된 규칙 목록(id, 이름, 출처) | — |
+| GET | `/regions` | — | 시도·시군구 목록(합성 인구 + 지자체 규칙 지역) | — |
+| POST | `/evaluate` | Household | 제도별 자격·급여·탈락 사유, 소득인정액, 기준중위소득, 가처분소득(다른 지역 지자체 사업은 숨김) | 5ms |
+| POST | `/sweep` | Household, 소득 변동 가구원, 최대 소득(≤600만), 간격(≥1만) | 소득 구간별 제도 급여·가처분소득 — 정적 `sweeps.json` 과 같은 형식·같은 값 | 0.7초 |
+| POST | `/verify/blindspot` | 빈곤선 비율(20~60%), 제도 조합(생계·기초연금·근로장려금), 개수 | Z3 반례 가구 + 탈락 사유. 없으면 unsat(없음 증명) | 2~4초 |
+| POST | `/verify/cliff` | 소득 증가폭 δ, 개수 | Z3 급여 절벽 반례(δ 늘 때 가처분소득 감소) | 9초 |
+| POST | `/scenario` | 생계급여 선정비율(25~40%), 신청 방식 S0(현행)/S1(자동 안내) | 현행 대비 자격·실수급·재정 변화(합성 인구 1만 가구 표본, 결과 캐시) | 9.5초 |
+
+- **공개 서버라 LLM 은 부르지 않는다**(사용자 결정). 규칙 추출·레드팀·에이전트 응답은 캐시·사전 계산본만 쓴다. 그래서 `/extract`·`/redteam`·`/backtest` 는 공개 API 에 두지 않았다(대시보드·웹 사전 계산본에서 보여 줌).
+- 무거운 계산(`/verify/*`·`/scenario`)은 한 번에 하나(대기 60초 넘으면 503), IP 당 분당 6회(`WT_HEAVY_PER_MIN`, 넘으면 429). `/sweep` 은 가벼워 제한 없이 최대 600구간만 받는다.
+- CORS 는 welfaretwin.vercel.app(+미리보기 도메인)·localhost:8790·`WT_CORS_ORIGINS` 만 허용.
+- 시나리오 표본: 1만 가구 표본은 전체 10만 가구 계산과 약 10% 다를 수 있다(생계 35% 시 자격 증가 +19.6만 vs +21.6만). 화면에 "표본 계산"이라고 밝힌다. 발표 수치는 전체 계산본.
+- 웹은 `<meta name="wt-api">`(또는 `?api=URL`)로 서버를 찾고, 서버가 없거나 잠들어 있으면 사전 계산본을 그대로 보여 주며 실시간 버튼만 비활성화한다(서버 깨우기 최대 150초 재시도).
 
 ## 2. 대시보드 (Streamlit, `app/dashboard.py`)
 

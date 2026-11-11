@@ -1,7 +1,7 @@
 """실시간 계산 API 를 Hugging Face Space(Docker)로 내보내기.
 
     uv run python scripts/build_space.py                                   # dist/space/ 만 만들기
-    uv run --with huggingface_hub python scripts/build_space.py --deploy                 # <로그인 계정>/welfaretwin-api
+    uv run --with huggingface_hub python scripts/build_space.py --deploy                 # <로그인 계정>/welfaretwin-api, RUNNING 까지 대기
 
 허용 목록(INCLUDE)에 있는 파일만 복사한다 — .env·원문 수집본·캐시는 절대 들어가지 않는다.
 합성 인구 parquet·수급 통계 CSV 는 git 에 없으므로(재생성 가능) 여기서 함께 올린다. 둘 다 개인정보 없음.
@@ -62,21 +62,54 @@ def build() -> Path:
     return OUT
 
 
-def deploy(repo: str) -> None:
+def space_url(repo: str) -> str:
+    sub = repo.lower().replace("/", "-").replace("_", "-").replace(".", "-")
+    return f"https://{sub}.hf.space"
+
+
+def deploy(repo: str, wait: bool) -> None:
     import os
 
     from dotenv import load_dotenv
     from huggingface_hub import HfApi
     load_dotenv(ROOT / ".env")          # HF_TOKEN(쓰기 권한)은 .env 에만 — 채팅·커밋 금지
-    api = HfApi(token=os.environ.get("HF_TOKEN"))
+    api = HfApi(token=os.environ.get("HF_TOKEN") or None)   # 없으면 `hf auth login` 로그인 정보
     if repo == "auto":
         repo = f"{api.whoami()['name']}/welfaretwin-api"
     api.create_repo(repo, repo_type="space", space_sdk="docker", exist_ok=True)
     api.upload_folder(folder_path=str(OUT), repo_id=repo, repo_type="space", delete_patterns=["*"],
                       commit_message="복지트윈 API 배포")
-    owner, name = repo.split("/")
+    url = space_url(repo)
     print(f"https://huggingface.co/spaces/{repo}")
-    print(f"API: https://{owner.lower()}-{name.lower().replace('_', '-').replace('.', '-')}.hf.space")
+    print(f"API: {url}")
+    if wait:
+        wait_running(api, repo, url)
+
+
+def wait_running(api, repo: str, url: str, timeout: int = 1200) -> None:
+    """빌드가 끝나 RUNNING 이 되고 /health 가 답할 때까지 기다린다(실패 단계면 바로 중단)."""
+    import time
+
+    import httpx
+    t0, last = time.time(), None
+    while time.time() - t0 < timeout:
+        st = api.get_space_runtime(repo).stage
+        stage = str(getattr(st, "value", st))
+        if stage != last:
+            print(f"  {int(time.time() - t0):4d}s  {stage}", flush=True)
+            last = stage
+        if stage.endswith("ERROR"):
+            raise SystemExit(f"Space 빌드/실행 실패({stage}) — https://huggingface.co/spaces/{repo} 의 Logs 확인")
+        if stage.endswith("RUNNING"):
+            try:
+                r = httpx.get(f"{url}/health", timeout=30)
+                if r.status_code == 200:
+                    print(f"  /health {r.json()}")
+                    return
+            except httpx.HTTPError:
+                pass
+        time.sleep(10)
+    raise SystemExit(f"{timeout}초 안에 RUNNING 이 안 됨 — Space 페이지에서 상태 확인")
 
 
 def main() -> int:
@@ -85,10 +118,11 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--deploy", metavar="OWNER/SPACE", nargs="?", const="auto",
                     help="값 없이 쓰면 <로그인 계정>/welfaretwin-api")
+    ap.add_argument("--no-wait", action="store_true", help="업로드만 하고 빌드 완료를 기다리지 않음")
     args = ap.parse_args()
     build()
     if args.deploy:
-        deploy(args.deploy)
+        deploy(args.deploy, wait=not args.no_wait)
     return 0
 
 
