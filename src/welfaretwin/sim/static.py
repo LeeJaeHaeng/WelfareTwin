@@ -35,12 +35,14 @@ def load_population(folder: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def to_households(hh: pd.DataFrame, persons: pd.DataFrame) -> list[Household]:
-    by_hh = {k: g.sort_values("idx") for k, g in persons.groupby("hh_id", sort=False)}
+    # 가구원 표를 한 번만 (가구, 순번) 정렬해 나눈다 — 가구마다 따로 정렬하던 것보다 수 배 빠르고 결과는 같다
+    by_hh: dict = {}
+    for m in persons.sort_values(["hh_id", "idx"])[["hh_id", *P_FIELDS]].to_dict("records"):
+        by_hh.setdefault(m["hh_id"], []).append(Person(**{f: m[f] for f in P_FIELDS}))
     out = []
     for row in hh[HH_FIELDS].to_dict("records"):
-        members = [Person(**{f: m[f] for f in P_FIELDS}) for m in by_hh[row["hh_id"]].to_dict("records")]
         row["region_sigungu"] = row["region_sigungu"] or None
-        out.append(Household(members=members, **row))
+        out.append(Household(members=by_hh[row["hh_id"]], **row))
     return out
 
 

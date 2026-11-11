@@ -62,6 +62,15 @@ def _eval_chunk(args) -> list[tuple]:
             for h in hhs for d in evaluate(h, rs, program_ids)]
 
 
+def sample_population(hh: pd.DataFrame, persons: pd.DataFrame, sample: int,
+                      seed: int = 0) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """무작위 표본 + 가중치 보정(전체 가구 수 / 표본 수). 같은 seed 면 항상 같은 가구."""
+    total = len(hh)
+    hh = hh.sample(sample, random_state=seed).copy()
+    hh["weight"] = hh["weight"] * (total / sample)
+    return hh, persons[persons["hh_id"].isin(hh["hh_id"])]
+
+
 def evaluate_population(change: PolicyChange, program_ids: list[str], sample: int | None = None,
                         workers: int = 6, seed: int = 0,
                         region: tuple[str, str | None] | None = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -75,10 +84,7 @@ def evaluate_population(change: PolicyChange, program_ids: list[str], sample: in
         persons = persons[persons["hh_id"].isin(hh["hh_id"])]
         sample = None
     if sample and sample < len(hh):
-        total = len(hh)
-        hh = hh.sample(sample, random_state=seed).copy()
-        hh["weight"] = hh["weight"] * (total / sample)
-        persons = persons[persons["hh_id"].isin(hh["hh_id"])]
+        hh, persons = sample_population(hh, persons, sample, seed)
     if change.population_scale:
         hh, persons = hh.copy(), persons.copy()
         for col, f in change.population_scale.items():
@@ -86,8 +92,11 @@ def evaluate_population(change: PolicyChange, program_ids: list[str], sample: in
             df[col] = (df[col] * f).round().astype("int64")
     objs = to_households(hh, persons)
     chunks = [(objs[i:i + 1500], change, program_ids) for i in range(0, len(objs), 1500)]
-    with ProcessPoolExecutor(max_workers=workers) as ex:
-        rows = [r for part in ex.map(_eval_chunk, chunks) for r in part]
+    if workers <= 1:      # 1코어 서버리스(Vercel 함수 등)는 프로세스 풀 없이 — 결과·순서는 같다
+        rows = [r for part in map(_eval_chunk, chunks) for r in part]
+    else:
+        with ProcessPoolExecutor(max_workers=workers) as ex:
+            rows = [r for part in ex.map(_eval_chunk, chunks) for r in part]
     res = pd.DataFrame(rows, columns=["hh_id", "program_id", "eligible", "benefit_monthly"])
     return res, hh, persons
 
@@ -177,6 +186,12 @@ def changed_types(t0: pd.DataFrame, t1: pd.DataFrame, top: int = 10) -> dict:
     return out
 
 
+def table_key(change: PolicyChange, sample: int | None) -> str:
+    """compare 캐시 키 — 같은 정책 변경·같은 표본이면 같은 가구 표."""
+    return json.dumps({"p": change.params, "x": [d["id"] for d in change.extra_programs],
+                       "s": change.population_scale, "n": sample}, sort_keys=True)
+
+
 def compare(changes: list[tuple[PolicyChange, str]], sample: int | None = None, workers: int = 6,
             cache: dict | None = None) -> dict:
     """changes[0] 은 기준(현행 규칙 + S0)이어야 한다. 기준에서 보정한 b 를 모든 시나리오에 적용.
@@ -189,8 +204,7 @@ def compare(changes: list[tuple[PolicyChange, str]], sample: int | None = None, 
     tables = cache if cache is not None else {}
     results = []
     for change, scen in changes:
-        key = json.dumps({"p": change.params, "x": [d["id"] for d in change.extra_programs],
-                          "s": change.population_scale, "n": sample}, sort_keys=True)
+        key = table_key(change, sample)
         if key not in tables:
             res, hh, persons = evaluate_population(change, NBLS, sample=sample, workers=workers)
             tables[key] = household_table(res, hh, persons)

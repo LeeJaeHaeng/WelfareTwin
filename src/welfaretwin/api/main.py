@@ -30,9 +30,37 @@ from welfaretwin.verify.explain import describe_household, failed_reasons
 ROOT = RULES_DB.parent
 CENTRAL_GROUPS = ["NBLS_LIVELIHOOD", "NBLS_HOUSING", "NBLS_EDUCATION", "BASIC_PENSION", "EITC", "ENERGY_VOUCHER"]
 INCOME_SUPPORT = ["NBLS_LIVELIHOOD", "BASIC_PENSION", "EITC"]
+ON_VERCEL = bool(os.environ.get("VERCEL"))   # Vercel 함수(1 vCPU): 프로세스 풀·시작 예열 없이
 SCENARIO_SAMPLE = int(os.environ.get("WT_SCENARIO_SAMPLE", "10000"))
-WORKERS = int(os.environ.get("WT_WORKERS", str(min(4, os.cpu_count() or 2))))
+WORKERS = int(os.environ.get("WT_WORKERS", "1" if ON_VERCEL else str(min(4, os.cpu_count() or 2))))
 HEAVY_PER_MIN = int(os.environ.get("WT_HEAVY_PER_MIN", "6"))
+# Z3 절벽 탐색 예산(초) — 제도별로 나눠 쓰므로 느린 1 vCPU 에서는 늘려야 찾는 절벽 수가 들쭉날쭉하지 않다
+CLIFF_BUDGET = float(os.environ.get("WT_CLIFF_BUDGET", "20" if ON_VERCEL else "10"))
+
+BASELINE_FILE = ROOT / "artifacts" / "api" / "scenario_base.pkl"   # scripts/deploy_api.py 가 배포 묶음에만 만든다
+_baseline_tried = False
+
+
+def _preload_baseline() -> bool:
+    """배포 묶음의 기준선(현행 규칙, 같은 표본) 가구 표를 캐시에 넣는다 — 지금 서버의 표본과 가구가 같을 때만."""
+    from welfaretwin.sim.scenario import PolicyChange, sample_population, table_key
+    from welfaretwin.sim.static import load_population
+    global _baseline_tried
+    key = table_key(PolicyChange("현행"), SCENARIO_SAMPLE)
+    if key in _scenario_cache:
+        return True
+    if _baseline_tried or not BASELINE_FILE.exists():
+        return False
+    _baseline_tried = True
+    saved = pd.read_pickle(BASELINE_FILE)
+    hh, persons = load_population(ROOT / "data" / "processed")
+    ids = set(sample_population(hh, persons, SCENARIO_SAMPLE)[0]["hh_id"])
+    if saved.get("key") != key or set(saved["table"].index) != ids:
+        return False                          # 표본·키가 다르면 쓰지 않고 새로 계산
+    _scenario_cache[key] = saved["table"]
+    _scenario_cache.move_to_end(key, last=False)   # 기준선은 캐시 맨 앞(비울 때 남김)
+    return True
+
 
 def _warmup() -> None:
     """서버가 뜨면 규칙·지역 목록을 읽고, 시나리오 기준선(현행·S0, 같은 표본)을 미리 계산해 첫 요청을 빠르게."""
@@ -41,12 +69,13 @@ def _warmup() -> None:
     if (ROOT / "data" / "processed" / "households.parquet").exists():
         from welfaretwin.sim.scenario import PolicyChange, compare
         with _heavy:
+            _preload_baseline()
             compare([(PolicyChange("현행"), "S0")], sample=SCENARIO_SAMPLE, workers=WORKERS, cache=_scenario_cache)
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    if os.environ.get("WT_WARMUP", "1") == "1":
+    if os.environ.get("WT_WARMUP", "0" if ON_VERCEL else "1") == "1":
         threading.Thread(target=_warmup, daemon=True).start()
     yield
 
@@ -238,7 +267,7 @@ def verify_cliff(req: CliffRequest, request: Request) -> dict:
     from welfaretwin.verify.explain import explain
     with _Heavy(request):
         rs = ruleset()
-        r = q.cliff(rs, delta=req.delta, n=req.n, budget_sec=10.0)
+        r = q.cliff(rs, delta=req.delta, n=req.n, budget_sec=CLIFF_BUDGET)
         items = explain(r, rs)
     return {"query": "cliff", "status": r.status, "elapsed_sec": round(r.elapsed_sec, 2),
             "options": r.options, "items": items}
@@ -258,6 +287,7 @@ def scenario(req: ScenarioRequest, request: Request) -> dict:
     ratio = round(req.selection_ratio_livelihood, 3)
     change = PolicyChange(f"생계급여 선정기준 {ratio:.0%}", {"selection_ratio_livelihood": ratio})
     with _Heavy(request):
+        _preload_baseline()
         out = compare([(PolicyChange("현행"), "S0"), (change, req.behavior)], sample=SCENARIO_SAMPLE,
                       workers=WORKERS, cache=_scenario_cache)
         while len(_scenario_cache) > 12:       # 기준선(처음 넣은 것)은 남기고 오래된 변경안부터 비움
