@@ -74,6 +74,59 @@ def sweeps(max_income: int = 3_500_000, step: int = 10_000) -> dict:
     return out
 
 
+def agents(n: int = 24) -> dict | None:
+    """가상 국민 카드 — Nemotron 가상 개인의 1인칭 응답(behavior v2). 정책 대상에 가까운 소득 1~2분위 유형을
+    연령대별로 돌아가며 n개 유형에서 한 명씩(결정적). 신청 확률은 LLM 원값(보정 전)이다."""
+    import hashlib
+
+    from welfaretwin.agents.behavior import household_facts
+    from welfaretwin.population.personas import AGE_GROUPS, build
+    from welfaretwin.population.residents import SOURCE
+    sim = ROOT / "artifacts" / "sim"
+    if not (sim / "behavior.parquet").exists() or not (sim / "residents.parquet").exists():
+        return None
+    b = pd.read_parquet(sim / "behavior.parquet")
+    if "resident_uuid" not in b:          # v1(클러스터 설명) 응답이면 카드 없음
+        return None
+    res = pd.read_parquet(sim / "residents.parquet").set_index("uuid")
+    hh = pd.read_parquet(ROOT / "data" / "processed" / "households.parquet")
+    persons = pd.read_parquet(ROOT / "data" / "processed" / "persons.parquet")
+    personas = {p.persona_id: p for p in build(hh, persons)[0]}
+    w = b.groupby("persona_id")["weight"].first()
+    mean = {sc: float((g.groupby("persona_id")["apply_probability"].mean() * w).sum() / w.sum())
+            for sc, g in b.groupby("scenario")}
+    s0 = b[b["scenario"] == "S0"].assign(rw=lambda d: d["persona_id"].map(w) / 3)
+    rs = s0.assign(r=s0["reasons"].str.split("|")).explode("r")
+    rs = rs[rs["r"].fillna("") != ""]
+    reasons = (rs.groupby("r")["rw"].sum() / s0["rw"].sum()).sort_values(ascending=False)
+    # 소득 1~2분위 유형, 연령대(persona_id 2번째 글자)별 가중치 큰 순 → 연령대를 돌아가며
+    low = [p for p in personas.values() if p.income_quintile <= 2]
+    by_age = {a: sorted([p for p in low if p.persona_id[1] == str(a)], key=lambda p: -p.weight) for a in range(len(AGE_GROUPS))}
+    picks = []
+    while len(picks) < n and any(by_age.values()):
+        for a in range(len(AGE_GROUPS)):
+            if by_age[a] and len(picks) < n:
+                picks.append(by_age[a].pop(0))
+    cards = []
+    for p in picks:
+        g = b[b["persona_id"] == p.persona_id]
+        slot = int(hashlib.sha1(p.persona_id.encode()).hexdigest(), 16) % 3
+        rows = g[g["sample"] == slot]
+        uuid = rows["resident_uuid"].iloc[0]
+        r = res.loc[uuid]
+        cards.append({
+            "persona_id": p.persona_id, "households": round(float(p.weight)), "household": household_facts(p),
+            "resident": {k: (int(r[k]) if k == "age" else r[k]) for k in
+                         ("sex", "age", "marital_status", "family_type", "district", "education_level", "occupation", "persona")},
+            "answers": {row["scenario"]: {"p": round(float(row["apply_probability"]), 2), "channel": row["channel"],
+                                          "reasons": [x for x in row["reasons"].split("|") if x], "rationale": row["rationale"]}
+                        for _, row in rows.iterrows()},
+        })
+    return {"n_residents": int(b["resident_uuid"].nunique()), "n_clusters": int(b["persona_id"].nunique()),
+            "mean_apply_raw": mean, "reasons_s0": {k: round(float(v), 3) for k, v in reasons.head(5).items()},
+            "model": b["model"].iloc[0], "source": SOURCE, "cards": cards}
+
+
 def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -93,6 +146,7 @@ def main() -> int:
         "redteam": load("redteam_heating.json"),
         "backtest": load("backtest_B2_2024_2025.json"),
         "backtest_fixed": load("backtest_B2_2024_2025_fixedpop.json"),
+        "agents": agents(),
         "nbls_series": series.to_dict("records") if series is not None else [],
         "static_calibration": static.get("calibration"),
         "nbls_assumptions": rs.libraries["NBLS_INCOME"].assumptions,

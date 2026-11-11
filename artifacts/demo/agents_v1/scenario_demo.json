@@ -1,0 +1,151 @@
+{
+ "calibration": {
+  "intercept_b": 1.6245919826261286,
+  "target": {
+   "year": 2025,
+   "households": 2013319.0,
+   "persons": 2837000.0,
+   "source": "e-나라지표 2760 국민기초생활보장 수급 현황"
+  },
+  "behavior_model_scenarios": [
+   "S0",
+   "S1"
+  ]
+ },
+ "scenarios": [
+  {
+   "name": "현행 / S0",
+   "params": {},
+   "behavior": "S0",
+   "metrics": {
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2013319.0,
+    "expected_recipient_persons": 3293268.409399166,
+    "non_take_up_households": 651655.830980001,
+    "take_up_rate": 0.7554739266560483,
+    "monthly_budget_won": 595271367745.2695,
+    "livelihood_eligible_households": 1424154.2715400006,
+    "livelihood_expected_recipients": 1098403.5813946407
+   },
+   "delta_vs_base": {
+    "eligible_households": 0.0,
+    "eligible_persons": 0.0,
+    "expected_recipient_households": 0.0,
+    "expected_recipient_persons": 0.0,
+    "non_take_up_households": 0.0,
+    "take_up_rate": 0.0,
+    "monthly_budget_won": 0.0,
+    "livelihood_eligible_households": 0.0,
+    "livelihood_expected_recipients": 0.0
+   }
+  },
+  {
+   "name": "현행 / S1",
+   "params": {},
+   "behavior": "S1",
+   "metrics": {
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2296559.8155911234,
+    "expected_recipient_persons": 3714104.1613043183,
+    "non_take_up_households": 368415.0153888776,
+    "take_up_rate": 0.8617566623496407,
+    "monthly_budget_won": 696486588956.4426,
+    "livelihood_eligible_households": 1424154.2715400006,
+    "livelihood_expected_recipients": 1270844.454605174
+   },
+   "delta_vs_base": {
+    "eligible_households": 0.0,
+    "eligible_persons": 0.0,
+    "expected_recipient_households": 283240.8155911234,
+    "expected_recipient_persons": 420835.7519051526,
+    "non_take_up_households": -283240.8155911234,
+    "take_up_rate": 0.10628273569359237,
+    "monthly_budget_won": 101215221211.1731,
+    "livelihood_eligible_households": 0.0,
+    "livelihood_expected_recipients": 172440.8732105333
+   }
+  },
+  {
+   "name": "생계급여 선정기준 32%→35% / S0",
+   "params": {
+    "selection_ratio_livelihood": 0.35
+   },
+   "behavior": "S0",
+   "metrics": {
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2013319.0,
+    "expected_recipient_persons": 3293268.409399166,
+    "non_take_up_households": 651655.830980001,
+    "take_up_rate": 0.7554739266560483,
+    "monthly_budget_won": 721713165360.9633,
+    "livelihood_eligible_households": 1640330.5872800008,
+    "livelihood_expected_recipients": 1263027.7943301788
+   },
+   "changes_vs_base": {
+    "newly_included": {
+     "households": 0.0,
+     "top_types": []
+    },
+    "newly_excluded": {
+     "households": 0.0,
+     "top_types": []
+    }
+   },
+   "delta_vs_base": {
+    "eligible_households": 0.0,
+    "eligible_persons": 0.0,
+    "expected_recipient_households": 0.0,
+    "expected_recipient_persons": 0.0,
+    "non_take_up_households": 0.0,
+    "take_up_rate": 0.0,
+    "monthly_budget_won": 126441797615.69373,
+    "livelihood_eligible_households": 216176.31574000022,
+    "livelihood_expected_recipients": 164624.21293553803
+   }
+  },
+  {
+   "name": "생계급여 선정기준 32%→35% / S1",
+   "params": {
+    "selection_ratio_livelihood": 0.35
+   },
+   "behavior": "S1",
+   "metrics": {
+    "eligible_households": 2664974.830980001,
+    "eligible_persons": 4473342.575240001,
+    "expected_recipient_households": 2296559.8155911234,
+    "expected_recipient_persons": 3714104.1613043183,
+    "non_take_up_households": 368415.0153888776,
+    "take_up_rate": 0.8617566623496407,
+    "monthly_budget_won": 841553850400.9125,
+    "livelihood_eligible_households": 1640330.5872800008,
+    "livelihood_expected_recipients": 1457290.2753313172
+   },
+   "changes_vs_base": {
+    "newly_included": {
+     "households": 0.0,
+     "top_types": []
+    },
+    "newly_excluded": {
+     "households": 0.0,
+     "top_types": []
+    }
+   },
+   "delta_vs_base": {
+    "eligible_households": 0.0,
+    "eligible_persons": 0.0,
+    "expected_recipient_households": 283240.8155911234,
+    "expected_recipient_persons": 420835.7519051526,
+    "non_take_up_households": -283240.8155911234,
+    "take_up_rate": 0.10628273569359237,
+    "monthly_budget_won": 246282482655.64294,
+    "livelihood_eligible_households": 216176.31574000022,
+    "livelihood_expected_recipients": 358886.6939366765
+   }
+  }
+ ],
+ "elapsed_sec": 120.7,
+ "sample_households": null
+}

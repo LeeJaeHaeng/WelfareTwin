@@ -31,18 +31,66 @@ def git_rev() -> str:
         return "unknown"
 
 
+def _agents_summary() -> dict | None:
+    """행동 응답이 v2(가상 국민)면 인원·평균 신청 의향(보정 전)."""
+    try:
+        import pandas as pd
+        b = pd.read_parquet(A / "sim" / "behavior.parquet")
+    except Exception:
+        return None
+    if "resident_uuid" not in b:
+        return None
+    w = b.groupby("persona_id")["weight"].first()
+    mean = {sc: float((g.groupby("persona_id")["apply_probability"].mean() * w).sum() / w.sum())
+            for sc, g in b.groupby("scenario")}
+    return {"residents": int(b["resident_uuid"].nunique()), "clusters": int(b["persona_id"].nunique()),
+            "mean_raw": mean, "model": str(b["model"].iloc[0])}
+
+
 def collect() -> dict:
     return {
         "blind": j(A / "demo" / "verify_blindspot.json"), "cliff": j(A / "demo" / "verify_cliff.json"),
         "overlap": j(A / "demo" / "verify_overlap.json"), "scen": j(A / "demo" / "scenario_demo.json"),
         "bt": j(A / "demo" / "backtest_B2_2024_2025.json"), "rules": j(A / "demo" / "m4_rules.json"),
         "bt_fixed": j(A / "demo" / "backtest_B2_2024_2025_fixedpop.json"),
+        "scen_v1": j(A / "demo" / "agents_v1" / "scenario_demo.json"),
+        "bt_v1": j(A / "demo" / "agents_v1" / "backtest_B2_2024_2025.json"),
+        "agents": _agents_summary(),
         "scale": j(A / "demo" / "blindspot_scale.json"), "static": j(A / "sim" / "static_2026.json"),
         "pop": j(ROOT / "data" / "processed" / "population_meta.json"),
         "rehearsal": j(A / "rehearsal" / "rehearsal_report.json"),
         "rt_md": (A / "demo" / "redteam_heating.md").read_text(encoding="utf-8")
         if (A / "demo" / "redteam_heating.md").exists() else "",
     }
+
+
+def _agents_lines(d: dict) -> list[str]:
+    """신청 행동 응답 v2(가상 국민) — v1(클러스터 설명)과 같은 보정·시나리오·백테스트로 나란히."""
+    ag, v1, bv1 = d.get("agents"), d.get("scen_v1"), d.get("bt_v1")
+    if not ag:
+        return []
+    out = [f"- 신청 행동 응답: 가상 국민 {ag['residents']:,}명(합성 인구 {ag['clusters']}개 유형 × 3명, "
+           f"NVIDIA Nemotron-Personas-Korea 인물 + 합성 인구 경제 상황, {ag['model']}) — 보정 전 평균 신청 의향 "
+           f"현행 {ag['mean_raw'].get('S0', 0):.1%} / 자동 안내 {ag['mean_raw'].get('S1', 0):.1%}"]
+    if v1 and bv1:
+        sc, bt = d["scen"], d["bt"]
+        m2, m1 = sc["scenarios"][0]["metrics"], v1["scenarios"][0]["metrics"]
+        s2, s1 = sc["scenarios"][1]["delta_vs_base"], v1["scenarios"][1]["delta_vs_base"]
+        out += [
+            "",
+            "| 항목 | v1 클러스터 설명(3회 표본) | v2 가상 국민(3명) |",
+            "|---|---|---|",
+            f"| 보정 절편 b | {v1['calibration']['intercept_b']:.2f} | {sc['calibration']['intercept_b']:.2f} |",
+            f"| 현행 수급률 | {m1['take_up_rate']:.1%} | {m2['take_up_rate']:.1%} |",
+            f"| 미신청 가구 | {m1['non_take_up_households']:,.0f} | {m2['non_take_up_households']:,.0f} |",
+            f"| 자동 안내 수급 변화 | {s1['expected_recipient_households']:+,.0f} | {s2['expected_recipient_households']:+,.0f} |",
+            f"| 자동 안내 월 재정 | {s1['monthly_budget_won'] / 1e8:+,.0f}억원 | {s2['monthly_budget_won'] / 1e8:+,.0f}억원 |",
+            f"| 백테스트 가구 오차율 | {bv1['households']['error_rate']:.1%} | {bt['households']['error_rate']:.1%} |",
+            f"| 백테스트 인원 오차율 | {bv1['persons']['error_rate']:.1%} | {bt['persons']['error_rate']:.1%} |",
+            "",
+            "  - v1 결과는 `artifacts/demo/agents_v1/`(같은 합성 인구·보정·코드). 자격 판정(생계 자격 변화 등)은 행동 응답과 무관해 같다.",
+        ]
+    return out
 
 
 def eval_md(d: dict) -> str:
@@ -80,7 +128,8 @@ def eval_md(d: dict) -> str:
          f"- 자동 안내(S1): 수급 {s1['delta_vs_base']['expected_recipient_households']:+,.0f}가구, "
          f"월 재정 {s1['delta_vs_base']['monthly_budget_won'] / 1e8:+,.0f}억원",
          f"- 생계급여 32→35%: 생계 자격 {liv['delta_vs_base']['livelihood_eligible_households']:+,.0f}가구, "
-         f"월 재정 {liv['delta_vs_base']['monthly_budget_won'] / 1e8:+,.0f}억원(기초생활 전체 자격 불변)", "",
+         f"월 재정 {liv['delta_vs_base']['monthly_budget_won'] / 1e8:+,.0f}억원(기초생활 전체 자격 불변)",
+         *_agents_lines(d), "",
          "## 5. 백테스트",
          f"- B2(2024→2025): 수급 가구 증가 예측 {bt['households']['predicted_increase']:+,.0f} vs 실제 "
          f"{bt['households']['actual_increase']:+,.0f} → 오차율 {bt['households']['error_rate']:.1%} "

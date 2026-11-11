@@ -49,29 +49,29 @@
  ],
  "base_year": 2024,
  "target_year": 2025,
- "intercept_b": 2.2813488650247358,
+ "intercept_b": 2.5931936950127756,
  "metrics": {
   "2024": {
    "eligible_households": 2193481.0143400007,
    "eligible_persons": 3642379.7132800007,
-   "expected_recipient_households": 1884089.0,
-   "expected_recipient_persons": 3086901.672602184,
-   "non_take_up_households": 309392.0143400007,
-   "take_up_rate": 0.8589493082833479,
-   "monthly_budget_won": 491721494701.1884,
+   "expected_recipient_households": 1884088.9999999998,
+   "expected_recipient_persons": 3090962.513235381,
+   "non_take_up_households": 309392.0143400009,
+   "take_up_rate": 0.8589493082833478,
+   "monthly_budget_won": 495695776585.3214,
    "livelihood_eligible_households": 1152865.3675000002,
-   "livelihood_expected_recipients": 996793.6733639981
+   "livelihood_expected_recipients": 1001366.2710471547
   },
   "2025": {
    "eligible_households": 2334074.351840001,
    "eligible_persons": 3876327.0268800007,
-   "expected_recipient_households": 2001644.6592006749,
-   "expected_recipient_persons": 3278298.71472274,
-   "non_take_up_households": 332429.6926393262,
-   "take_up_rate": 0.8575753628511171,
-   "monthly_budget_won": 554336969215.1399,
+   "expected_recipient_households": 2001514.9560851927,
+   "expected_recipient_persons": 3282523.51108383,
+   "non_take_up_households": 332559.3957548083,
+   "take_up_rate": 0.8575197934493198,
+   "monthly_budget_won": 558386675018.2383,
    "livelihood_eligible_households": 1242395.20482,
-   "livelihood_expected_recipients": 1075120.2834789911
+   "livelihood_expected_recipients": 1078790.2933692331
   }
  },
  "actual": {
@@ -85,14 +85,14 @@
   }
  },
  "households": {
-  "predicted_increase": 117555.65920067485,
+  "predicted_increase": 117425.95608519297,
   "actual_increase": 129230.0,
-  "error_rate": 0.09033769867155572
+  "error_rate": 0.09134135970600503
  },
  "persons": {
-  "predicted_increase": 191397.04212055588,
+  "predicted_increase": 191560.99784844927,
   "actual_increase": 164000.0,
-  "error_rate": 0.1670551348814383
+  "error_rate": 0.16805486492956875
  },
  "eligible_increase_households": 140593.33750000037,
  "series_actual": {

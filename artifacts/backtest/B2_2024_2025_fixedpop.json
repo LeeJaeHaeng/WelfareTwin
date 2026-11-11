@@ -5,29 +5,29 @@
  "population_growth_sources": [],
  "base_year": 2024,
  "target_year": 2025,
- "intercept_b": 2.4211343605366533,
+ "intercept_b": 2.730579101430769,
  "metrics": {
   "2024": {
    "eligible_households": 2153889.9305000007,
    "eligible_persons": 3565671.9883400006,
-   "expected_recipient_households": 1884088.9999999998,
-   "expected_recipient_persons": 3081746.7918967875,
-   "non_take_up_households": 269800.93050000095,
-   "take_up_rate": 0.8747378282058407,
-   "monthly_budget_won": 492822597224.5141,
+   "expected_recipient_households": 1884088.9999999995,
+   "expected_recipient_persons": 3085764.2307690466,
+   "non_take_up_households": 269800.9305000012,
+   "take_up_rate": 0.8747378282058406,
+   "monthly_budget_won": 496238915564.5465,
    "livelihood_eligible_households": 1133969.6229400004,
-   "livelihood_expected_recipients": 997917.555077798
+   "livelihood_expected_recipients": 1001689.6584857935
   },
   "2025": {
    "eligible_households": 2421579.645100001,
    "eligible_persons": 4036266.0076200007,
-   "expected_recipient_households": 2111996.6614666004,
-   "expected_recipient_persons": 3474468.6135274116,
-   "non_take_up_households": 309582.9836334004,
-   "take_up_rate": 0.872156596517553,
-   "monthly_budget_won": 588812537840.5964,
+   "expected_recipient_households": 2112003.892556523,
+   "expected_recipient_persons": 3479487.7718785354,
+   "non_take_up_households": 309575.7525434778,
+   "take_up_rate": 0.8721595826220724,
+   "monthly_budget_won": 592477725176.8279,
    "livelihood_eligible_households": 1293233.7556600007,
-   "livelihood_expected_recipients": 1138379.1737955762
+   "livelihood_expected_recipients": 1141401.5621629856
   }
  },
  "actual": {
@@ -41,14 +41,14 @@
   }
  },
  "households": {
-  "predicted_increase": 227907.6614666006,
+  "predicted_increase": 227914.89255652344,
   "actual_increase": 129230.0,
-  "error_rate": 0.763581687430168
+  "error_rate": 0.7636376426257327
  },
  "persons": {
-  "predicted_increase": 392721.8216306241,
+  "predicted_increase": 393723.5411094888,
   "actual_increase": 164000.0,
-  "error_rate": 1.394645253845269
+  "error_rate": 1.4007532994481025
  },
  "eligible_increase_households": 267689.71460000006,
  "series_actual": {

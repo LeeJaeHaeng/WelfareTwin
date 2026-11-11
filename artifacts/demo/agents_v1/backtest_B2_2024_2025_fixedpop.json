@@ -1,0 +1,204 @@
+{
+ "id": "B2_2024_2025_fixedpop",
+ "description": "기준중위소득·기초연금 기준값의 연도별 변화만 반영(인구 소득·재산 고정)",
+ "population_growth": {},
+ "population_growth_sources": [],
+ "base_year": 2024,
+ "target_year": 2025,
+ "intercept_b": 2.4211343605366533,
+ "metrics": {
+  "2024": {
+   "eligible_households": 2153889.9305000007,
+   "eligible_persons": 3565671.9883400006,
+   "expected_recipient_households": 1884088.9999999998,
+   "expected_recipient_persons": 3081746.7918967875,
+   "non_take_up_households": 269800.93050000095,
+   "take_up_rate": 0.8747378282058407,
+   "monthly_budget_won": 492822597224.5141,
+   "livelihood_eligible_households": 1133969.6229400004,
+   "livelihood_expected_recipients": 997917.555077798
+  },
+  "2025": {
+   "eligible_households": 2421579.645100001,
+   "eligible_persons": 4036266.0076200007,
+   "expected_recipient_households": 2111996.6614666004,
+   "expected_recipient_persons": 3474468.6135274116,
+   "non_take_up_households": 309582.9836334004,
+   "take_up_rate": 0.872156596517553,
+   "monthly_budget_won": 588812537840.5964,
+   "livelihood_eligible_households": 1293233.7556600007,
+   "livelihood_expected_recipients": 1138379.1737955762
+  }
+ },
+ "actual": {
+  "2024": {
+   "households": 1884089.0,
+   "persons": 2673000.0
+  },
+  "2025": {
+   "households": 2013319.0,
+   "persons": 2837000.0
+  }
+ },
+ "households": {
+  "predicted_increase": 227907.6614666006,
+  "actual_increase": 129230.0,
+  "error_rate": 0.763581687430168
+ },
+ "persons": {
+  "predicted_increase": 392721.8216306241,
+  "actual_increase": 164000.0,
+  "error_rate": 1.394645253845269
+ },
+ "eligible_increase_households": 267689.71460000006,
+ "series_actual": {
+  "2010": {
+   "households": 878799.0,
+   "persons": 1550000.0
+  },
+  "2011": {
+   "households": 850689.0,
+   "persons": 1469000.0
+  },
+  "2012": {
+   "households": 821879.0,
+   "persons": 1394000.0
+  },
+  "2013": {
+   "households": 810544.0,
+   "persons": 1351000.0
+  },
+  "2014": {
+   "households": 814184.0,
+   "persons": 1329000.0
+  },
+  "2015": {
+   "households": 1014177.0,
+   "persons": 1646000.0
+  },
+  "2016": {
+   "households": 1035435.0,
+   "persons": 1630000.0
+  },
+  "2017": {
+   "households": 1032996.0,
+   "persons": 1582000.0
+  },
+  "2018": {
+   "households": 1165175.0,
+   "persons": 1744000.0
+  },
+  "2019": {
+   "households": 1281759.0,
+   "persons": 1881000.0
+  },
+  "2020": {
+   "households": 1459059.0,
+   "persons": 2134000.0
+  },
+  "2021": {
+   "households": 1637569.0,
+   "persons": 2360000.0
+  },
+  "2022": {
+   "households": 1699497.0,
+   "persons": 2451000.0
+  },
+  "2023": {
+   "households": 1788309.0,
+   "persons": 2555000.0
+  },
+  "2024": {
+   "households": 1884089.0,
+   "persons": 2673000.0
+  },
+  "2025": {
+   "households": 2013319.0,
+   "persons": 2837000.0
+  }
+ },
+ "sources": {
+  "2024": [
+   {
+    "param": "median_income",
+    "doc": "보건복지부고시 제2023-150호 (2023.8.16.) 2024년 기준중위소득 및 생계·의료급여 선정기준과 최저보장수준",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=377725"
+   },
+   {
+    "param": "median_income_size7",
+    "doc": "보건복지부고시 제2023-150호 (2023.8.16.) 2024년 기준중위소득 및 생계·의료급여 선정기준과 최저보장수준",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=377725"
+   },
+   {
+    "param": "median_income_increment_per_member",
+    "doc": "보건복지부고시 제2023-150호 (2023.8.16.) 2024년 기준중위소득 및 생계·의료급여 선정기준과 최저보장수준",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=377725"
+   },
+   {
+    "param": "bp_selection_threshold",
+    "doc": "보건복지부고시 제2023-264호 (2023.12.29.) 기초연금 선정기준액·기준연금액 고시",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=1479569"
+   },
+   {
+    "param": "bp_base_amount",
+    "doc": "보건복지부고시 제2025-4호 (2025 기준연금액 개정; 신구조문대비 현행=2024)",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=1484283"
+   },
+   {
+    "param": "nbls_earned_deduction_senior_min_age",
+    "doc": "보건복지부 보도자료 「2025년도 기준 중위소득 6.42%로 역대 최대 인상」(2024.7.) — 근로소득 공제 대상 75세→65세 확대",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10503000000&bid=0027&list_no=1482430&act=view"
+   }
+  ],
+  "2025": [
+   {
+    "param": "median_income",
+    "doc": "보건복지부고시 제2024-162호 (2024.8.1.) 2025년 기준중위소득 및 생계·의료급여 선정기준과 최저보장수준",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=1482528"
+   },
+   {
+    "param": "median_income_size7",
+    "doc": "보건복지부고시 제2024-162호 (2024.8.1.) 2025년 기준중위소득 및 생계·의료급여 선정기준과 최저보장수준",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=1482528"
+   },
+   {
+    "param": "median_income_increment_per_member",
+    "doc": "보건복지부고시 제2024-162호 (2024.8.1.) 2025년 기준중위소득 및 생계·의료급여 선정기준과 최저보장수준",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=1482528"
+   },
+   {
+    "param": "bp_selection_threshold",
+    "doc": "보건복지부고시 제2024-292호 기초연금 고시 일부개정",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=1484169"
+   },
+   {
+    "param": "bp_base_amount",
+    "doc": "보건복지부고시 제2025-4호 (2025 기준연금액 개정; 신구조문대비 현행=2024)",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10409020000&bid=0026&act=view&list_no=1484283"
+   },
+   {
+    "param": "nbls_earned_deduction_senior_min_age",
+    "doc": "보건복지부 보도자료 「2025년도 기준 중위소득 6.42%로 역대 최대 인상」(2024.7.) — 근로소득 공제 대상 75세→65세 확대",
+    "page": null,
+    "url": "https://www.mohw.go.kr/board.es?mid=a10503000000&bid=0027&list_no=1482430&act=view"
+   }
+  ]
+ },
+ "limitations": [
+  "합성 인구의 소득·재산은 고정(가계금융복지조사 2025 = 2024년 소득) — 소득 증가로 인한 탈락은 반영 안 됨",
+  "재산 기본공제·근로소득공제 등 연도별 값이 확인되지 않은 항목은 2026 값을 사용",
+  "실제 수급자 증감에는 경기·신청 행태·제도 운영 변화가 섞여 있음",
+  "B1(2021.10 생계급여 부양의무자 기준 폐지)은 가족관계 데이터 부재로 MVP 미수행"
+ ]
+}

@@ -31,6 +31,9 @@ artifacts/sim/*.parquet
 
 # 예외: LLM 행동 응답(비용이 든 결과, 재현용)
 !artifacts/sim/behavior.parquet
+!artifacts/sim/behavior_v1.parquet
+# 가상 국민 714명(Nemotron-Personas-Korea, CC BY 4.0 — 출처 README)
+!artifacts/sim/residents.parquet
 
 # Vercel CLI 로컬 설정
 web/.vercel

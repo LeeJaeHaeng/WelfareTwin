@@ -219,6 +219,20 @@ ul.list li.x > .ic { color: var(--crit-text); }
 ul.bullets { margin: 10px 0 0; padding-left: 18px; font-size: 14px; }
 ul.bullets li { margin: 6px 0; }
 .textblock { white-space: pre-wrap; background: var(--surface-2); border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; }
+
+/* ---------- 가상 국민(생성형 에이전트) 카드 */
+.agent { display: flex; flex-direction: column; gap: 12px; }
+.agent .bio { margin: 0; font-size: 14px; line-height: 1.65; }
+.agent .hh { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+.agent .ans { border-top: 1px solid var(--border); padding-top: 12px; }
+.agent .ans-h { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); }
+.agent .ans-h b { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--text); min-width: 2.6em; letter-spacing: -0.02em; }
+.agent .meter { flex: 1; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.agent .meter i { display: block; height: 100%; border-radius: 3px; background: var(--clay); }
+.agent .quote { margin: 8px 0 4px; font-size: 13.5px; line-height: 1.65; }
+.agent .why { margin: 0; font-size: 12px; color: var(--muted); }
+.ag-foot { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+.ag-foot p { margin: 0; flex: 1; min-width: 240px; }
 .chart { width: 100%; height: 460px; }
 .chart.sm { height: 320px; }
 @media (max-width: 760px) { .chart { height: 360px; } }
@@ -538,7 +552,7 @@ function viewHome() {
         <div class="layers">
         ${[["L1", "Rules-as-Code", "복지서비스 선정기준을 실행 가능한 규칙으로. 중앙 제도 7종 + 대구·경북 사업 12건, 모든 수치에 출처(사업안내 쪽수·고시·URL)."],
            ["L2", "형식검증(Z3)", "규칙 전체를 제약식으로 바꿔 '이런 가구가 존재하는가'를 판정 — 사각지대·급여 절벽·중복·사문화."],
-           ["L3", "가상 대한민국", `합성 가구 ${num(nHh)}개(KOSIS 집계표 IPF) + AI 페르소나 238개의 신청 행동.`],
+           ["L3", "가상 대한민국", `합성 가구 ${num(nHh)}개(KOSIS 집계표 IPF) + 가상 국민 714명(238개 유형 × 통계 기반 인물 3명)의 신청 행동.`],
            ["L4", "AI 정책 레드팀", "사업안 한 줄 → 영향·배제·허점·절벽·행정 부담 점검 리포트."],
            ["V", "백테스트", "과거 제도 변화를 재현해 실제 수급 통계와 비교 — 오차를 숨기지 않고 공개."]]
           .map(([k, t, d]) => `<div><span class="k">${k}</span><div><b>${t}</b><p>${d}</p></div></div>`).join("")}
@@ -870,8 +884,38 @@ function viewSim() {
   const label = n => { const [rule, mode] = String(n).split(" / ");
     return [rule === "현행" ? "현행 규칙" : rule.replace("생계급여 선정기준 ", "생계 "), mode === "S1" ? "자동 안내" : "현행 신청"]; };
   let sel = sc.scenarios.length - 1;
+  const ag = B.agents;
+  const who = ag ? `가상 국민 ${num(ag.n_residents)}명(${ag.n_clusters}개 유형 × 3명)의 신청 의향을` : "AI 페르소나 238개의 신청 확률을";
+  const agCard = c => {
+    const r = c.resident, job = r.occupation === "무직" ? "일하지 않음" : r.occupation;
+    const ans = (k, name) => { const a = c.answers[k]; if (!a) return "";
+      return `<div class="ans"><div class="ans-h"><span>${name}</span><b>${pct(a.p, 0)}</b><span class="meter" aria-hidden="true"><i style="width:${Math.round(a.p * 100)}%"></i></span></div>
+        <p class="quote">“${esc(a.rationale)}”</p>${a.reasons.length ? `<p class="why">망설이는 이유: ${a.reasons.map(esc).join(" · ")}</p>` : ""}</div>`; };
+    return `<article class="card agent"><p class="card-label">${esc(r.sex)} ${r.age}세 · ${esc(String(r.district).replace("-", " "))} · ${esc(job)}</p>
+      <p class="bio">${esc(r.persona)}</p>
+      <p class="hh">${esc(r.family_type)} · ${esc(c.household)}<br>이 유형 약 ${man(c.households)}가구</p>
+      ${ans("S0", "현행 신청")}${ans("S1", "자동 안내")}</article>`;
+  };
+  const agSection = !ag ? "" : `
+    <section class="section" aria-labelledby="h-ag">
+      <div class="section-head"><div><p class="eyebrow">가상 국민 · 생성형 에이전트</p><h2 class="display" id="h-ag">가상 국민 ${num(ag.n_residents)}명이 직접 답했습니다</h2></div></div>
+      <p class="small muted" style="margin:-8px 0 20px;max-width:74ch">합성 인구 ${ag.n_clusters}개 유형마다 조건(가구주 나이·가구 형태·지역·취업 여부)이 맞는 통계 기반 가상 인물 3명이
+        "자격이 있다면 신청하겠는가"에 1인칭으로 답합니다. 이 답을 그대로 쓰지 않고, 실제 수급 가구 수로 보정해 위 시나리오를 계산합니다.</p>
+      <div class="band mb2">
+        ${stat("가상 국민", `${num(ag.n_residents)}<small>명</small>`, `${ag.n_clusters}개 유형 × 3명`)}
+        ${stat("신청 의향 · 현행 신청", pct(ag.mean_apply_raw.S0, 0), "가구 가중 평균 · 보정 전 원값")}
+        ${stat("신청 의향 · 자동 안내", pct(ag.mean_apply_raw.S1, 0), `현행 대비 +${Math.round((ag.mean_apply_raw.S1 - ag.mean_apply_raw.S0) * 100)}%p`)}
+        ${stat("현행에서 가장 많이 꼽은 이유", esc(Object.keys(ag.reasons_s0)[0] || "—"),
+          `응답의 ${pct(Object.values(ag.reasons_s0)[0] || 0, 0)} · ` +
+          Object.entries(ag.reasons_s0).slice(1, 4).map(([k, v]) => `${esc(k)} ${pct(v, 0)}`).join(" · "), "sm")}
+      </div>
+      <div class="grid g3" id="agCards" aria-live="polite"></div>
+      <div class="ag-foot"><button type="button" class="btn sm" id="agMore">${icon("arrowR")} 다른 사람 보기</button>
+        <p class="xs muted">가상 인물: <a href="https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea" target="_blank" rel="noopener">NVIDIA Nemotron-Personas-Korea</a>(CC BY 4.0, 통계청 등 공식 통계 기반 합성 — 실제 개인이 아님) ·
+          가구 경제 상황은 복지트윈 합성 인구 · 응답 ${esc(ag.model)}(미리 받아 둔 응답, 공개 서버는 LLM 을 부르지 않음)</p></div>
+    </section>`;
   $("v-sim").innerHTML = chap("sim", "정책을 바꾸면, 누가 들어오고 누가 빠지는가",
-    `AI 페르소나 238개의 신청 확률을 ${sc.calibration.target.year}년 실제 수급 가구 수(${num(sc.calibration.target.households)})로 보정한 뒤 시나리오를 비교합니다.`) + `
+    `${who} ${sc.calibration.target.year}년 실제 수급 가구 수(${num(sc.calibration.target.households)})로 보정한 뒤 시나리오를 비교합니다.`) + `
     <div class="card mb">
       <p class="field-label" id="scLabel">시나리오 · 선정기준 × 신청 방식</p>
       <div class="choices" role="group" aria-labelledby="scLabel" id="scChoices" style="--n:${sc.scenarios.length}">
@@ -898,6 +942,7 @@ function viewSim() {
         <div id="scChart" class="chart sm" role="img" aria-label="시나리오별 기대 수급 가구 막대그래프"></div></div>
       <div class="card"><h3>새로 포함 / 새로 탈락 (현행 대비)</h3><div id="scChanges" class="small"></div></div>
     </div>
+    ${agSection}
     <section class="section" aria-labelledby="h-rt">
       <div class="section-head"><div><p class="eyebrow">AI 정책 레드팀</p><h2 class="display" id="h-rt">사업안 한 줄을 넣으면, ${rt.timings.total}초 만에 점검 리포트</h2></div></div>
       <div class="card mb"><p class="card-label">사업안</p><blockquote class="proposal mt">${esc(rt.proposal)}</blockquote>
@@ -954,6 +999,13 @@ function viewSim() {
   $("scChoices").onclick = e => { const b = e.target.closest("button.choice"); if (!b) return; sel = +b.dataset.i;
     $("scChoices").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); };
   draw();
+  if (ag) {   // 가상 국민 카드 3장씩, '다른 사람 보기'로 넘김
+    let page = 0;
+    const agDraw = () => { const cs = ag.cards, s = (page * 3) % cs.length;
+      $("agCards").innerHTML = [0, 1, 2].map(i => agCard(cs[(s + i) % cs.length])).join(""); };
+    agDraw();
+    $("agMore").onclick = () => { page++; agDraw(); };
+  }
   // 실시간: 선정기준·신청 방식을 직접 바꿔 합성 인구 표본으로 계산(현행과 같은 표본으로 비교)
   let lb = "S0";
   $("lr").oninput = () => { $("lrVal").textContent = `${$("lr").value}%`; };
