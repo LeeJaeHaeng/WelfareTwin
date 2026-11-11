@@ -220,49 +220,101 @@ ul.bullets { margin: 10px 0 0; padding-left: 18px; font-size: 14px; }
 ul.bullets li { margin: 6px 0; }
 .textblock { white-space: pre-wrap; background: var(--surface-2); border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; }
 
-/* ---------- 가상 대한민국(인터랙티브 시뮬레이션) */
-.world { padding: 28px; }
-.world-ctl { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) auto; gap: 20px 28px; align-items: end; margin-top: 20px; }
-.world-ctl .acts { display: flex; gap: 10px; flex-wrap: wrap; }
-.world-say { margin: 22px 0 0; padding: 16px 18px; border-radius: 12px; background: var(--accent-wash); font-size: 16px; line-height: 1.7; }
-.world-say b { font-weight: 700; }
-.world-body { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; margin-top: 22px; align-items: start; }
-.world-map svg { width: 100%; height: auto; display: block; touch-action: manipulation; cursor: pointer; }
-#wMap .t-bg { fill: var(--surface-2); }
-#wMap .t-heat { fill: var(--accent); transition: fill-opacity .6s ease; }
-#wMap .t-name { font: 600 17px var(--sans, inherit); fill: var(--text); }
-#wMap .t-delta { font: 600 15px var(--sans, inherit); fill: var(--text-2); font-variant-numeric: tabular-nums; }
-#wMap circle.dot { transition: fill .5s ease, stroke .5s ease, r .3s ease; }
-#wMap .d0 { fill: var(--border-strong); }
-#wMap .d1 { fill: var(--surface); stroke: var(--text-2); stroke-width: 1.3; }
-#wMap .d2 { fill: var(--clay); opacity: .55; }
-#wMap .d3 { fill: var(--accent); }
-#wMap circle.sel { stroke: var(--text); stroke-width: 2.6; }
-#wMap .ripple { fill: none; stroke: var(--accent); stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: wrip 1.3s ease-out forwards; }
-@keyframes wrip { from { transform: scale(.25); opacity: .7; } to { transform: scale(2.4); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { #wMap .ripple { display: none; } #wMap circle.dot, #wMap .t-heat { transition: none; } }
-.world-legend { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12.5px; color: var(--text-2); }
-.world-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.world-legend svg { width: 12px; height: 12px; }
-.wk { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
-.wk .stat .v { font-size: 30px; font-variant-numeric: tabular-nums; }
-.w-sub { margin: 22px 0 10px; font-size: 13px; font-weight: 600; color: var(--text-2); }
-.wbars { display: grid; gap: 8px; }
-.wbar { display: grid; grid-template-columns: 74px minmax(0, 1fr) 96px; gap: 10px; align-items: center; font-size: 13px; }
-.wbar .track { display: block; height: 12px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
-.wbar .fill { display: block; height: 100%; border-radius: 4px; background: var(--accent); transition: width .5s ease; }
-.wbar .val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
-.wperson { margin-top: 22px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
-.wperson .bio { margin: 6px 0 0; font-size: 14px; line-height: 1.65; }
-.wperson .hh { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
-.wperson .q { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; }
-.wplay { margin: 10px 0 0; font-size: 13px; color: var(--text-2); min-height: 1.4em; }
-@media (max-width: 900px) {
-  .world { padding: 20px 16px; }
-  .world-ctl { grid-template-columns: 1fr; }
-  .world-body { grid-template-columns: 1fr; }
-  .wk .stat .v { font-size: 24px; }
+/* ---------- 가상 대한민국 정책 시뮬레이터(전체 폭 관제 화면) — 사이트 테마와 무관하게 어두운 무대 */
+html, body { overflow-x: clip; }   /* 전체 폭 무대(100vw)가 가로 스크롤을 만들지 않게 */
+.stage { --s-bg: #121211; --s-panel: rgba(255,255,255,.04); --s-line: rgba(255,255,255,.10); --s-text: #f3efe6; --s-muted: #a9a397;
+  --s-clay: #e2774a; --s-gold: #ffc861; --s-cool: #8fa3b8;
+  width: 100vw; margin: 0 calc(50% - 50vw) 48px; background: radial-gradient(1200px 700px at 30% 40%, #1d1a16 0%, #121211 60%, #0d0d0c 100%);
+  color: var(--s-text); padding: 34px 0 30px; border-top: 1px solid #000; border-bottom: 1px solid #000; }
+.stage-in { max-width: 1480px; margin: 0 auto; padding: 0 32px; }
+.stage-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.stage-eyebrow { margin: 0 0 10px; display: flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: .08em; color: var(--s-gold); font-weight: 600; }
+.stage-eyebrow .live { width: 8px; height: 8px; border-radius: 50%; background: var(--s-gold); box-shadow: 0 0 12px var(--s-gold); animation: spulse 1.6s ease-in-out infinite; }
+@keyframes spulse { 50% { opacity: .35; } }
+.stage h2 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(28px, 3.4vw, 46px); letter-spacing: -0.02em; line-height: 1.2; color: var(--s-text); }
+.stage-clock { text-align: right; }
+.stage-clock .m { font-family: var(--serif); font-size: 34px; font-weight: 600; color: var(--s-text); font-variant-numeric: tabular-nums; }
+.stage-clock .l { font-size: 12.5px; color: var(--s-muted); }
+.stage-clock .bar { width: 220px; height: 4px; border-radius: 2px; background: var(--s-line); margin-top: 8px; overflow: hidden; margin-left: auto; }
+.stage-clock .bar i { display: block; height: 100%; width: 0; background: var(--s-gold); transition: width .35s linear; }
+.stage-main { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.88fr); gap: 28px; margin-top: 22px; align-items: start; }
+.stage-map { position: relative; width: 100%; max-width: 820px; margin: 0 auto; aspect-ratio: 918 / 1000; max-height: 86vh; }
+.stage-map svg, .stage-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.stage-map canvas { pointer-events: none; }
+#wMap .pv { stroke: rgba(255,255,255,.22); stroke-width: 1.1; cursor: pointer; transition: stroke .2s; }
+#wMap .pv-heat { fill: var(--s-clay); pointer-events: none; transition: fill-opacity .7s ease; }
+#wMap .pv:hover, #wMap .pv.on { stroke: var(--s-gold); stroke-width: 2.2; }
+#wMap .muni { fill: none; stroke: rgba(255,255,255,.07); stroke-width: .6; pointer-events: none; }
+#wMap .lab { pointer-events: none; paint-order: stroke; stroke: #121211; stroke-width: 4px; stroke-linejoin: round; }
+#wMap .lab .n { font: 600 15px var(--sans, inherit); fill: var(--s-text); }
+#wMap .lab .g { font: 700 14px var(--sans, inherit); fill: var(--s-gold); font-variant-numeric: tabular-nums; }
+#wMap .isl { fill: none; stroke: rgba(255,255,255,.25); stroke-dasharray: 4 4; }
+#wMap .isl-t { font-size: 11px; fill: var(--s-muted); }
+.stage-legend { position: absolute; left: 0; bottom: 0; display: grid; gap: 6px; font-size: 12px; color: var(--s-muted); background: rgba(18,18,17,.72);
+  padding: 10px 12px; border-radius: 10px; border: 1px solid var(--s-line); }
+.stage-legend span { display: flex; align-items: center; gap: 8px; }
+.stage-legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.stage-tip { position: absolute; z-index: 3; pointer-events: none; min-width: 210px; padding: 12px 14px; border-radius: 12px; background: rgba(12,12,11,.94);
+  border: 1px solid var(--s-line); font-size: 13px; line-height: 1.6; color: var(--s-text); box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.stage-tip b { color: var(--s-gold); }
+.hud { display: grid; gap: 16px; }
+.hud-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.hud-k { background: var(--s-panel); border: 1px solid var(--s-line); border-radius: 14px; padding: 14px 16px 12px; }
+.hud-k .l { margin: 0; font-size: 12.5px; color: var(--s-muted); }
+.hud-k .v { margin: 6px 0 0; font-family: var(--serif); font-weight: 600; font-size: clamp(26px, 2.5vw, 38px); letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--s-text); }
+.hud-k .v small { font-size: .5em; color: var(--s-muted); margin-left: 3px; }
+.hud-k .d { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--s-muted); }
+.hud-k .d.up { color: #8fd694; } .hud-k .d.down { color: #ff9b85; }
+.hud-k.hi { border-color: rgba(255,200,97,.45); box-shadow: inset 0 0 0 1px rgba(255,200,97,.15); }
+.hud-say { margin: 0; padding: 14px 16px; border-radius: 14px; background: linear-gradient(135deg, rgba(226,119,74,.18), rgba(255,200,97,.08));
+  border: 1px solid rgba(226,119,74,.35); font-size: 15px; line-height: 1.75; color: var(--s-text); }
+.hud-say b { color: var(--s-gold); }
+.hud-sec { background: var(--s-panel); border: 1px solid var(--s-line); border-radius: 14px; padding: 14px 16px; }
+.hud-sec h3 { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--s-muted); letter-spacing: .02em; }
+.hbar { display: grid; grid-template-columns: 70px minmax(0, 1fr) 92px; gap: 10px; align-items: center; font-size: 12.5px; margin: 6px 0; color: var(--s-text); }
+.hbar .t { display: block; height: 10px; border-radius: 5px; background: rgba(255,255,255,.06); overflow: hidden; }
+.hbar .f { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--s-clay), var(--s-gold)); transition: width .6s ease; }
+.hbar .v { text-align: right; font-variant-numeric: tabular-nums; }
+.hud-who p { margin: 0; }
+.hud-who .who { font-size: 13px; color: var(--s-gold); font-weight: 600; }
+.hud-who .bio { margin-top: 6px; font-size: 13.5px; line-height: 1.6; color: var(--s-text); }
+.hud-who .q { margin-top: 8px; font-size: 13.5px; line-height: 1.65; color: var(--s-text); border-left: 2px solid var(--s-clay); padding-left: 10px; }
+.hud-who .m { margin-top: 6px; font-size: 12px; color: var(--s-muted); }
+.hud-who + .hud-who { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--s-line); }
+.stage-dock { margin-top: 22px; display: grid; grid-template-columns: auto minmax(220px, 1fr) auto auto; gap: 14px 22px; align-items: center;
+  background: rgba(255,255,255,.035); border: 1px solid var(--s-line); border-radius: 16px; padding: 14px 18px; }
+.dock-presets { display: flex; gap: 8px; flex-wrap: wrap; grid-column: 1 / -1; }
+.sbtn { font: inherit; font-size: 13.5px; font-weight: 600; color: var(--s-text); background: rgba(255,255,255,.05); border: 1px solid var(--s-line);
+  border-radius: 999px; padding: 9px 14px; min-height: 40px; cursor: pointer; transition: background .2s, border-color .2s; }
+.sbtn:hover { border-color: rgba(255,255,255,.35); }
+.sbtn[aria-pressed="true"] { background: rgba(226,119,74,.22); border-color: var(--s-clay); color: #fff; }
+.sbtn.go { background: var(--s-clay); border-color: var(--s-clay); color: #1a120d; padding: 10px 20px; }
+.sbtn.go:hover { background: #ec8a60; }
+.sbtn:disabled { opacity: .5; cursor: not-allowed; }
+.sbtn:focus-visible { outline: 2px solid var(--s-gold); outline-offset: 2px; }
+.dock-slider { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; font-size: 13px; color: var(--s-muted); }
+.dock-slider input { accent-color: var(--s-clay); height: 36px; }
+.dock-slider .val { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--s-text); min-width: 2.8em; text-align: right; font-variant-numeric: tabular-nums; }
+.dock-seg { display: inline-flex; border: 1px solid var(--s-line); border-radius: 999px; padding: 3px; gap: 3px; }
+.dock-seg .sbtn { border: 0; background: transparent; }
+.dock-seg .sbtn[aria-pressed="true"] { background: var(--s-clay); color: #1a120d; }
+.stage-note { margin: 14px 0 0; font-size: 12px; line-height: 1.7; color: var(--s-muted); }
+.stage-note a { color: var(--s-text); }
+@media (max-width: 1100px) {
+  .stage-main { grid-template-columns: 1fr; }
+  .stage-map { max-height: none; }
 }
+@media (max-width: 760px) {
+  .stage { padding: 24px 0 22px; }
+  .stage-in { padding: 0 16px; }
+  .stage-clock { text-align: left; } .stage-clock .bar { margin-left: 0; width: 160px; }
+  .stage-dock { grid-template-columns: 1fr; padding: 12px; }
+  .dock-slider { grid-template-columns: 1fr auto; } .dock-slider label { grid-column: 1 / -1; }
+  .stage-legend { position: static; margin-top: 10px; grid-template-columns: 1fr 1fr; }
+  .stage-map { aspect-ratio: 918 / 1000; }
+  .hbar { grid-template-columns: 60px minmax(0, 1fr) 84px; }
+}
+@media (prefers-reduced-motion: reduce) { .stage-eyebrow .live { animation: none; } #wMap .pv-heat, .hbar .f { transition: none; } }
 
 /* ---------- 가상 국민(생성형 에이전트) 카드 */
 .agent { display: flex; flex-direction: column; gap: 12px; }
@@ -921,151 +973,206 @@ function viewCliff() {
   window.__drawCliff = draw;
 }
 
-// ---------------------------------------------------------------- 가상 대한민국: 정책 손잡이 → 지도·기대효과 즉시 갱신
-const W_TILES = [["서울", 1, 0], ["인천", 0, 1], ["경기", 1, 1], ["강원", 2, 1], ["충청남", 0, 2], ["세종", 1, 2], ["충청북", 2, 2],
-  ["경상북", 3, 2], ["전북", 0, 3], ["대전", 1, 3], ["대구", 2, 3], ["울산", 3, 3], ["광주", 0, 4], ["전라남", 1, 4],
-  ["경상남", 2, 4], ["부산", 3, 4], ["제주", 0, 5]];
-const W_LABEL = { 충청남: "충남", 충청북: "충북", 경상북: "경북", 경상남: "경남", 전라남: "전남" };
-const W_STATE = ["자격 없음", "자격 있지만 아직 신청 안 함", "수급 중(주거·의료 등)", "생계급여 수급 중"];
-let WORLD = null;
+// ---------------------------------------------------------------- 가상 대한민국 정책 시뮬레이터(전체 폭 관제 화면)
+// 데이터: world.json(정책 격자 16 × 2, 가상 국민 714명) + korea.json(시도 경계, 시군구 분포대로 뿌린 가구 점)
+let WORLD = null, KOREA = null;
 const wRng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
   t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 // 새로 혜택받는 가구 = (수급 가구 변화) + (생계급여 수급 가구 변화) — 생계 기준만 바꾸면 전체 수급은 그대로라 둘을 합쳐 본다
 const wGain = (v, b) => (v.recipients - b.recipients) + (v.livelihood_recipients - b.livelihood_recipients);
+const W_RGB = { 1: "143,163,184", 2: "226,119,74", 3: "255,200,97" };
+const W_STATE = { 1: "자격 있지만 신청 안 함", 2: "수급 중(주거·의료 등)", 3: "생계급여 수급 중" };
 
 async function initWorld() {
   if (!$("world")) return;
-  try { WORLD = WORLD || await (await fetch("data/world.json")).json(); }
-  catch (e) { $("wSay").textContent = "가상 대한민국 데이터를 불러오지 못했습니다."; return; }
-  const W = WORLD, SVGNS = "http://www.w3.org/2000/svg";
-  if (!W.ready) {   // 사람마다 고정 난수(자격·신청·생계·재생 시점) — 같은 설정이면 언제 봐도 같은 그림
-    W.agents.forEach((a, i) => { const r = wRng(7919 * (i + 1)); a.u = r(); a.v = r(); a.z = r(); a.m = 1 + Math.floor(r() * 12); a.cl = W.clusters[a.c]; });
-    let mx = 0;     // 타일 색 눈금: 모든 설정 중 시도별 '새로 혜택받는 가구' 최대 비율
+  try {
+    [WORLD, KOREA] = await Promise.all([WORLD || fetch("data/world.json").then(r => r.json()),
+      KOREA || fetch("data/korea.json").then(r => r.json())]);
+  } catch (e) { $("wSay").textContent = "시뮬레이터 데이터를 불러오지 못했습니다."; return; }
+  const W = WORLD, K = KOREA, svg = $("wMap"), cv = $("wCanvas"), box = $("wBox"), ctx = cv.getContext("2d");
+  const base = W.national["0.32"].S0, pb = W.province["0.32"].S0;
+  if (!W.ready) {
+    let mx = 0;
     for (const k of Object.keys(W.province)) for (const s of W.behaviors) for (const [p, v] of Object.entries(W.province[k][s])) {
-      const b0 = W.province["0.32"].S0[p]; if (b0 && b0.recipients) mx = Math.max(mx, wGain(v, b0) / b0.recipients); }
-    W.heatMax = Math.max(mx, 0.05); W.ready = true;
+      const b0 = pb[p]; if (b0 && b0.recipients) mx = Math.max(mx, wGain(v, b0) / b0.recipients); }
+    W.heatMax = Math.max(mx, 0.05);
+    W.agents.forEach(a => { a.cl = W.clusters[a.c]; });
+    K.parts = [];
+    for (let i = 0, j = 0; i < K.elig.length; i += 3, j++) { const r = wRng(104729 * (j + 1));
+      K.parts.push({ x: K.elig[i], y: K.elig[i + 1], p: K.elig[i + 2], u: r(), ph: r() * 6.283, m: 1 + Math.floor(r() * 12), d: r(), s: 1, from: 1, t0: 0 }); }
+    W.ready = true;
   }
-  // ---- 지도 배치: 시도 타일(4열) 안에 그 시도 가상 국민 점
-  const TW = 240, GAP = 12, P = 11, HEAD = 46, PAD = 14, COLS = Math.floor((TW - 2 * PAD) / P) + 1;
-  const by = {}; W.agents.forEach(a => (by[a.prov] ||= []).push(a));
-  Object.values(by).forEach(list => list.sort((x, y) => wRng(31 * W.agents.indexOf(x) + 7)() - wRng(31 * W.agents.indexOf(y) + 7)()));
-  const rowH = []; W_TILES.forEach(([p, , r]) => { rowH[r] = Math.max(rowH[r] || 0, HEAD + Math.ceil((by[p] || []).length / COLS) * P + 14); });
-  const rowY = []; rowH.reduce((y, h, i) => (rowY[i] = y, y + h + GAP), 0);
-  const svg = $("wMap"), Wd = 4 * TW + 3 * GAP, Ht = rowY[rowY.length - 1] + rowH[rowH.length - 1];
-  svg.setAttribute("viewBox", `0 0 ${Wd} ${Ht}`);
-  svg.innerHTML = W_TILES.map(([p, c, r]) => { const x = c * (TW + GAP), y = rowY[r], h = rowH[r];
-    return `<g data-p="${p}"><rect class="t-bg" x="${x}" y="${y}" width="${TW}" height="${h}" rx="12"/>
-      <rect class="t-heat" x="${x}" y="${y}" width="${TW}" height="${h}" rx="12" fill-opacity="0"/>
-      <text class="t-name" x="${x + PAD}" y="${y + 28}">${W_LABEL[p] || p}</text>
-      <text class="t-delta" x="${x + TW - PAD}" y="${y + 28}" text-anchor="end"></text>
-      ${(by[p] || []).map((a, j) => { a.x = x + PAD + 4 + (j % COLS) * P; a.y = y + HEAD + 4 + Math.floor(j / COLS) * P;
-        return `<circle class="dot d0" data-i="${W.agents.indexOf(a)}" cx="${a.x}" cy="${a.y}" r="2.4"/>`; }).join("")}</g>`; }).join("");
-  const dots = [...svg.querySelectorAll("circle.dot")];
-  W.agents.forEach((a, i) => { a.el = dots.find(d => +d.dataset.i === i); });
-  // ---- 상태 계산
-  let R = 0.32, S = "S0", sel = null, playing = false;
+  // ---- 지도(SVG): 바탕 → 효과 색 → 시군구 선 → 시도 외곽(마우스) → 라벨
+  const P = K.provinces;
+  svg.setAttribute("viewBox", `0 0 ${K.w} ${K.h}`);
+  const ib = K.island_box;
+  svg.innerHTML = P.map(p => `<path d="${p.d}" style="fill:#1f1d1a"/>`).join("")
+    + P.map((p, i) => `<path class="pv-heat" data-i="${i}" d="${p.d}" fill-opacity="0"/>`).join("")
+    + `<path class="muni" d="${K.muni_d}"/>`
+    + P.map((p, i) => `<path class="pv" data-i="${i}" d="${p.d}" style="fill:transparent"><title>${p.name}</title></path>`).join("")
+    + (ib ? `<rect class="isl" x="${ib[0]}" y="${ib[1]}" width="${ib[2]}" height="${ib[3]}" rx="8"/><text class="isl-t" x="${ib[0] + 6}" y="${ib[1] - 6}">울릉도·독도</text>` : "")
+    + P.map((p, i) => `<text class="lab" data-i="${i}" x="${p.lx}" y="${p.ly}" text-anchor="middle"><tspan class="n">${p.name}</tspan><tspan class="g" x="${p.lx}" dy="17"></tspan></text>`).join("");
+  const heat = [...svg.querySelectorAll(".pv-heat")], labs = [...svg.querySelectorAll(".lab .g")], outl = [...svg.querySelectorAll(".pv")];
+  // ---- 캔버스: 크기·투영·빛 점 이미지
+  let fit = { s: 1, ox: 0, oy: 0 }, dpr = 1, bg = null, spr = {};
+  const sprite = (rgb, core, glow) => { const n = Math.ceil((core + glow) * 2 * dpr) + 2, c = document.createElement("canvas"); c.width = c.height = n;
+    const g = c.getContext("2d"), h = n / 2, gr = g.createRadialGradient(h, h, 0, h, h, h);
+    gr.addColorStop(0, `rgba(${rgb},1)`); gr.addColorStop(Math.min(.95, core / (core + glow)), `rgba(${rgb},.85)`); gr.addColorStop(1, `rgba(${rgb},0)`);
+    g.fillStyle = gr; g.fillRect(0, 0, n, n); return c; };
+  const resize = () => {
+    const rc = box.getBoundingClientRect(); if (!rc.width) return;
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(rc.width * dpr); cv.height = Math.round(rc.height * dpr);
+    const s = Math.min(rc.width / K.w, rc.height / K.h);
+    fit = { s, ox: (rc.width - K.w * s) / 2, oy: (rc.height - K.h * s) / 2 };
+    bg = document.createElement("canvas"); bg.width = cv.width; bg.height = cv.height;
+    const g = bg.getContext("2d"), pr = Math.max(1, 1.5 * s) * dpr; g.fillStyle = "rgba(255,255,255,.30)";
+    for (let i = 0; i < K.pop.length; i += 2) g.fillRect((fit.ox + K.pop[i] * s) * dpr - pr / 2, (fit.oy + K.pop[i + 1] * s) * dpr - pr / 2, pr, pr);
+    const core = Math.max(1.1, 1.7 * s);
+    spr = { 1: sprite(W_RGB[1], core * .8, core * .8), 2: sprite(W_RGB[2], core, core * 1.8), 3: sprite(W_RGB[3], core * 1.05, core * 2.2) };
+    draw(performance.now(), true);
+  };
+  // ---- 상태
+  let R = 0.32, S = "S0", focus = null, playing = false, ripples = [];
   const key = () => R.toFixed(2);
-  const stateOf = a => { if (!(a.u < a.cl.es)) return 0; if (!(a.v < a.cl.pc[S])) return 1; return a.z < (W.liv_share[key()][a.c] || 0) ? 3 : 2; };
-  const tw = (el, to, fmt) => { const from = +el.dataset.v || 0; el.dataset.v = to;
+  const target = (pt, r = R, s = S) => { const v = W.province[r.toFixed(2)][s][P[pt.p].key]; if (!v || !v.eligible) return 1;
+    return pt.u < v.livelihood_recipients / v.eligible ? 3 : pt.u < v.recipients / v.eligible ? 2 : 1; };
+  const setState = (pt, s, now, delay = true) => { if (pt.s === s) return; pt.from = pt.s; pt.s = s; pt.t0 = now + (delay && !reduceMotion() ? pt.d * 700 : 0); };
+  // ---- 그리기(보일 때만 계속 — 반짝임)
+  let visible = true, raf = 0;
+  function draw(now, once) {
+    if (!bg) return;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.drawImage(bg, 0, 0);
+    const s = fit.s, still = reduceMotion();
+    for (const pt of K.parts) {
+      const x = (fit.ox + pt.x * s) * dpr, y = (fit.oy + pt.y * s) * dpr;
+      const k = still ? 1 : Math.max(0, Math.min(1, (now - pt.t0) / 650));
+      const tw = pt.s > 1 && !still ? .78 + .22 * Math.sin(now * .0022 + pt.ph) : 1;
+      ctx.globalCompositeOperation = pt.s > 1 ? "screen" : "source-over";
+      if (k < 1) { const a = spr[pt.from]; ctx.globalAlpha = (1 - k) * .9; ctx.drawImage(a, x - a.width / 2, y - a.height / 2); }
+      const b = spr[pt.s], boost = k < 1 && pt.s > pt.from ? 1 + 1.6 * Math.sin(k * Math.PI) : 1, w = b.width * boost;
+      ctx.globalAlpha = (pt.s === 1 ? .7 : pt.s === 2 ? .55 : .7) * k * tw; ctx.drawImage(b, x - w / 2, y - w / 2, w, w);
+    }
+    ctx.globalCompositeOperation = "screen";
+    ripples = ripples.filter(r => now - r.t0 < 1600);
+    for (const r of ripples) { const t = (now - r.t0) / 1600; if (t < 0) continue;
+      ctx.globalAlpha = (1 - t) * .5; ctx.strokeStyle = `rgba(${W_RGB[3]},1)`; ctx.lineWidth = 2 * dpr;
+      ctx.beginPath(); ctx.arc((fit.ox + r.x * s) * dpr, (fit.oy + r.y * s) * dpr, (14 + t * r.mag) * s * dpr, 0, 6.283); ctx.stroke(); }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+    if (!once && visible && !still) raf = requestAnimationFrame(t => draw(t));
+  }
+  const loop = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(t => draw(t)); };
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) loop(); }).observe(box);
+  new ResizeObserver(() => resize()).observe(box);
+  // ---- 숫자
+  const tween = (el, to, fmt, ms = 700) => { const from = +el.dataset.v || 0; el.dataset.v = to;
     if (reduceMotion()) { el.innerHTML = fmt(to); return; }
-    const t0 = performance.now(), step = t => { const k = Math.min(1, (t - t0) / 450), e = 1 - Math.pow(1 - k, 3);
-      el.innerHTML = fmt(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); };
-  $("wKpi").innerHTML = [["rec", "기초생활보장 수급 가구"], ["nt", "미신청 사각지대"], ["liv", "생계급여 수급 가구"], ["bud", "월 재정(생계·주거·교육)"]]
-    .map(([k, l]) => `<div class="stat sm"><p class="l">${l}</p><p class="v" id="wk-${k}">0</p><p class="d same" id="wd-${k}"></p></div>`).join("");
-  const dline = (d, inv, unit = "가구") => d === 0 ? `<span>현행과 같음</span>`
-    : `<span class="${(d > 0) !== !!inv ? "up" : "down"}" style="display:inline-flex;gap:4px;align-items:center">${icon(d > 0 ? "up" : "down", 13)} 현행 대비 ${signed(d)}${unit}</span>`;
-  const person = a => {
-    const st = stateOf(a), ans = a.a[S], job = a.occ === "무직" ? "일하지 않음" : a.occ;
-    $("wPerson").innerHTML = `<p class="card-label">${icon("person", 14)} ${esc(a.sex)} ${a.age}세 · ${esc(String(a.dist).replace("-", " "))} · ${esc(job)}</p>
-      <span class="pill ${st >= 2 ? "good" : ""}">${W_STATE[st]}</span>
-      <p class="bio">${esc(a.persona)}</p><p class="hh">${esc(a.fam)} · ${esc(a.cl.hh)}</p>
-      <p class="q">“${esc(ans.t)}”</p>
-      <p class="xs muted" style="margin:6px 0 0">${S === "S1" ? "자동 안내" : "현행 신청"} 기준 · 본인 답 신청 의향 ${pct(ans.p, 0)} → 실제 통계로 보정한 신청 확률 ${pct(a.cl.pc[S], 0)}${ans.r.length ? " · 망설이는 이유: " + ans.r.map(esc).join(", ") : ""}</p>
-      <button type="button" class="btn ghost sm" id="wNext" style="margin-top:12px">${icon("arrowR")} 다른 사람</button>`;
-    $("wNext").onclick = () => { const pool = W.agents.filter(x => stateOf(x) > 0); pick(pool[Math.floor(Math.random() * pool.length)]); };
+    const t0 = performance.now(), st = t => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+      el.innerHTML = fmt(from + (to - from) * e); if (k < 1) requestAnimationFrame(st); }; requestAnimationFrame(st); };
+  $("wKpi").innerHTML = [["rec", "기초생활보장 수급 가구"], ["nt", "미신청 사각지대"], ["liv", "생계급여 수급 가구"], ["bud", "추가 재정(연간)"]]
+    .map(([k, l]) => `<div class="hud-k" id="wkb-${k}"><p class="l">${l}</p><p class="v" id="wk-${k}">0</p><p class="d" id="wd-${k}"></p></div>`).join("");
+  const dl = (id, d, inv, unit) => { const el = $(id); el.className = "d" + (d ? ((d > 0) !== !!inv ? " up" : " down") : "");
+    el.textContent = d ? `현행 대비 ${signed(d)}${unit}` : "현행과 같음"; };
+  const metricsAt = (frac, from, to) => { const m = {}; for (const k of ["expected_recipient_households", "non_take_up_households", "livelihood_expected_recipients", "monthly_budget_won"])
+    m[k] = from[k] + (to[k] - from[k]) * frac; return m; };
+  const paintKpi = n => {
+    const dRec = n.expected_recipient_households - base.expected_recipient_households, dNt = n.non_take_up_households - base.non_take_up_households;
+    const dLiv = n.livelihood_expected_recipients - base.livelihood_expected_recipients, dBud = n.monthly_budget_won - base.monthly_budget_won;
+    tween($("wk-rec"), n.expected_recipient_households, v => num(v)); dl("wd-rec", Math.round(dRec), false, "가구");
+    tween($("wk-nt"), n.non_take_up_households, v => num(v)); dl("wd-nt", Math.round(dNt), true, "가구");
+    tween($("wk-liv"), n.livelihood_expected_recipients, v => num(v)); dl("wd-liv", Math.round(dLiv), false, "가구");
+    tween($("wk-bud"), dBud * 12 / 1e12, v => `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2)}<small>조원</small>`);
+    $("wd-bud").className = "d"; $("wd-bud").textContent = `월 재정 ${num(n.monthly_budget_won / 1e8)}억원 (${signed(Math.round(dBud / 1e8))}억)`;
+    ["rec", "nt", "liv", "bud"].forEach((k, i) => $("wkb-" + k).classList.toggle("hi", Math.abs([dRec, dNt, dLiv, dBud / 1e4][i]) > 1));
   };
-  const pick = a => { if (sel) sel.el.classList.remove("sel"); sel = a; a.el.classList.add("sel"); person(a); };
-  const paintDots = (prev) => {
-    const changed = [];
-    W.agents.forEach(a => { const s = stateOf(a), c = "d" + s; if (!a.el.classList.contains(c)) { if (prev) changed.push(a);
-      a.el.classList.remove("d0", "d1", "d2", "d3"); a.el.classList.add(c); a.el.setAttribute("r", s ? 4.6 : 2.4); } });
-    return changed;
-  };
-  const ripple = provs => { if (reduceMotion()) return;
-    provs.forEach(p => { const g = svg.querySelector(`g[data-p="${p}"]`), r = g.querySelector(".t-bg");
-      const c = document.createElementNS(SVGNS, "circle"); c.setAttribute("class", "ripple");
-      c.setAttribute("cx", +r.getAttribute("x") + TW / 2); c.setAttribute("cy", +r.getAttribute("y") + +r.getAttribute("height") / 2);
-      c.setAttribute("r", 46); g.appendChild(c); setTimeout(() => c.remove(), 1400); }); };
-  const update = (animate = true) => {
-    const n = W.national[key()][S], b0 = W.national["0.32"].S0, pv = W.province[key()][S], pb = W.province["0.32"].S0;
-    // 지도: 타일 색·증가율, 점 상태
-    const grow = [];
-    W_TILES.forEach(([p]) => { const g = svg.querySelector(`g[data-p="${p}"]`), v = pv[p], b = pb[p];
-      const d = v && b && b.recipients ? wGain(v, b) / b.recipients : 0;
-      g.querySelector(".t-heat").setAttribute("fill-opacity", Math.max(0, Math.min(1, d / W.heatMax)) * 0.42);
-      g.querySelector(".t-delta").textContent = Math.abs(d) < 0.0005 ? "" : `${d > 0 ? "+" : "−"}${(Math.abs(d) * 100).toFixed(1)}%`;
-      if (d > 0.005) grow.push(p); });
-    const changed = paintDots(animate);
-    if (animate) ripple(grow);
-    // 기대효과
-    const dRec = n.expected_recipient_households - b0.expected_recipient_households, dNt = n.non_take_up_households - b0.non_take_up_households;
-    const dLiv = n.livelihood_expected_recipients - b0.livelihood_expected_recipients, dBud = n.monthly_budget_won - b0.monthly_budget_won;
-    tw($("wk-rec"), n.expected_recipient_households, v => num(v)); $("wd-rec").innerHTML = dline(Math.round(dRec));
-    tw($("wk-nt"), n.non_take_up_households, v => num(v)); $("wd-nt").innerHTML = dline(Math.round(dNt), true);
-    tw($("wk-liv"), n.livelihood_expected_recipients, v => num(v)); $("wd-liv").innerHTML = dline(Math.round(dLiv));
-    tw($("wk-bud"), n.monthly_budget_won / 1e8, v => `${num(v)}<small>억원</small>`); $("wd-bud").innerHTML = dline(Math.round(dBud / 1e8), true, "억원");
-    // 연령대별 수급 변화
-    const ag = W.age[key()][S], a0 = W.age["0.32"].S0;
-    const rows = W.age_groups.map(g => ({ g, d: ag[g] && a0[g] ? wGain(ag[g], a0[g]) : 0 }));
-    const mxd = Math.max(1, ...rows.map(r => Math.abs(r.d)));
-    $("wAge").innerHTML = rows.map(r => `<div class="wbar"><span>${esc(r.g)}</span><span class="track"><span class="fill" style="width:${Math.abs(r.d) / mxd * 100}%;${r.d < 0 ? "background:var(--muted)" : ""}"></span></span>
-      <span class="val">${r.d ? signed(r.d) + "가구" : "—"}</span></div>`).join("");
-    // 한 줄 요약
+  // ---- 사람(가상 국민)
+  const who = (a, sc) => { const ans = a.a[sc], job = a.occ === "무직" ? "일하지 않음" : a.occ;
+    return `<div class="hud-who"><p class="who">${esc(a.sex)} ${a.age}세 · ${esc(String(a.dist).replace("-", " "))} · ${esc(job)}</p>
+      <p class="bio">${esc(a.persona)}</p><p class="q">“${esc(ans.t)}”</p>
+      <p class="m">${sc === "S1" ? "자동 안내" : "현행 신청"}일 때 본인 답 신청 의향 ${pct(ans.p, 0)} → 실제 통계로 보정 ${pct(a.cl.pc[sc], 0)}${ans.r.length ? " · 망설이는 이유: " + ans.r.map(esc).join(", ") : ""}</p></div>`; };
+  const people = (pk, n = 2) => W.agents.filter(a => a.prov === pk && a.cl.es > 0).sort((x, y) => y.cl.es * y.cl.pc[S] - x.cl.es * x.cl.pc[S]).slice(0, n);
+  const pstat = i => { const p = P[i], v = W.province[key()][S][p.key], b = pb[p.key]; return { p, v, b, g: v && b ? wGain(v, b) : 0 }; };
+  const paintFocus = () => {
     const isBase = R === 0.32 && S === "S0";
-    const top = W_TILES.map(([p]) => [p, pv[p] && pb[p] && pb[p].recipients ? wGain(pv[p], pb[p]) / pb[p].recipients : 0])
-      .sort((x, y) => y[1] - x[1])[0];
-    const gainTot = dRec + dLiv, best = [...rows].sort((x, y) => gainTot >= 0 ? y.d - x.d : x.d - y.d)[0];
+    const i = focus ?? (() => { let bi = 0, bv = -Infinity; P.forEach((p, j) => { const { g, b, v } = pstat(j);
+      const r = isBase ? v.eligible : (b && b.recipients ? g / b.recipients : 0); if (r > bv) { bv = r; bi = j; } }); return bi; })();
+    const { p, v, b, g } = pstat(i);
+    const head = `<h3>${focus !== null ? "선택한 지역" : isBase ? "가상 국민의 목소리" : "지금 가장 크게 달라지는 곳"} — ${esc(p.name)}</h3>
+      <p style="margin:0 0 10px;font-size:13.5px;line-height:1.7">자격 가구 ${num(v.eligible)} · 수급 ${num(b.recipients)} → <b style="color:var(--s-gold)">${num(v.recipients)}</b>
+        · 생계급여 ${num(b.livelihood_recipients)} → ${num(v.livelihood_recipients)} · 새로 혜택 <b style="color:var(--s-gold)">${signed(Math.round(g))}가구</b>
+        · 월 재정 ${signed(Math.round((v.budget - b.budget) / 1e8))}억원</p>`;
+    $("wFocus").innerHTML = head + people(p.key).map(a => who(a, S)).join("");
+  };
+  // ---- 갱신
+  const say = n => {
+    const dRec = n.expected_recipient_households - base.expected_recipient_households, dNt = n.non_take_up_households - base.non_take_up_households;
+    const dLiv = n.livelihood_expected_recipients - base.livelihood_expected_recipients, dBud = n.monthly_budget_won - base.monthly_budget_won;
+    if (R === 0.32 && S === "S0") return `지금 제도(생계급여 <b>32%</b> · 본인이 찾아서 신청)에서는 기초생활보장 자격 가구 ${num(n.eligible_households)} 중 <b>${num(n.non_take_up_households)}가구(${pct(1 - n.take_up_rate, 0)})</b>가 받을 수 있는데도 신청하지 않습니다. 아래 손잡이로 정책을 바꿔 보세요.`;
+    const pv = W.province[key()][S];
+    const top = P.map(p => [p.name, pb[p.key] && pb[p.key].recipients ? wGain(pv[p.key], pb[p.key]) / pb[p.key].recipients : 0]).sort((x, y) => y[1] - x[1])[0];
+    const ag = W.age[key()][S], a0 = W.age["0.32"].S0, gt = dRec + dLiv;
+    const best = W.age_groups.map(g => [g, ag[g] && a0[g] ? wGain(ag[g], a0[g]) : 0]).sort((x, y) => gt >= 0 ? y[1] - x[1] : x[1] - y[1])[0];
     const per = dBud > 0 ? Math.round((dRec > 0 ? dRec : dLiv) / (dBud / 1e8)) : 0;
-    $("wSay").innerHTML = isBase
-      ? `지금 제도(생계급여 <b>32%</b> · 본인이 찾아서 신청)입니다. 기초생활보장 자격 가구 ${num(n.eligible_households)} 중 <b>${num(n.non_take_up_households)}가구(${pct(1 - n.take_up_rate, 0)})</b>가 받을 수 있는데도 신청하지 않습니다. 손잡이를 움직여 보세요.`
-      : `생계급여 기준 <b>${Math.round(R * 100)}%</b>${S === "S1" ? " + <b>자동 안내</b>" : ""}로 바꾸면 —
-        ${dRec ? `기초생활보장 수급 <b>${signed(Math.round(dRec))}가구</b>(미신청 사각지대 ${dNt < 0 ? "−" : "+"}${pct(Math.abs(dNt) / b0.non_take_up_households, 0)}), ` : ""}생계급여 수급 <b>${signed(Math.round(dLiv))}가구</b>,
-        월 재정 <b>${signed(Math.round(dBud / 1e8))}억원</b>(연 ${(dBud * 12 / 1e12).toFixed(2)}조원).
-        ${per > 0 ? `재정 1억 원당 ${dRec > 0 ? "새 수급" : "생계급여 수급"} <b>${num(per)}가구</b>. ` : ""}${gainTot > 0 ? `${top && top[1] > 0.0005 ? `새로 혜택받는 가구 비율이 가장 큰 곳은 <b>${W_LABEL[top[0]] || top[0]}</b>(${pct(top[1], 1)}), ` : ""}혜택이 가장 큰 연령대는 <b>${esc(best.g)}</b>입니다.`
-          : gainTot < 0 ? `혜택이 가장 크게 줄어드는 연령대는 <b>${esc(best.g)}</b>입니다.` : ""}
-        지도에서 상태가 바뀐 가상 국민 ${changed.length}명.`;
-    if (!sel) { const first = W.agents.find(a => stateOf(a) === 3) || W.agents.find(a => stateOf(a) > 0); if (first) pick(first); }
-    else person(sel);
+    return `생계급여 기준 <b>${Math.round(R * 100)}%</b>${S === "S1" ? " + <b>자동 안내</b>" : ""}로 바꾸면 —
+      ${dRec ? `기초생활보장 수급 <b>${signed(Math.round(dRec))}가구</b>, 미신청 사각지대 <b>${dNt < 0 ? "−" : "+"}${pct(Math.abs(dNt) / base.non_take_up_households, 0)}</b>, ` : ""}생계급여 수급 <b>${signed(Math.round(dLiv))}가구</b>,
+      재정은 연 <b>${dBud >= 0 ? "+" : "−"}${Math.abs(dBud * 12 / 1e12).toFixed(2)}조원</b>.
+      ${per > 0 ? `월 재정 1억 원당 ${dRec > 0 ? "새 수급" : "생계급여 수급"} ${num(per)}가구. ` : ""}${gt > 0 && top[1] > 0.0005 ? `가장 크게 달라지는 곳은 <b>${top[0]}</b>(+${(top[1] * 100).toFixed(1)}%), ` : ""}${gt ? `혜택이 가장 ${gt > 0 ? "큰" : "크게 주는"} 연령대는 <b>${esc(best[0])}</b>.` : ""}`;
   };
-  // ---- 조작
-  $("wR").oninput = () => { R = +$("wR").value / 100; $("wRv").textContent = `${$("wR").value}%`; update(); };
-  $("wS").onclick = e => { const b = e.target.closest("button.choice"); if (!b || b.dataset.s === S) return; S = b.dataset.s;
-    $("wS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); update(); };
-  $("wReset").onclick = () => { R = 0.32; S = "S0"; $("wR").value = 32; $("wRv").textContent = "32%";
-    $("wS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.s === "S0")); update(); };
-  $("wPlay").onclick = () => {   // 12개월: 자격 있는 사람이 차례로 신청 → 수급
+  const paintMap = (rip) => {
+    const pv = W.province[key()][S], now = performance.now();
+    P.forEach((p, i) => { const v = pv[p.key], b = pb[p.key], g = v && b && b.recipients ? wGain(v, b) / b.recipients : 0;
+      heat[i].setAttribute("fill-opacity", (Math.max(0, Math.min(1, g / W.heatMax)) * .38).toFixed(3));
+      labs[i].textContent = Math.abs(g) < 0.0005 ? "" : `${g > 0 ? "+" : "−"}${(Math.abs(g) * 100).toFixed(1)}%`;
+      if (rip && g > 0.005 && !reduceMotion()) ripples.push({ x: p.lx, y: p.ly - 6, t0: now + i * 40, mag: 40 + 140 * Math.min(1, g / W.heatMax) }); });
+  };
+  const paintAge = () => {
+    const ag = W.age[key()][S], a0 = W.age["0.32"].S0, rows = W.age_groups.map(g => [g, ag[g] && a0[g] ? wGain(ag[g], a0[g]) : 0]);
+    const mx = Math.max(1, ...rows.map(r => Math.abs(r[1])));
+    $("wAge").innerHTML = rows.map(([g, d]) => `<div class="hbar"><span>${esc(g)}</span><span class="t"><span class="f" style="width:${Math.abs(d) / mx * 100}%;${d < 0 ? "background:#8fa3b8" : ""}"></span></span><span class="v">${d ? signed(Math.round(d)) : "—"}</span></div>`).join("");
+  };
+  const syncCtl = () => { $("wR").value = Math.round(R * 100); $("wRv").textContent = `${Math.round(R * 100)}%`;
+    $("wS").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === S));
+    $("wPre").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.r === Math.round(R * 100) && b.dataset.s === S)); };
+  const clock = (m, label) => { $("wMonth").textContent = m === null ? "지금" : `${m}개월째`; $("wMonthL").textContent = label; $("wMonthBar").style.width = `${(m || 0) / 12 * 100}%`; };
+  const update = (rip = true) => {
+    syncCtl(); const now = performance.now();
+    K.parts.forEach(pt => setState(pt, target(pt), now));
+    paintMap(rip); paintKpi(W.national[key()][S]); paintAge(); paintFocus();
+    $("wSay").innerHTML = say(W.national[key()][S]);
+    clock(null, R === 0.32 && S === "S0" ? "현행 제도 · 2026년 기준" : `정책 적용 후 · 생계급여 ${Math.round(R * 100)}%${S === "S1" ? " + 자동 안내" : ""}`);
+    loop();
+  };
+  // ---- 정책 시행 12개월 재생: 현행 → 지금 손잡이(현행이면 '아무도 신청 안 한 상태' → 현행)
+  $("wPlay").onclick = () => {
     if (playing) return; playing = true; $("wPlay").disabled = true;
-    const elig = W.agents.filter(a => stateOf(a) > 0), fin = elig.filter(a => stateOf(a) >= 2).length;
-    elig.forEach(a => { a.el.classList.remove("d2", "d3"); a.el.classList.add("d1"); });
-    let m = 0;
-    const tick = () => { m++;
-      elig.forEach(a => { const s = stateOf(a); if (s >= 2 && a.m === m) { a.el.classList.remove("d1"); a.el.classList.add("d" + s); } });
-      const done = elig.filter(a => stateOf(a) >= 2 && a.m <= m).length;
-      $("wPlayMsg").textContent = `${m}개월째 — 자격 있는 가상 국민 ${elig.length}명 중 ${done}명 신청·수급 (${S === "S1" ? "자동 안내" : "현행 신청"})`;
-      if (m < 12) setTimeout(tick, reduceMotion() ? 60 : 480);
-      else { playing = false; $("wPlay").disabled = false;
-        $("wPlayMsg").textContent = `12개월 뒤 — ${elig.length}명 중 ${fin}명 수급, ${elig.length - fin}명은 끝내 신청하지 않음(점을 눌러 이유 보기)`; } };
-    setTimeout(tick, 250);
+    const fromBase = !(R === 0.32 && S === "S0"), startOf = pt => fromBase ? target(pt, 0.32, "S0") : 1;
+    const zero = { ...base, expected_recipient_households: 0, non_take_up_households: base.eligible_households, livelihood_expected_recipients: 0, monthly_budget_won: 0 };
+    const from = fromBase ? base : zero, to = W.national[key()][S];
+    let now = performance.now(); K.parts.forEach(pt => { pt.s = startOf(pt); pt.from = pt.s; pt.t0 = now; });
+    paintKpi(from); let m = 0;
+    const tick = () => { m++; now = performance.now();
+      K.parts.forEach(pt => { if (pt.m === m) setState(pt, target(pt), now); });
+      paintKpi(metricsAt(m / 12, from, to));
+      if (m % 3 === 0 || m === 1) paintMap(true);
+      clock(m, fromBase ? `정책 시행 ${m}개월 · 생계급여 ${Math.round(R * 100)}%${S === "S1" ? " + 자동 안내" : ""}` : `현행 제도에서 ${m}개월 동안의 신청`);
+      if (m < 12) setTimeout(tick, reduceMotion() ? 80 : 700);
+      else { playing = false; $("wPlay").disabled = false; paintKpi(to); } };
+    loop(); setTimeout(tick, 300);
   };
-  svg.onclick = e => {   // 가장 가까운 점 선택(모바일에서 작은 점도 누르기 쉽게)
-    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
-    const q = pt.matrixTransform(svg.getScreenCTM().inverse());
-    let best = null, bd = 18 * 18;
-    W.agents.forEach(a => { const d = (a.x - q.x) ** 2 + (a.y - q.y) ** 2; if (d < bd) { bd = d; best = a; } });
-    if (best) pick(best);
-  };
-  update(false);
+  $("wR").oninput = () => { R = +$("wR").value / 100; update(); };
+  $("wS").onclick = e => { const b = e.target.closest("button"); if (!b || b.dataset.s === S) return; S = b.dataset.s; update(); };
+  $("wPre").onclick = e => { const b = e.target.closest("button"); if (!b) return; R = +b.dataset.r / 100; S = b.dataset.s; update(); };
+  // ---- 시도: 마우스를 올리면 요약, 누르면 그 지역 사람들
+  const tip = $("wTip");
+  outl.forEach((el, i) => {
+    el.addEventListener("mousemove", e => { const { p, v, b, g } = pstat(i), rc = box.getBoundingClientRect();
+      tip.hidden = false; tip.innerHTML = `<b>${esc(p.name)}</b> · 새로 혜택 <b>${signed(Math.round(g))}가구</b><br>수급 ${num(b.recipients)} → ${num(v.recipients)}<br>생계급여 ${num(b.livelihood_recipients)} → ${num(v.livelihood_recipients)}<br>월 재정 ${signed(Math.round((v.budget - b.budget) / 1e8))}억원`;
+      const x = e.clientX - rc.left + 14, y = e.clientY - rc.top + 14; tip.style.left = `${Math.min(x, rc.width - 230)}px`; tip.style.top = `${Math.min(y, rc.height - 120)}px`; });
+    el.addEventListener("mouseleave", () => { tip.hidden = true; });
+    el.addEventListener("click", () => { focus = focus === i ? null : i; outl.forEach((o, j) => o.classList.toggle("on", j === focus)); paintFocus(); });
+  });
+  resize(); update(false);
 }
 
 // ---------------------------------------------------------------- 04 시뮬레이터 + 레드팀
@@ -1107,42 +1214,56 @@ function viewSim() {
     </section>`;
   $("v-sim").innerHTML = chap("sim", "정책을 바꾸면, 누가 들어오고 누가 빠지는가",
     `${who} ${sc.calibration.target.year}년 실제 수급 가구 수(${num(sc.calibration.target.households)})로 보정한 뒤 시나리오를 비교합니다.`) + `
-    <div class="card world mb" id="world" aria-labelledby="h-world">
-      <p class="eyebrow">가상 대한민국 시뮬레이션</p>
-      <h2 class="display" id="h-world" style="margin:0">손잡이를 움직이면, 대한민국이 어떻게 달라질까</h2>
-      <p class="small muted" style="margin:8px 0 0">합성 인구 10만 가구 전체를 생계급여 선정기준마다 미리 평가해 두었고, 신청 여부는 가상 국민의 응답을 실제 수급 통계로 보정한 확률로 정합니다. 움직이는 즉시 다시 계산됩니다.</p>
-      <div class="world-ctl">
-        <div><div class="slider-row"><label class="field-label" for="wR" style="margin:0">생계급여 선정기준 (기준중위소득 대비) <span class="muted" style="font-weight:500">· 현행 32%</span></label><span class="now" id="wRv">32%</span></div>
-          <input type="range" id="wR" min="25" max="40" step="1" value="32" aria-describedby="wSay"></div>
-        <div><p class="field-label" id="wSl">신청 방식</p><div class="choices compact" role="group" aria-labelledby="wSl" id="wS" style="--n:2">
-          <button type="button" class="choice" data-s="S0" aria-pressed="true"><span class="t">현행 신청</span><span class="m">본인이 찾아서</span></button>
-          <button type="button" class="choice" data-s="S1" aria-pressed="false"><span class="t">자동 안내</span><span class="m">정부가 먼저 알림</span></button></div></div>
-        <div class="acts"><button type="button" class="btn primary sm" id="wPlay">${icon("arrowR")} 12개월 재생</button>
-          <button type="button" class="btn ghost sm" id="wReset">현행으로</button></div>
-      </div>
-      <p class="world-say" id="wSay" aria-live="polite">불러오는 중…</p>
-      <div class="world-body" id="wBody">
-        <div class="world-map">
-          <svg id="wMap" role="img" aria-label="시도별 가상 국민 지도 — 점 하나가 가상 국민 한 명, 타일 색은 현행 대비 새로 혜택받는 가구 비율"></svg>
-          <div class="world-legend" aria-hidden="true">
-            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" class="d0" style="fill:var(--border-strong);opacity:.55"/></svg>자격 없음</span>
-            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.2" style="fill:var(--surface);stroke:var(--text-2);stroke-width:1.3"/></svg>자격 있지만 미신청</span>
-            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" style="fill:var(--clay);opacity:.55"/></svg>수급(주거·의료 등)</span>
-            <span><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5" style="fill:var(--accent)"/></svg>생계급여 수급</span>
-            <span><svg viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" rx="2" style="fill:var(--accent);fill-opacity:.35"/></svg>타일 색·% = 현행 대비 새로 혜택받는 가구 비율(새로 수급 + 생계급여 새로 받음)</span>
+    <section class="stage" id="world" aria-labelledby="h-world">
+      <div class="stage-in">
+        <header class="stage-top">
+          <div><p class="stage-eyebrow"><span class="live" aria-hidden="true"></span>가상 대한민국 · 정책 시뮬레이터</p>
+            <h2 id="h-world">정책을 바꾸면, 대한민국이 이렇게 달라집니다</h2></div>
+          <div class="stage-clock" aria-live="polite"><div class="m" id="wMonth">지금</div><div class="l" id="wMonthL">현행 제도 · 2026년 기준</div><div class="bar"><i id="wMonthBar"></i></div></div>
+        </header>
+        <div class="stage-main">
+          <div>
+            <div class="stage-map" id="wBox">
+              <svg id="wMap" role="img" aria-label="대한민국 시도 지도 — 빛나는 점은 기초생활보장 자격 가구(점 하나 약 800가구), 색이 진한 시도일수록 새로 혜택받는 가구 비율이 큼"></svg>
+              <canvas id="wCanvas" aria-hidden="true"></canvas>
+              <div class="stage-tip" id="wTip" hidden></div>
+            </div>
+            <div class="stage-legend" id="wLegend">
+              <span><i style="background:#8fa3b8;opacity:.75"></i>자격 있지만 신청 안 함</span>
+              <span><i style="background:#e2774a;box-shadow:0 0 8px #e2774a"></i>수급(주거·의료 등)</span>
+              <span><i style="background:#ffc861;box-shadow:0 0 8px #ffc861"></i>생계급여 수급</span>
+              <span><i style="background:rgba(255,255,255,.35)"></i>그 밖의 가구(약 6,000가구당 1점)</span>
+            </div>
           </div>
-          <p class="wplay" id="wPlayMsg" aria-live="polite"></p>
+          <aside class="hud" aria-label="정책 효과">
+            <div class="hud-kpis" id="wKpi"></div>
+            <p class="hud-say" id="wSay" aria-live="polite">불러오는 중…</p>
+            <div class="hud-sec"><h3>누가 혜택을 받나 — 가구주 연령대별 새로 혜택받는 가구</h3><div id="wAge"></div></div>
+            <div class="hud-sec" id="wFocus"></div>
+          </aside>
         </div>
-        <div>
-          <div class="wk" id="wKpi"></div>
-          <p class="w-sub">누가 혜택을 받나 — 가구주 연령대별 새로 혜택받는 가구 (현행 대비)</p>
-          <div class="wbars" id="wAge"></div>
-          <div class="wperson" id="wPerson"></div>
+        <div class="stage-dock" role="group" aria-label="정책 손잡이">
+          <div class="dock-presets" id="wPre" role="group" aria-label="빠른 시나리오">
+            <button type="button" class="sbtn" data-r="32" data-s="S0">현행</button>
+            <button type="button" class="sbtn" data-r="35" data-s="S0">생계급여 기준 35%</button>
+            <button type="button" class="sbtn" data-r="32" data-s="S1">자동 안내</button>
+            <button type="button" class="sbtn" data-r="35" data-s="S1">35% + 자동 안내</button>
+            <button type="button" class="sbtn" data-r="40" data-s="S1">40% + 자동 안내</button>
+          </div>
+          <span style="font-size:13px;color:var(--s-muted)">직접 조절</span>
+          <div class="dock-slider"><label for="wR">생계급여 선정기준(중위소득 대비)</label><input type="range" id="wR" min="25" max="40" step="1" value="32"><span class="val" id="wRv">32%</span></div>
+          <div class="dock-seg" id="wS" role="group" aria-label="신청 방식">
+            <button type="button" class="sbtn" data-s="S0" aria-pressed="true">현행 신청</button>
+            <button type="button" class="sbtn" data-s="S1" aria-pressed="false">자동 안내</button>
+          </div>
+          <div style="display:flex;gap:8px"><button type="button" class="sbtn go" id="wPlay">▶ 정책 시행 12개월 재생</button></div>
         </div>
+        <p class="stage-note">숫자는 합성 인구 10만 가구 전체를 생계급여 선정기준 16개 × 신청 방식 2개로 미리 계산한 값입니다(시나리오 엔진과 같은 값). 신청 여부는 가상 국민 714명(NVIDIA Nemotron-Personas-Korea 인물)의 응답을
+          2025년 실제 수급 가구 수로 보정한 확률입니다. 점의 위치는 합성 인구의 시군구 분포를 따르고, 12개월 재생의 시점은 보여 주기 위한 연출입니다.
+          경계: 통계청 SGIS 센서스용 행정구역경계(2018). 울릉도·독도는 점선 상자로 옮겨 그렸습니다.</p>
       </div>
-      <p class="xs muted" style="margin:16px 0 0">점 하나 = 가상 국민 한 명(통계 기반 합성, 실제 개인 아님). 점의 상태는 그 사람 유형의 자격 비율·신청 확률로 정한 한 번의 추첨이고,
-        숫자는 10만 가구 전체 계산값입니다. 12개월 재생의 신청 시점은 보여 주기 위한 연출입니다(시점은 모델링하지 않음).</p>
-    </div>` + `
+    </section>
+` + `
     <div class="card mb">
       <p class="field-label" id="scLabel">시나리오 · 선정기준 × 신청 방식</p>
       <div class="choices" role="group" aria-labelledby="scLabel" id="scChoices" style="--n:${sc.scenarios.length}">
